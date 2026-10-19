@@ -71,7 +71,7 @@ def _leer_eventos(path: Path, errores: list[str]) -> list[Evento]:
         except ValidationError as e:
             for err in e.errors():
                 campo = ".".join(str(p) for p in err["loc"])
-                errores.append(f"{path.name}: evento {n} ({crudo.get('id')}): {campo}: {err['msg']}")
+                errores.append(f"{path.parent.name}/{path.name}: evento {n} ({crudo.get('id')}): {campo}: {err['msg']}")
     return eventos
 
 
@@ -83,11 +83,14 @@ def cargar(directorio: Path = DIRECTORIO_DATOS) -> Repositorio:
             if dato.id in repo.datos:
                 errores.append(f"{path.name}: id duplicado {dato.id}")
             repo.datos[dato.id] = dato
-    eventos = directorio / "eventos.yaml"
-    if eventos.exists():
-        repo.eventos = _leer_eventos(eventos, errores)
-        ids = [e.id for e in repo.eventos]
-        errores += [f"eventos.yaml: id duplicado {i}" for i in sorted(set(ids)) if ids.count(i) > 1]
+    # Un archivo de eventos por tema (data/eventos/*.yaml), para que cada responsable edite el suyo.
+    archivos = sorted((directorio / "eventos").glob("*.yaml"))
+    if (directorio / "eventos.yaml").exists():
+        archivos.append(directorio / "eventos.yaml")
+    for archivo in archivos:
+        repo.eventos += _leer_eventos(archivo, errores)
+    ids = [e.id for e in repo.eventos]
+    errores += [f"eventos: id duplicado {i}" for i in sorted(set(ids)) if ids.count(i) > 1]
     if errores:
         raise ErrorDeCarga(errores)
     return repo

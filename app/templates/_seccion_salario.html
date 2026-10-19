@@ -1,0 +1,16 @@
+{% from "_macros.html" import num, encabezado, linea_tiempo %}
+<section class="seccion" id="salario">
+  {{ encabezado("01", "Salario docente", "¿Cuánto cobra un docente frente a lo que exige la ley?") }}
+  <div class="datos revelar">
+    <div class="dato dato-grande"><small>Aumento que falta</small><span class="rojo">{{ num(es, "brecha-art5", true) }}</span></div>
+    <div class="dato"><small>Se pagó</small>{{ num(es, "pagado", true) }}</div>
+    <div class="dato"><small>La ley exige</small>{{ num(es, "exigido", true) }}</div>
+    <div class="dato"><small>Poder de compra vs. nov-2023</small>{{ num(es, "real-nov_2023", true) }}</div>
+  </div>
+  <div class="revelar dibujar">{% include "_grafico_salario.html" %}</div>
+  {% if brecha.aviso %}<p class="aviso">{{ brecha.aviso }}</p>{% endif %}
+  <details class="mas-info">
+    <summary>¿De dónde sale este número?</summary>
+    {% with eje = es %}{% include "_articulo_salario.html" %}{% endwith %}
+  </details>
+</section>

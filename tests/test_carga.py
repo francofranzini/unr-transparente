@@ -55,3 +55,31 @@ def test_evento_sin_url_es_error(tmp_path):
     """), encoding="utf-8")
     with pytest.raises(ErrorDeCarga, match="url"):
         cargar(tmp_path)
+
+
+EVENTO = """
+- id: {id}
+  fecha: "2026-01"
+  tipo: estado
+  ejes: [control]
+  titulo: Algo
+  tipo_fuente: primaria
+  documento: Doc
+  url: https://ejemplo.org
+  consultado: 2026-10-19
+"""
+
+
+def test_eventos_por_tema_en_carpeta(tmp_path):
+    (tmp_path / "eventos").mkdir()
+    (tmp_path / "eventos" / "ley.yaml").write_text(EVENTO.format(id="e1"), encoding="utf-8")
+    (tmp_path / "eventos" / "control.yaml").write_text(EVENTO.format(id="e2"), encoding="utf-8")
+    assert sorted(e.id for e in cargar(tmp_path).eventos) == ["e1", "e2"]
+
+
+def test_id_de_evento_repetido_entre_archivos_es_error(tmp_path):
+    (tmp_path / "eventos").mkdir()
+    (tmp_path / "eventos" / "ley.yaml").write_text(EVENTO.format(id="e1"), encoding="utf-8")
+    (tmp_path / "eventos" / "control.yaml").write_text(EVENTO.format(id="e1"), encoding="utf-8")
+    with pytest.raises(ErrorDeCarga, match="duplicado"):
+        cargar(tmp_path)

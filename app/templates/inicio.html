@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_macros.html" import num, linea_tiempo %}
+{% from "_macros.html" import num, encabezado %}
 {% block contenido %}
 {% set es = ejes["salario"] %}{% set el = ejes["ley"] %}{% set ej = ejes["ejecucion"] %}
 {% set ec = ejes["control"] %}{% set eg = ejes["graduacion"] %}
@@ -27,92 +27,16 @@
   <p>No te decimos qué pensar: cada número se puede tocar para ver el documento de donde sale. Hecho en una hackatón sobre la universidad pública.</p>
 </section>
 
-{% macro encabezado(n, titulo, pregunta) %}
-<header class="sec-encabezado revelar">
-  <p class="sec-numero">{{ n }} — {{ titulo }}</p>
-  <h2>{{ pregunta }}</h2>
-</header>
-{% endmacro %}
 
-{# 01 Salario #}
-<section class="seccion" id="salario">
-  {{ encabezado("01", "Salario docente", "¿Cuánto cobra un docente frente a lo que exige la ley?") }}
-  <div class="datos revelar">
-    <div class="dato dato-grande"><small>Aumento que falta</small><span class="rojo">{{ num(es, "brecha-art5", true) }}</span></div>
-    <div class="dato"><small>Se pagó</small>{{ num(es, "pagado", true) }}</div>
-    <div class="dato"><small>La ley exige</small>{{ num(es, "exigido", true) }}</div>
-    <div class="dato"><small>Poder de compra vs. nov-2023</small>{{ num(es, "real-nov_2023", true) }}</div>
-  </div>
-  <div class="revelar dibujar">{% include "_grafico_salario.html" %}</div>
-  {% if brecha.aviso %}<p class="aviso">{{ brecha.aviso }}</p>{% endif %}
-  <details class="mas-info">
-    <summary>¿De dónde sale este número?</summary>
-    {% with eje = es %}{% include "_articulo_salario.html" %}{% endwith %}
-  </details>
-</section>
+{% include "_seccion_salario.html" %}
 
-{# 02 Ley #}
-<section class="seccion" id="ley">
-  {{ encabezado("02", "Ley 27.795", "¿En qué estado está la ley de financiamiento universitario?") }}
-  {% if hoy %}
-  <div class="hoy revelar">
-    <small>Dónde está hoy</small>
-    <p>{{ hoy_texto[0]|upper }}{{ hoy_texto[1:] }}.</p>
-    <a class="enlace" href="/ficha/evento/{{ hoy.id }}" hx-get="/ficha/evento/{{ hoy.id }}" hx-target="#ficha-contenido">De dónde sale este dato →</a>
-  </div>
-  {% endif %}
-  {% include "_cronologia_ley.html" %}
-</section>
+{% include "_seccion_ley.html" %}
 
-{# 03 Transferencias #}
-<section class="seccion" id="transferencias">
-  {{ encabezado("03", "Transferencias", "¿Cuánto del presupuesto " ~ ej.cifra("unr-ejecucion").periodo ~ " llegó a la UNR?") }}
-  <div class="datos revelar">
-    <div class="dato dato-grande"><small>Del crédito vigente</small>{{ num(ej, "unr-ejecucion", true) }}</div>
-    <div class="dato"><small>Crédito vigente UNR</small>{{ num(ej, "unr-credito_vigente", true) }}</div>
-    <div class="dato"><small>Ya transferido</small>{{ num(ej, "unr-devengado", true) }}</div>
-    <div class="dato"><small>Año transcurrido</small>{{ num(ej, "anio-transcurrido", true) }}</div>
-  </div>
-  <details class="mas-info">
-    <summary>Ver el detalle del sistema</summary>
-    <table class="tabla">
-      <thead><tr><th></th><th>Vigente</th><th>Devengado</th><th>%</th></tr></thead>
-      <tbody>
-        <tr><th>UNR</th><td data-r="Vigente">{{ num(ej, "unr-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "unr-devengado") }}</td><td data-r="%">{{ num(ej, "unr-ejecucion") }}</td></tr>
-        <tr><th>61 universidades</th><td data-r="Vigente">{{ num(ej, "sistema-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "sistema-devengado") }}</td><td data-r="%">{{ num(ej, "sistema-ejecucion") }}</td></tr>
-        <tr><th>Sin universidad asignada</th><td data-r="Vigente">{{ num(ej, "no-asignado-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "no-asignado-devengado") }}</td><td data-r="%" class="sin-dato">—</td></tr>
-      </tbody>
-    </table>
-    <p class="aviso">Transferencias del Tesoro (Programa 26). Falta comparar con lo que exigen los arts. 3 y 4 de la Ley 27.795.</p>
-  </details>
-</section>
+{% include "_seccion_transferencias.html" %}
 
-{# 04 Control #}
-<section class="seccion" id="control">
-  {{ encabezado("04", "Control", "¿Quién audita a la UNR?") }}
-  <div class="hoy revelar">
-    <small>Último control externo publicado</small>
-    <p>Informe 161/2022 de la Auditoría General de la Nación, sobre el ejercicio 2017.</p>
-    <a class="enlace" href="/ficha/evento/agn-informe-161-2022" hx-get="/ficha/evento/agn-informe-161-2022" hx-target="#ficha-contenido">De dónde sale este dato →</a>
-  </div>
-  <div class="revelar">{{ linea_tiempo(ec, 4) }}</div>
-</section>
+{% include "_seccion_control.html" %}
 
-{# 05 Graduación #}
-<section class="seccion" id="graduacion">
-  {{ encabezado("05", "Graduación", "¿Cuántos estudian y se reciben?") }}
-  <div class="datos revelar">
-    {% for anio in ["2025", "2024", "2023"] %}
-    <div class="dato{{ ' dato-grande' if loop.first }}"><small>Egresados de grado {{ anio }}</small>{{ num(eg, "egresados-grado-" ~ anio, true) }}</div>
-    {% endfor %}
-  </div>
-  <div class="datos revelar">
-    <div class="dato"><small>Alumnos de grado 2024</small>{{ num(eg, "alumnos-grado-2024", true) }}</div>
-    <div class="dato"><small>Posgrado</small>{{ num(eg, "alumnos-posgrado-2024", true) }}</div>
-    <div class="dato"><small>Pregrado</small>{{ num(eg, "alumnos-pregrado-tecnicaturas-2024", true) }}</div>
-  </div>
-  <p class="aviso">Valores absolutos: para calcular una tasa de egreso hacen falta los ingresantes de cada cohorte.</p>
-</section>
+{% include "_seccion_graduacion.html" %}
 
 {# Cómo leer #}
 <section class="seccion como-leer">

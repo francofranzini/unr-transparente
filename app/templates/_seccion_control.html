@@ -1,0 +1,10 @@
+{% from "_macros.html" import num, encabezado, linea_tiempo %}
+<section class="seccion" id="control">
+  {{ encabezado("04", "Control", "¿Quién audita a la UNR?") }}
+  <div class="hoy revelar">
+    <small>Último control externo publicado</small>
+    <p>Informe 161/2022 de la Auditoría General de la Nación, sobre el ejercicio 2017.</p>
+    <a class="enlace" href="/ficha/evento/agn-informe-161-2022" hx-get="/ficha/evento/agn-informe-161-2022" hx-target="#ficha-contenido">De dónde sale este dato →</a>
+  </div>
+  <div class="revelar">{{ linea_tiempo(ec, 4) }}</div>
+</section>

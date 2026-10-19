@@ -3,6 +3,8 @@
 > Contexto para el agente que construye este proyecto en una hackatón (temática: Universidad Pública).
 > Leer completo antes de escribir código. Lo marcado **[POR DEFINIR]** lo decide el equipo; si falta una decisión, preguntar en vez de suponer.
 >
+> **Estándar del sitio:** [`docs/ESTANDAR.md`](docs/ESTANDAR.md) fija la estética y las funcionalidades; es la base de cualquier modificación y no se cambia sin acuerdo del equipo y un ADR. El trabajo en curso está dividido en [`docs/tareas/`](docs/tareas/README.md).
+>
 > **Documentos relacionados:** `CONTEXT.md` es el glosario del dominio; usar esos términos en el código y en la interfaz. `docs/adr/` registra las decisiones tomadas y su porqué. Si este archivo y un ADR se contradicen, vale el ADR más reciente.
 
 ## 1. Qué es
@@ -76,7 +78,7 @@ nota: "Copia del anexo publicada por la UNT; buscar también la publicación ofi
 
 Los hechos sin cifra son registros `Evento` (fecha, tipo, descripción literal y la misma ficha de fuente). Tipos: hitos de negociación (leyes, vetos, decretos, acuerdos del CIN, paritarias), dictámenes, auditorías y **eventos de estado**, que registran la ausencia de información a una fecha ("no se encontraron informes publicados al 2026-10-19"), con las búsquedas realizadas como ficha.
 
-- Almacenamiento: `data/*.csv` (un archivo por indicador) y `data/eventos.yaml`, versionados y cargados a mano. Un validador en la integración continua rechaza cualquier fila sin ficha completa. No hay ingesta automática: el **vigía de fuentes** (`data/fuentes.yaml` + script) detecta cambios y avisa, y la carga es manual (ADR 0010).
+- Almacenamiento: `data/*.csv` (un archivo por indicador) y `data/eventos/*.yaml`, versionados y cargados a mano. Un validador en la integración continua rechaza cualquier fila sin ficha completa. No hay ingesta automática: el **vigía de fuentes** (`data/fuentes.yaml` + script) detecta cambios y avisa, y la carga es manual (ADR 0010).
 - Las lentes (sección 5.2) son funciones puras `(serie, parámetros) → serie`, y cada resultado lleva consigo la lista de supuestos aplicados para mostrarlos en pantalla.
 
 ## 5. Fuentes
@@ -262,6 +264,6 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 - [ ] Instructivos de jul-2026 y ago-2026 (no publicados en el portal de la UNR).
 - [ ] Lente arts. 3 y 4 (gastos de funcionamiento) para reemplazar "asignado contra ejecutado" (ADR 0015).
 - [ ] Texto de la Ley 27.795 y de los Decs. 647/2025 y 759/2025 desde el Boletín Oficial, y textos de las resoluciones judiciales (fuente primaria; ADR 0018).
-- [x] Cronología de la ley con cobertura de prensa (ADR 0018). Para actualizarla: agregar el Evento en `data/eventos.yaml` con su ficha y sus `noticias` (títulos tal como se publicaron).
+- [x] Cronología de la ley con cobertura de prensa (ADR 0018). Para actualizarla: agregar el Evento en `data/eventos/ley.yaml` con su ficha y sus `noticias` (títulos tal como se publicaron).
 - [ ] Permiso y crédito para la API de la FCEIA.
 - [x] Nombre del portal: «UNR Transparente», siempre con «sitio independiente» (ADR 0019).

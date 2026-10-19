@@ -1,0 +1,12 @@
+{% from "_macros.html" import num, encabezado, linea_tiempo %}
+<section class="seccion" id="ley">
+  {{ encabezado("02", "Ley 27.795", "¿En qué estado está la ley de financiamiento universitario?") }}
+  {% if hoy %}
+  <div class="hoy revelar">
+    <small>Dónde está hoy</small>
+    <p>{{ hoy_texto[0]|upper }}{{ hoy_texto[1:] }}.</p>
+    <a class="enlace" href="/ficha/evento/{{ hoy.id }}" hx-get="/ficha/evento/{{ hoy.id }}" hx-target="#ficha-contenido">De dónde sale este dato →</a>
+  </div>
+  {% endif %}
+  {% include "_cronologia_ley.html" %}
+</section>

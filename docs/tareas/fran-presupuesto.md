@@ -1,0 +1,50 @@
+# Fran — Presupuesto y transferencias
+
+**Sección:** 03 — `#transferencias`. **Archivos propios:** `data/ejecucion_programa26_*.csv`, `data/credito_asignado_ley.csv`, CSV nuevos `data/presupuesto_*.csv`, `app/templates/_seccion_transferencias.html`, `eje_ejecucion` en `core/ejes.py`, lentes nuevas en `core/lentes.py`. **Rama:** `fran/presupuesto`. **ADR:** `0020`–`0024`.
+
+Leer antes: [`docs/ESTANDAR.md`](../ESTANDAR.md), ADR 0012, 0013, 0014 y 0015.
+
+## Estado actual
+
+- La sección muestra cuánto del crédito vigente 2026 se transfirió a la UNR: 88,0 % al 16-oct-2026, desde Presupuesto Abierto (`data/ejecucion_programa26_2026.csv`).
+- Falta lo central para la disputa: **lo que exigen los arts. 3 y 4 de la Ley 27.795 frente a lo transferido.**
+
+## Lo que ya se sabe (para no repetir trabajo)
+
+- Datos abiertos de Presupuesto Abierto, mensuales: `https://dgsiaf-repo.mecon.gob.ar/repository/pa/datasets/<año>/credito-mensual-<año>.zip`. Filtrar por `programa_desc` = «Desarrollo de la Educacion Superior» y `subparcial_desc` = «Universidad Nacional de Rosario». El `programa_id` 26 se repite en otras subjurisdicciones: no filtrar solo por id. Los valores están en millones de pesos.
+- En 2024 y 2025 la UNR tuvo **crédito vigente igual al presupuestado** (presupuesto 2023 prorrogado). Los aumentos se pagaron por fuera del crédito asignado a la UNR, a través de «Universidades sin Discriminar». Por eso la comparación con la ley se hace sobre lo **devengado**.
+- Funcionamiento (actividad 14), devengado de la UNR en millones: total 2024 = 13.318 (≈283–679 por mes hasta mayo; **1.483 por mes desde junio**, después del aumento de mayo de 2024); total 2025 = 15.135, con montos mensuales irregulares (580 a 2.836).
+- Cálculo exploratorio de lo que exigían los arts. 3 y 4 en 2025 (actividades 14, 15 y 16):
+  - **Opción A** (monto de partida: nivel mensual vigente desde mayo de 2024): exigido 27.267, transferido 15.733, la ley exigía un **73 % más**.
+  - **Opción B** (monto de partida: promedio mensual de todo 2024): exigido ~20.400, la ley exigía un **~31 % más**.
+  - Recomendación previa: **A como principal y B visible**, igual que en Salario. Los arts. 3 y 4 no fijan fórmula para 2026: mostrar lo transferido en 2026 como dato, sin inventar un «exigido».
+
+## Tareas
+
+### 1. Decidir y registrar
+- [ ] Decidir el monto de partida (A o B) con el equipo y registrarlo en un ADR (`0020`).
+
+### 2. Cargar los datos
+- [ ] Extender `scripts/extraer_presupuesto_abierto.py` (o crear uno nuevo) para la apertura **mensual** por actividad, y generar `data/presupuesto_unr_mensual_2024.csv` y `…_2025.csv` con la ficha completa.
+- [ ] Volver a extraer 2026 con la última actualización de Presupuesto Abierto.
+
+### 3. Calcular
+- [ ] Agregar en `core/lentes.py` la lente de los arts. 3 y 4: art. 3 (IPC de mayo a diciembre de 2024, al 1-ene-2025) y art. 4 (actualización bimestral por IPC durante 2025, tomando a cuenta los aumentos otorgados).
+- [ ] Tests con valores calculados a mano en `tests/test_lentes.py`.
+- [ ] Cifras nuevas en `eje_ejecucion` (`core/ejes.py`), con su cálculo explicado.
+
+### 4. Mostrar (solo con componentes del estándar)
+- [ ] En `_seccion_transferencias.html`: fila de datos con lo que exigía la ley, lo transferido y la diferencia; la medición alternativa (B) visible; el 88 % frente al presupuesto pasa a segundo plano, dentro de un `mas-info`.
+- [ ] Un artículo «¿De dónde sale este número?» con pasos (`.articulo` / `.paso`), con el mismo tono que el de Salario.
+
+### 5. Verificar datos existentes
+- [ ] `data/credito_asignado_ley.csv`: reverificar contra los PDF los valores de 2021 y 2026 (tienen la nota «reverificar»), y reemplazar las copias de terceros (UNT, El Tucumano) por la publicación oficial.
+- [ ] Buscar el acto (decisión administrativa) que creó el crédito vigente de «Universidades sin Discriminar» en 2026 (1,46 billones, con 0 devengado) y cargarlo como evento. Ver si se relaciona con el acuerdo del 10-jun-2026.
+
+## Avances
+
+_(Completar a medida que se avanza.)_
+
+## Propuestas de presentación
+
+_(Anotar acá, sin implementarlas.)_

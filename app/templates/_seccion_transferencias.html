@@ -1,0 +1,22 @@
+{% from "_macros.html" import num, encabezado, linea_tiempo %}
+<section class="seccion" id="transferencias">
+  {{ encabezado("03", "Transferencias", "¿Cuánto del presupuesto " ~ ej.cifra("unr-ejecucion").periodo ~ " llegó a la UNR?") }}
+  <div class="datos revelar">
+    <div class="dato dato-grande"><small>Del crédito vigente</small>{{ num(ej, "unr-ejecucion", true) }}</div>
+    <div class="dato"><small>Crédito vigente UNR</small>{{ num(ej, "unr-credito_vigente", true) }}</div>
+    <div class="dato"><small>Ya transferido</small>{{ num(ej, "unr-devengado", true) }}</div>
+    <div class="dato"><small>Año transcurrido</small>{{ num(ej, "anio-transcurrido", true) }}</div>
+  </div>
+  <details class="mas-info">
+    <summary>Ver el detalle del sistema</summary>
+    <table class="tabla">
+      <thead><tr><th></th><th>Vigente</th><th>Devengado</th><th>%</th></tr></thead>
+      <tbody>
+        <tr><th>UNR</th><td data-r="Vigente">{{ num(ej, "unr-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "unr-devengado") }}</td><td data-r="%">{{ num(ej, "unr-ejecucion") }}</td></tr>
+        <tr><th>61 universidades</th><td data-r="Vigente">{{ num(ej, "sistema-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "sistema-devengado") }}</td><td data-r="%">{{ num(ej, "sistema-ejecucion") }}</td></tr>
+        <tr><th>Sin universidad asignada</th><td data-r="Vigente">{{ num(ej, "no-asignado-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "no-asignado-devengado") }}</td><td data-r="%" class="sin-dato">—</td></tr>
+      </tbody>
+    </table>
+    <p class="aviso">Transferencias del Tesoro (Programa 26). Falta comparar con lo que exigen los arts. 3 y 4 de la Ley 27.795.</p>
+  </details>
+</section>

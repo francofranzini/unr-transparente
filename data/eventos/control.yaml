@@ -1,0 +1,111 @@
+# Hechos documentados sin cifra (ver Evento en core/modelos.py y CONTEXT.md).
+# Los títulos describen el hecho; no lo califican.
+# Archivo: control
+
+# --- Control ---------------------------------------------------------------
+
+- id: sigen-if-2021-70799304
+  fecha: "2021-07"
+  tipo: auditoria
+  ejes: [control]
+  titulo: "SIGEN emite el informe IF-2021-70799304-APN-GCSS#SIGEN sobre el sistema de control interno de la UNR y su Unidad de Auditoría Interna"
+  tipo_fuente: primaria
+  documento: "UNR — Resumen Unidad de Auditoría Interna 2019-2024"
+  url: https://transparencia.unr.edu.ar/wp-content/uploads/2025/11/RESUMEN-INFORME-UAI-2019_2024.pdf
+  consultado: 2026-10-19
+  nota: "El resumen informa para ambos informes de SIGEN «un 95% de cumplimiento» (cita textual)."
+
+- id: sigen-if-2022-50136522
+  fecha: "2022-07"
+  tipo: auditoria
+  ejes: [control]
+  titulo: "SIGEN emite el informe IF-2022-50136522-APN-GCSS#SIGEN sobre el sistema de control interno de la UNR y su Unidad de Auditoría Interna"
+  tipo_fuente: primaria
+  documento: "UNR — Resumen Unidad de Auditoría Interna 2019-2024"
+  url: https://transparencia.unr.edu.ar/wp-content/uploads/2025/11/RESUMEN-INFORME-UAI-2019_2024.pdf
+  consultado: 2026-10-19
+
+- id: agn-informe-161-2022
+  fecha: "2022"
+  tipo: auditoria
+  ejes: [control]
+  titulo: "AGN emite el informe 161/2022 sobre la UNR, referido al ejercicio 2017 (último informe de control externo según la UNR)"
+  tipo_fuente: primaria
+  documento: "UNR — Resumen Unidad de Auditoría Interna 2019-2024"
+  url: https://transparencia.unr.edu.ar/wp-content/uploads/2025/11/RESUMEN-INFORME-UAI-2019_2024.pdf
+  consultado: 2026-10-19
+  nota: "Pendiente: ubicar el informe original en el sitio de la AGN."
+
+- id: ptn-dictamen-2022-11-28
+  fecha: "2022-11-28"
+  tipo: dictamen
+  ejes: [control]
+  titulo: "La Procuración del Tesoro dictamina que no son aplicables a las universidades nacionales las previsiones de control interno de los arts. 100 y concordantes de la Ley 24.156"
+  tipo_fuente: primaria
+  documento: "UNR — Resumen Unidad de Auditoría Interna 2019-2024"
+  url: https://transparencia.unr.edu.ar/wp-content/uploads/2025/11/RESUMEN-INFORME-UAI-2019_2024.pdf
+  consultado: 2026-10-19
+
+- id: res-sigen-299-2023
+  fecha: "2023-07-20"
+  tipo: norma
+  ejes: [control]
+  titulo: "Resolución SIGEN 299/2023: unifica la Sindicatura Jurisdiccional del Ministerio de Educación y Universidades Nacionales; su ámbito alcanza a las universidades que suscriban convenio"
+  tipo_fuente: primaria
+  documento: "UNR — Resumen Unidad de Auditoría Interna 2019-2024"
+  url: https://transparencia.unr.edu.ar/wp-content/uploads/2025/11/RESUMEN-INFORME-UAI-2019_2024.pdf
+  consultado: 2026-10-19
+
+- id: convenio-cin-sigen-2023
+  fecha: "2023-09-08"
+  tipo: convenio
+  ejes: [control]
+  titulo: "El CIN aprueba el Convenio Marco con SIGEN; la UNR no suscribió convenio específico"
+  tipo_fuente: primaria
+  documento: "UNR — Resumen Unidad de Auditoría Interna 2019-2024"
+  url: https://transparencia.unr.edu.ar/wp-content/uploads/2025/11/RESUMEN-INFORME-UAI-2019_2024.pdf
+  consultado: 2026-10-19
+  nota: "La UNR adoptó internamente los manuales de SIGEN por Res. UNR 4424/2023."
+
+- id: convenio-cin-agn-2024
+  fecha: "2024-08-07"
+  tipo: convenio
+  ejes: [control]
+  titulo: "El CIN firma con la AGN un convenio de cooperación, emisión de informes especiales y capacitación"
+  tipo_fuente: primaria
+  documento: "UNR — Resumen Unidad de Auditoría Interna 2019-2024"
+  url: https://transparencia.unr.edu.ar/wp-content/uploads/2025/11/RESUMEN-INFORME-UAI-2019_2024.pdf
+  consultado: 2026-10-19
+
+- id: ptn-dictamen-2024-10-15
+  fecha: "2024-10-15"
+  tipo: dictamen
+  ejes: [control]
+  titulo: "La Procuración del Tesoro emite el dictamen IF-2024-112489009-APN-PTN, que revierte el dictamen del 28-nov-2022"
+  tipo_fuente: primaria
+  documento: "UNR — Resumen Unidad de Auditoría Interna 2019-2024"
+  url: https://transparencia.unr.edu.ar/wp-content/uploads/2025/11/RESUMEN-INFORME-UAI-2019_2024.pdf
+  consultado: 2026-10-19
+  nota: "El resumen agrega: «no contándose con mayores certezas respecto de su aplicación a la fecha»."
+
+- id: uai-unr-informes-2019-2024
+  fecha: "2024-12"
+  tipo: auditoria
+  ejes: [control]
+  titulo: "La Unidad de Auditoría Interna de la UNR informa 95 informes de auditoría (2019-2024) y 65 instructivos de trabajo de SIGEN"
+  tipo_fuente: primaria
+  documento: "UNR — Resumen Unidad de Auditoría Interna 2019-2024 (Anexo I)"
+  url: https://transparencia.unr.edu.ar/wp-content/uploads/2025/11/RESUMEN-INFORME-UAI-2019_2024.pdf
+  consultado: 2026-10-19
+  nota: "Por año: 2019: 21, 2020: 10, 2021: 14, 2022: 18, 2023: 20, 2024: 12. El texto del mismo documento dice «89 informes»; la tabla suma 95. Fecha: metadatos del PDF (26-dic-2024)."
+
+- id: estado-uai-informes-individuales
+  fecha: "2026-10-19"
+  tipo: estado
+  ejes: [control]
+  titulo: "No se encontraron publicados los informes individuales de la Unidad de Auditoría Interna de la UNR"
+  tipo_fuente: primaria
+  documento: "Búsqueda en unr.edu.ar/auditoria-interna y transparencia.unr.edu.ar"
+  url: https://unr.edu.ar/auditoria-interna/
+  consultado: 2026-10-19
+  nota: "La página de la UAI lista autoridades y contacto. El portal de transparencia publica solo el resumen 2019-2024."

@@ -1,0 +1,42 @@
+# Hechos documentados sin cifra (ver Evento en core/modelos.py y CONTEXT.md).
+# Los títulos describen el hecho; no lo califican.
+# Archivo: salario
+
+# --- Paritarias (eje salario) -------------------------------------------------
+
+- id: paritaria-docente-2023-12-etapas
+  fecha: "2023-12-06"
+  tipo: paritaria
+  ejes: [salario]
+  titulo: "El instructivo de diciembre de 2023 fija los básicos docentes en etapas: nov-2023, dic-2023 y feb-2024, sin valor para ene-2024"
+  tipo_fuente: primaria
+  documento: "SPU — Instructivo de Liquidación Docente dic-2023 (Escalas salariales, Transparencia UNR)"
+  url: https://drive.google.com/file/d/1llJgOv3axy99wHqvWGwQaxCJYJxTTN1O/view?usp=drive_web
+  pagina: 2
+  consultado: 2026-10-19
+  nota: "Actas de negociación salarial del 16-nov-2023 y 5-dic-2023. El valor de feb-2024 fue luego reemplazado por el instructivo de feb-2024."
+  confirma_vigencia: ["2024-01"]
+
+- id: paritaria-docente-2024-03-propuesta
+  fecha: "2024-03-20"
+  tipo: paritaria
+  ejes: [salario]
+  titulo: "Desde mar-2024 los instructivos fijan los básicos a partir de una «propuesta elevada mediante acta»; desde jun-2024 no citan acta"
+  tipo_fuente: primaria
+  documento: "SPU — Instructivos de liquidación docente mar-2024 a may-2026 (Escalas salariales, Transparencia UNR)"
+  url: https://drive.google.com/file/d/1blJ-UMu-V3zaSZnJOA9Rh0N8bzYzDx7Q/view?usp=drive_web
+  pagina: 2
+  consultado: 2026-10-19
+  nota: "Hasta feb-2024 los instructivos dicen «A partir de lo acordado por Acta(s) de negociación salarial». Texto de cada mes en la columna base_normativa de data/salario_cargo_testigo.csv."
+
+- id: paritaria-docente-2026-06-actas-acuerdo
+  fecha: "2026-06-10"
+  tipo: paritaria
+  ejes: [salario]
+  titulo: "Actas-Acuerdo del 10-jun-2026: el básico del profesor adjunto exclusivo pasa de $ 1.252.853,64 (may-2026) a $ 1.520.087,32 (jun-2026)"
+  tipo_fuente: primaria
+  documento: "SPU — Instructivo de Liquidación Doc y No Doc junio 2026 (Escalas salariales, Transparencia UNR)"
+  url: https://drive.google.com/file/d/1kFzDXN2LyO6hb63ovQVc-CSNRrBM4OhW/view?usp=drive_web
+  pagina: 2
+  consultado: 2026-10-19
+  nota: "No se encontraron publicados en el portal de la UNR los instructivos de jul-2026 y ago-2026."

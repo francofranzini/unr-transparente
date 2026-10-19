@@ -31,3 +31,10 @@
 </details>
 {% endif %}
 {% endmacro %}
+
+{% macro encabezado(n, titulo, pregunta) %}
+<header class="sec-encabezado revelar">
+  <p class="sec-numero">{{ n }} — {{ titulo }}</p>
+  <h2>{{ pregunta }}</h2>
+</header>
+{% endmacro %}
