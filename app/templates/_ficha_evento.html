@@ -1,0 +1,10 @@
+<p class="ficha-rotulo">Ficha</p>
+<h3 id="ficha-titulo">{{ evento.titulo }}</h3>
+<dl class="ficha">
+  <dt>Fecha</dt><dd>{{ fmt.fecha_evento(evento.fecha) }}</dd>
+  <dt>Tipo</dt><dd>{{ evento.tipo }}</dd>
+  <dt>Fuente</dt><dd>{{ evento.tipo_fuente.value }}</dd>
+  <dt>Documento</dt><dd><a href="{{ evento.url }}" rel="noopener" target="_blank">{{ evento.documento }}</a>{% if evento.pagina %}, pág. {{ evento.pagina }}{% endif %}
+    <br><small>consultado {{ evento.consultado.strftime("%d/%m/%Y") }}</small></dd>
+  {% if evento.nota %}<dt>Nota</dt><dd>{{ evento.nota }}</dd>{% endif %}
+</dl>

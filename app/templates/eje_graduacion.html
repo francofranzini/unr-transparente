@@ -1,0 +1,28 @@
+{% extends "eje_base.html" %}
+{% block destacado %}
+<div class="tarjeta-destacada">
+  <span class="td-rotulo">Egresados de grado en 2025</span>
+  <span class="td-cifra td-cifra-neutra">{{ num(eje, "egresados-grado-2025") }}</span>
+  <span class="td-pie">Según datos del Rectorado publicados en la prensa. Es un valor absoluto: para calcular una tasa
+    de egreso hacen falta los ingresantes de cada cohorte.</span>
+</div>
+{% endblock %}
+
+{% block cuerpo %}
+<p class="seccion-sobre">Egresados</p>
+<h2 class="titulo-seccion">Cuántos se reciben cada año</h2>
+<div class="panel">
+<table class="tabla">
+  <thead><tr><th>Egresados</th><th>Grado</th><th>Total informado</th></tr></thead>
+  <tbody>
+    {% for anio in ["2023", "2024", "2025"] %}
+    <tr><th>{{ anio }}</th><td data-r="Grado">{{ num(eje, "egresados-grado-" ~ anio) }}</td><td data-r="Total informado">{{ num(eje, "egresados-total-informado-" ~ anio) }}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+<p class="seccion-sobre" style="margin-top:32px">Alumnos</p>
+<h2 class="titulo-seccion">Cuántos estudian</h2>
+<p class="panel">Alumnos 2024: {{ num(eje, "alumnos-grado-2024") }} de grado · {{ num(eje, "alumnos-posgrado-2024") }} de posgrado ·
+   {{ num(eje, "alumnos-pregrado-tecnicaturas-2024") }} de pregrado · {{ num(eje, "alumnos-preuniversitario-2024") }} preuniversitarios.</p>
+{% endblock %}

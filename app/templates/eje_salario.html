@@ -1,0 +1,80 @@
+{% extends "eje_base.html" %}
+{% block destacado %}
+{% set brecha = eje.cifra("brecha-art5") %}
+<div class="tarjeta-destacada">
+  <span class="td-rotulo">Aumento que falta para cumplir la Ley 27.795</span>
+  <span class="td-cifra">{{ num(eje, "brecha-art5") }}</span>
+  <span class="td-pie">Se pagó {{ num(eje, "pagado") }}; la ley exige {{ num(eje, "exigido") }}.
+    Poder de compra frente a noviembre de 2023: {{ num(eje, "real-nov_2023") }}.</span>
+  {% if brecha.aviso %}<span class="td-aviso">{{ brecha.aviso }}</span>{% endif %}
+</div>
+{% endblock %}
+
+{% block cuerpo %}
+<p class="seccion-sobre">Mes a mes</p>
+<h2 class="titulo-seccion">El sueldo frente a lo que exige la ley</h2>
+{% include "_grafico_salario.html" %}
+{% endblock %}
+
+{% block notas %}
+{% set d = eje.detalle %}
+{% set confirmados = d.sin_grilla|selectattr(1, "equalto", "confirmada")|list %}
+{% set sin_confirmar = d.sin_grilla|rejectattr(1, "equalto", "confirmada")|list %}
+<section class="articulo">
+  <p class="seccion-sobre">De dónde sale cada dato</p>
+  <h2 class="titulo-seccion">Cómo llegamos a este número</h2>
+  <p class="entrada">Te lo contamos paso a paso. Cada número subrayado se puede tocar para ver el documento de donde sale.</p>
+
+  <div class="paso">
+    <h3><span>1</span>Cuánto cobra un docente</h3>
+    <p>Todos los meses, la Secretaría de Políticas Universitarias del Ministerio de Capital Humano les envía a las
+       universidades un instructivo con la escala salarial: cuánto vale cada cargo docente. La UNR los publica en su
+       portal de transparencia, en la sección <a href="https://transparencia.unr.edu.ar/escalas-salariales/">Escalas salariales</a>.</p>
+    <p>De esos instructivos tomamos el sueldo básico de un profesor adjunto con dedicación exclusiva y sin antigüedad.
+       Es solo un cargo de referencia: entre noviembre de 2023 y junio de 2026, todas las categorías con dedicación
+       exclusiva, de ayudante a titular, aumentaron en la misma proporción. El resultado sería el mismo con cualquiera de ellas.</p>
+    <p>Reunimos {{ d.meses_con_grilla }} instructivos, de {{ d.desde }} a {{ d.hasta_grilla }}. A veces un instructivo
+       corrige lo que anunciaba el anterior; en ese caso usamos el más reciente.
+       {%- for mes, _, desde in confirmados %} En {{ mes }} no hubo instructivo nuevo: el de {{ desde }} ya fijaba los valores hasta el mes siguiente.{% endfor %}
+       {%- if sin_confirmar %} Para {{ sin_confirmar|map(attribute=0)|join(" y ") }} la UNR todavía no publicó instructivo,
+       así que usamos el de {{ sin_confirmar[0][2] }} y lo marcamos con línea punteada en el gráfico.{% endif %}</p>
+  </div>
+
+  <div class="paso">
+    <h3><span>2</span>Cuánto subieron los precios</h3>
+    <p>Para la inflación usamos el Índice de Precios al Consumidor del INDEC, el mismo índice que menciona la ley.
+       El último mes publicado es {{ d.ultimo_ipc }}. Entre noviembre de 2023 y ese mes, los precios subieron
+       {{ num(eje, "aumento-ipc") }}; el sueldo básico, en el mismo período, subió {{ num(eje, "aumento-basico") }}.</p>
+    {% if d.grillas_sin_ipc %}<p>Ya están publicados los sueldos de {{ d.grillas_sin_ipc|join(" y ") }}, pero el INDEC
+       todavía no informó la inflación de esos meses. Cuando lo haga, actualizamos la cuenta.</p>{% endif %}
+  </div>
+
+  <div class="paso">
+    <h3><span>3</span>Qué exige la ley</h3>
+    <p>La <a href="https://www.consejosalta.org.ar/wp-content/uploads/Ley-27.795-y-Dec-759-2025.pdf">Ley 27.795 de Financiamiento Universitario</a>
+       dice en su artículo 5 que los salarios docentes deben actualizarse desde el 1 de diciembre de 2023
+       «en un porcentaje que no puede ser inferior al Índice de Precios al Consumidor», y que después cada
+       actualización mensual tiene que ser «no inferior a la inflación».</p>
+    <p>En otras palabras: desde noviembre de 2023, el sueldo no puede quedar por detrás de los precios.</p>
+  </div>
+
+  <div class="paso">
+    <h3><span>4</span>La cuenta</h3>
+    <div class="cuenta">
+      <p>En noviembre de 2023, un adjunto exclusivo cobraba {{ num(eje, "basico-nov2023") }}.</p>
+      <p>Si ese sueldo hubiera subido igual que los precios, en {{ d.ultimo_ipc }} sería {{ num(eje, "exigido") }}.</p>
+      <p>Cobró {{ num(eje, "pagado") }}.</p>
+      <p class="resultado">Para llegar a lo que pide la ley, le falta un aumento de <strong class="rojo">{{ num(eje, "brecha-art5") }}</strong>.</p>
+    </div>
+    <p>Es la misma cifra que reclaman los gremios universitarios
+       (<a href="https://www.tiempoar.com.ar/ta_article/gremios-universitarios-intimaron-al-gobierno-para-que-abone-la-recomposicion-salarial-del-334/amp/">nota de Tiempo Argentino</a>).</p>
+  </div>
+
+  <div class="paso">
+    <h3><span>5</span>Lo que este número no dice</h3>
+    <p>No incluye antigüedad ni adicionales, que cambian según cada docente. Tampoco dice qué va a pasar: el Poder
+       Ejecutivo condicionó la ejecución de la ley a que el presupuesto incluya los fondos, y la disputa sigue en la
+       Justicia. La seguimos en <a href="/ley">Ley 27.795</a>.</p>
+  </div>
+</section>
+{% endblock %}

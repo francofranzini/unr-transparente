@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% from "_macros.html" import num %}
+{% block contenido %}
+{% set es = ejes["salario"] %}
+{% set ej = ejes["ejecucion"] %}
+{% set el = ejes["ley"] %}
+{% set eg = ejes["graduacion"] %}
+{% set hoy = el.eventos|selectattr("tipo", "equalto", "estado")|list|last %}
+{% set brecha = es.cifra("brecha-art5") %}
+
+<section class="banda banda-portada">
+  <div class="portada-grid">
+    <div>
+      <p class="portada-sobre">Universidad Nacional de Rosario</p>
+      <h1>La universidad pública, con la fuente de cada número</h1>
+      <p class="portada-bajada">Datos oficiales sobre la UNR y su financiamiento, explicados para que cualquiera
+         pueda entenderlos. No te decimos qué pensar: te mostramos de dónde sale cada cifra.</p>
+      <a class="boton" href="#recorrido">Empezar el recorrido ↓</a>
+    </div>
+    <a class="tarjeta-destacada" href="/salario">
+      <span class="td-rotulo">Aumento que le falta al sueldo docente para cumplir la Ley 27.795</span>
+      <span class="td-cifra">{{ fmt.cifra_corta(brecha) }}</span>
+      <span class="td-pie">Profesor adjunto con dedicación exclusiva · {{ brecha.etiqueta.split("(")[1].rstrip(")") }}</span>
+      <span class="td-enlace">Ver cómo se calcula →</span>
+    </a>
+  </div>
+</section>
+
+<section class="seccion" id="recorrido">
+  <p class="seccion-sobre">De qué se trata</p>
+  <h2>Una disputa con muchos números</h2>
+  <div class="dos-columnas">
+    <p>Desde fines de 2023, la plata de las universidades públicas está en el centro de una disputa entre las
+       universidades y el Gobierno nacional. Cada parte muestra números distintos y, muchas veces, los dos son correctos.</p>
+    <p>Depende de contra qué año se compara, qué inflación se usa o si se mira lo prometido o lo que efectivamente
+       se pagó. Acá juntamos los datos oficiales de la UNR y te mostramos cómo se calcula cada uno.</p>
+  </div>
+</section>
+
+<section class="seccion">
+  <p class="seccion-sobre">Qué podés ver</p>
+  <h2>Cinco preguntas, una página para cada una</h2>
+  <ul class="tarjetas">
+    <li><a class="tarjeta" href="/salario">
+      <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/></svg>
+      <span class="t-titulo">Salario docente</span>
+      <span class="t-dato rojo">{{ fmt.cifra_corta(brecha) }}</span>
+      <span class="t-texto">Cuánto cobra un profesor y cuánto le falta para lo que exige la Ley de Financiamiento Universitario.</span>
+    </a></li>
+    <li><a class="tarjeta" href="/ley">
+      <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M7 21h10M4 7h16M6.5 7 3.5 13a3 3 0 0 0 6 0L6.5 7ZM17.5 7l-3 6a3 3 0 0 0 6 0l-3-6Z"/></svg>
+      <span class="t-titulo">Ley 27.795</span>
+      <span class="t-dato">En la Justicia</span>
+      <span class="t-texto">La historia de la ley: el Congreso, el veto, la promulgación suspendida y los fallos.
+        {% if hoy %}{% set t = hoy.titulo|replace("Hoy: ", "") %}{{ t[0]|upper }}{{ t[1:] }}.{% endif %}</span>
+    </a></li>
+    <li><a class="tarjeta" href="/transferencias">
+      <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg>
+      <span class="t-titulo">Transferencias</span>
+      <span class="t-dato">{{ fmt.cifra_corta(ej.cifra("unr-ejecucion")) }}</span>
+      <span class="t-texto">Cuánto del presupuesto {{ ej.cifra("unr-ejecucion").periodo }} ya llegó a la UNR, frente a su crédito vigente.</span>
+    </a></li>
+    <li><a class="tarjeta" href="/control">
+      <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5.5 5.5M8 10.5l2 2 3.5-4"/></svg>
+      <span class="t-titulo">Control</span>
+      <span class="t-dato">AGN · SIGEN · UAI</span>
+      <span class="t-texto">Quién audita a la universidad y qué informes hay publicados.</span>
+    </a></li>
+    <li><a class="tarjeta" href="/graduacion">
+      <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9.5 12 5l10 4.5L12 14 2 9.5Z"/><path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5M22 9.5V15"/></svg>
+      <span class="t-titulo">Graduación</span>
+      {% set c = eg.cifra("egresados-grado-2025") %}
+      <span class="t-dato">{{ fmt.cifra_corta(c) }}{% if c.tipo_fuente != "primaria" %}<span class="sec" title="Dato de prensa">sec.</span>{% endif %}<small> egresados de grado en 2025</small></span>
+      <span class="t-texto">Cuántas personas estudian y se reciben en la UNR.</span>
+    </a></li>
+  </ul>
+</section>
+
+<section class="seccion">
+  <p class="seccion-sobre">Cómo leer los números</p>
+  <h2>Tocá un número y mirá de dónde sale</h2>
+  <p class="nota-demo" style="margin:0 0 14px">Probá con el de abajo: se abre su ficha.</p>
+  <div class="demo">
+    <p class="demo-frase">En {{ es.detalle.ultimo_ipc }}, a un profesor adjunto se le pagó {{ num(es, "pagado") }}.</p>
+    <div class="demo-flecha" aria-hidden="true">→</div>
+    <div class="demo-ficha">
+      <span class="ficha-rotulo">Ficha</span>
+      {% set d = es.cifra("pagado").fuentes[0] %}
+      <strong>{{ es.cifra("pagado").etiqueta }}</strong>
+      <span>Documento: instructivo de liquidación de la Secretaría de Políticas Universitarias{% if d.pagina %}, pág. {{ d.pagina }}{% endif %}</span>
+      <span>Consultado: {{ d.consultado.strftime("%d/%m/%Y") }} · Fuente {{ d.tipo_fuente.value }}</span>
+    </div>
+  </div>
+  <p class="nota-demo">Cuando un dato viene de la prensa o de un informe de terceros, lo marcamos con <span class="sec">sec.</span> y te decimos cuál es la fuente original.</p>
+</section>
+
+<section class="banda banda-cita">
+  <p class="seccion-sobre">Por qué lo hicimos</p>
+  <blockquote>Para que cualquier persona, estudie o no en la UNR, pueda entender la discusión sobre el
+    financiamiento sin tener que creerle a nadie.</blockquote>
+  <p>Lo armamos en una hackatón sobre la universidad pública. Si encontrás un error, la ficha de cada número te dice dónde verificarlo.</p>
+</section>
+{% endblock %}

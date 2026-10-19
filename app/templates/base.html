@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}UNR en datos{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400&display=swap">
+  <link rel="stylesheet" href="/static/estilo.css">
+  <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+</head>
+<body>
+  <header class="barra-sup">
+    <a href="/" class="logo">UNR en datos <small>sitio independiente</small></a>
+    <nav aria-label="Secciones">
+      {% for href, nombre in [("salario", "Salario"), ("ley", "Ley 27.795"), ("transferencias", "Transferencias"), ("control", "Control"), ("graduacion", "Graduación")] %}
+      <a href="/{{ href }}"{% if actual == href %} aria-current="page"{% endif %}>{{ nombre }}</a>
+      {% endfor %}
+    </nav>
+  </header>
+  <main>{% block contenido %}{% endblock %}</main>
+  <footer class="pie">
+    <p>Tocá un número para ver de dónde sale. <span class="sec">sec.</span> = dato de prensa o de terceros.</p>
+    <p>Fuentes: <a href="https://transparencia.unr.edu.ar/">Transparencia UNR</a> ·
+       <a href="https://www.presupuestoabierto.gob.ar/sici/datos-abiertos">Presupuesto Abierto</a> ·
+       <a href="https://apis.datos.gob.ar/series/api/">INDEC</a>. Sitio independiente, sin afiliación con la UNR.</p>
+  </footer>
+  <dialog id="ficha" aria-labelledby="ficha-titulo">
+    <div id="ficha-contenido"></div>
+    <form method="dialog"><button class="cerrar">Cerrar</button></form>
+  </dialog>
+  <script>
+    document.addEventListener("htmx:afterSwap", (e) => {
+      if (e.detail.target.id === "ficha-contenido") document.getElementById("ficha").showModal();
+    });
+  </script>
+</body>
+</html>

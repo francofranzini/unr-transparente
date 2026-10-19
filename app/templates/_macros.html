@@ -1,0 +1,33 @@
+{% macro num(eje, clave) -%}
+{%- set c = eje.cifra(clave) -%}
+<a class="num" href="/ficha/cifra/{{ eje.clave }}/{{ c.clave }}" hx-get="/ficha/cifra/{{ eje.clave }}/{{ c.clave }}"
+   hx-target="#ficha-contenido" title="Ver ficha">{{ fmt.cifra_corta(c) }}</a>
+{%- if c.tipo_fuente != "primaria" %}<span class="sec" title="Fuente {{ c.tipo_fuente }}">sec.</span>{% endif -%}
+{%- endmacro %}
+
+{% macro notas(eje) %}
+{% if eje.supuestos %}
+<details class="nota"><summary>Cómo se calcula</summary><ul>{% for s in eje.supuestos %}<li>{{ s }}</li>{% endfor %}</ul></details>
+{% endif %}
+{% if eje.pendientes %}
+<details class="nota"><summary>Datos pendientes</summary><ul>{% for p in eje.pendientes %}<li>{{ p }}</li>{% endfor %}</ul></details>
+{% endif %}
+{% endmacro %}
+
+{% macro hecho(e) %}
+  <li{% if e.tipo == "estado" %} class="estado"{% endif %}>
+    <time>{{ fmt.fecha_evento(e.fecha) }}</time>
+    <span><a href="/ficha/evento/{{ e.id }}" hx-get="/ficha/evento/{{ e.id }}" hx-target="#ficha-contenido">{{ e.titulo }}</a>
+    {%- if e.tipo_fuente.value != "primaria" %}<span class="sec">sec.</span>{% endif %}</span>
+  </li>
+{% endmacro %}
+
+{% macro linea_tiempo(eje, visibles=5) %}
+{% set hechos = eje.eventos|reverse|list %}
+<ol class="tiempo">{% for e in hechos[:visibles] %}{{ hecho(e) }}{% endfor %}</ol>
+{% if hechos|length > visibles %}
+<details class="mas"><summary>Ver {{ hechos|length - visibles }} hechos anteriores</summary>
+  <ol class="tiempo">{% for e in hechos[visibles:] %}{{ hecho(e) }}{% endfor %}</ol>
+</details>
+{% endif %}
+{% endmacro %}

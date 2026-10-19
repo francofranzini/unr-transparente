@@ -1,0 +1,16 @@
+<p class="ficha-rotulo">Ficha</p>
+<h3 id="ficha-titulo">{{ cifra.etiqueta }}</h3>
+<p class="ficha-valor">{{ fmt.cifra_exacta(cifra) }}</p>
+<dl class="ficha">
+  <dt>Período</dt><dd>{{ cifra.periodo }}</dd>
+  <dt>Fuente</dt><dd>{{ cifra.tipo_fuente }}</dd>
+  {% if cifra.calculo %}<dt>Cálculo</dt><dd>{{ cifra.calculo }}</dd>{% endif %}
+  {% if cifra.aviso %}<dt>Vigencia</dt><dd>{{ cifra.aviso }}</dd>{% endif %}
+  <dt>Documento</dt>
+  <dd>{% for (documento, url, pagina, tipo, consultado), n in documentos.items() %}
+    <p><a href="{{ url }}" rel="noopener" target="_blank">{{ documento }}</a>{% if pagina %}, pág. {{ pagina }}{% endif %}
+    <br><small>consultado {{ consultado.strftime("%d/%m/%Y") }}{% if n > 1 %} · {{ n }} registros{% endif %}</small></p>
+  {% endfor %}</dd>
+  {% if notas %}<dt>Notas</dt><dd>{% for nota in notas %}<p>{{ nota }}</p>{% endfor %}</dd>{% endif %}
+</dl>
+<p class="ids">{% for d in cifra.fuentes[:4] %}<code>{{ d.id }}</code> {% endfor %}{% if cifra.fuentes|length > 4 %}y {{ cifra.fuentes|length - 4 }} más{% endif %}</p>

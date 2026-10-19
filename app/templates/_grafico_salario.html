@@ -1,0 +1,51 @@
+<figure class="grafico">
+  <figcaption>Sueldo básico mensual de un profesor adjunto exclusivo y lo que exige la ley, en pesos de cada mes</figcaption>
+  {% for g in graficos_salario %}
+  <div class="grafico-lienzo solo-{{ g.formato }}" data-puntos='{{ g.puntos_json }}'>
+    <svg viewBox="0 0 {{ g.ancho }} {{ g.alto }}" role="img"
+         aria-label="Básico pagado y salario exigido por el art. 5, por mes. Detalle en la tabla de abajo.">
+      {% for t in g.ticks_y %}
+        <line class="grilla" x1="{{ g.margen.izq }}" x2="{{ g.ancho - g.margen.der }}" y1="{{ t.y }}" y2="{{ t.y }}"/>
+        <text class="eje-texto" x="{{ g.margen.izq - 8 }}" y="{{ t.y + 4 }}" text-anchor="end">{{ t.texto }}</text>
+      {% endfor %}
+      {% for t in g.ticks_x %}
+        <text class="eje-texto" x="{{ t.x }}" y="{{ g.alto - 8 }}" text-anchor="middle">{{ t.texto }}</text>
+      {% endfor %}
+      <path class="linea exigido" d="{{ g.exigido }}"/>
+      <path class="linea pagado" d="{{ g.pagado }}"/>
+      {% if g.pagado_no_confirmado %}<path class="linea pagado no-confirmado" d="{{ g.pagado_no_confirmado }}"/>{% endif %}
+      <circle class="punto exigido" cx="{{ g.fin_exigido.x }}" cy="{{ g.fin_exigido.y }}" r="4"/>
+      <circle class="punto pagado" cx="{{ g.fin_pagado.x }}" cy="{{ g.fin_pagado.y }}" r="4"/>
+      <text class="rotulo" x="{{ g.fin_exigido.x + 10 }}" y="{{ g.fin_exigido.y + 4 }}">Exige la ley</text>
+      <text class="rotulo" x="{{ g.fin_pagado.x + 10 }}" y="{{ g.fin_pagado.y + 4 }}">Pagado</text>
+      <line class="cruz" x1="0" x2="0" y1="{{ g.margen.sup }}" y2="{{ g.base_y }}" visibility="hidden"/>
+      <rect class="zona" x="{{ g.margen.izq }}" y="0" width="{{ g.ancho - g.margen.izq - g.margen.der }}" height="{{ g.alto }}"/>
+    </svg>
+    <div class="tooltip" hidden></div>
+  </div>
+  {% endfor %}
+  <p class="leyenda"><span class="clave pagado"></span>Básico pagado
+    <span class="clave pagado discontinuo"></span>escala todavía no publicada
+    <span class="clave exigido"></span>Lo que exige la ley</p>
+</figure>
+<script>
+(() => {
+  document.currentScript.previousElementSibling.querySelectorAll(".grafico-lienzo").forEach((fig) => {
+  const svg = fig.querySelector("svg"), zona = fig.querySelector(".zona"), cruz = fig.querySelector(".cruz");
+  const tip = fig.querySelector(".tooltip"), puntos = JSON.parse(fig.dataset.puntos);
+  const vb = svg.viewBox.baseVal;
+  zona.addEventListener("pointermove", (ev) => {
+    const r = svg.getBoundingClientRect(), xv = (ev.clientX - r.left) * vb.width / r.width;
+    const p = puntos.reduce((a, b) => Math.abs(b.x - xv) < Math.abs(a.x - xv) ? b : a);
+    cruz.setAttribute("x1", p.x); cruz.setAttribute("x2", p.x); cruz.setAttribute("visibility", "visible");
+    tip.innerHTML = `<strong>${p.mes}</strong><br>Pagado: ${p.pagado}` +
+      (p.vigencia === "no_confirmada" ? " <em>(escala no publicada)</em>" : "") +
+      (p.exigido ? `<br>Exige la ley: ${p.exigido}<br>Falta: ${p.brecha}` : "");
+    tip.hidden = false;
+    const izq = p.x * r.width / vb.width;
+    tip.style.left = Math.min(izq + 12, r.width - tip.offsetWidth) + "px";
+  });
+  zona.addEventListener("pointerleave", () => { tip.hidden = true; cruz.setAttribute("visibility", "hidden"); });
+  });
+})();
+</script>

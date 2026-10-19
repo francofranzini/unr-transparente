@@ -1,0 +1,67 @@
+{% extends "eje_base.html" %}
+{% set actores = {"legislativo": ("congreso", "Congreso"), "norma": ("ejecutivo", "Poder Ejecutivo"),
+                  "judicial": ("justicia", "Justicia"), "convenio": ("acuerdo", "Acuerdo"), "paritaria": ("acuerdo", "Acuerdo")} %}
+{% set hitos = eje.eventos|rejectattr("tipo", "equalto", "estado")|list %}
+{% set hoy = eje.eventos|selectattr("tipo", "equalto", "estado")|list|last %}
+
+{% block destacado %}
+{% if hoy %}
+{% set texto = hoy.titulo|replace("Hoy: ", "") %}
+<div class="tarjeta-destacada">
+  <span class="td-rotulo">Dónde está hoy</span>
+  <span class="td-texto">{{ texto[0]|upper }}{{ texto[1:] }}.</span>
+  <a class="td-enlace" href="/ficha/evento/{{ hoy.id }}" hx-get="/ficha/evento/{{ hoy.id }}" hx-target="#ficha-contenido">De dónde sale este dato →</a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block cuerpo %}
+<p class="seccion-sobre">Cronología</p>
+<h2 class="titulo-seccion">Del Congreso a la Justicia</h2>
+
+
+<p class="leyenda-actores">
+  {% for clase, nombre in [("congreso", "Congreso"), ("ejecutivo", "Poder Ejecutivo"), ("justicia", "Justicia"), ("acuerdo", "Acuerdo")] %}
+  <span class="actor actor-{{ clase }}"><i></i>{{ nombre }}</span>
+  {% endfor %}
+</p>
+
+<div class="cronologia">
+  <div class="cronologia-controles">
+    <button type="button" data-ir="inicio">← Inicio</button>
+    <button type="button" data-ir="fin">Hoy →</button>
+  </div>
+  <ol class="linea-h" tabindex="0" aria-label="Cronología de la Ley 27.795, de izquierda a derecha">
+    {% for e in hitos %}
+    {% set clase, actor = actores.get(e.tipo, ("otro", "Otro")) %}
+    <li class="hito actor-{{ clase }}{% if e.id.startswith('ley-2024') %} antecedente{% endif %}">
+      {% if loop.first or e.fecha[:4] != loop.previtem.fecha[:4] %}<span class="hito-anio" aria-hidden="true">{{ e.fecha[:4] }}</span>{% endif %}
+      <span class="hito-marca"></span>
+      <time>{{ fmt.fecha_evento(e.fecha) }}</time>
+      <span class="hito-actor">{{ "Antecedente · " if e.id.startswith("ley-2024") }}{{ actor }}</span>
+      <details class="hito-detalle">
+        <summary class="hito-titulo">{{ e.titulo }}</summary>
+        {% if e.nota.startswith("Argumento del Gobierno") %}<p class="hito-argumento">{{ e.nota }}</p>{% endif %}
+        {% if e.noticias %}
+        <p class="hito-medios-rotulo">Cómo lo contaron</p>
+        <ul class="hito-medios">
+          {% for n in e.noticias %}<li><a href="{{ n.url }}" rel="noopener" target="_blank"><strong>{{ n.medio }}</strong> {{ n.titulo }}</a></li>{% endfor %}
+        </ul>
+        {% endif %}
+        <a class="hito-ficha" href="/ficha/evento/{{ e.id }}" hx-get="/ficha/evento/{{ e.id }}" hx-target="#ficha-contenido">De dónde sale este dato</a>
+      </details>
+    </li>
+    {% endfor %}
+  </ol>
+</div>
+<script>
+(() => {
+  const linea = document.querySelector(".linea-h");
+  document.querySelectorAll(".cronologia-controles button").forEach((b) => b.addEventListener("click", () => {
+    linea.scrollTo({ left: b.dataset.ir === "fin" ? linea.scrollWidth : 0, behavior: "smooth" });
+  }));
+})();
+</script>
+{% endblock %}
+
+{% block notas %}{% endblock %}
