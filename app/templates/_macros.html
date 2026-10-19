@@ -1,7 +1,7 @@
-{% macro num(eje, clave) -%}
+{% macro num(eje, clave, contar=false) -%}
 {%- set c = eje.cifra(clave) -%}
 <a class="num" href="/ficha/cifra/{{ eje.clave }}/{{ c.clave }}" hx-get="/ficha/cifra/{{ eje.clave }}/{{ c.clave }}"
-   hx-target="#ficha-contenido" title="Ver ficha">{{ fmt.cifra_corta(c) }}</a>
+   hx-target="#ficha-contenido" title="Ver de dónde sale"{% if contar %} data-contar{% endif %}>{{ fmt.cifra_corta(c) }}</a>
 {%- if c.tipo_fuente != "primaria" %}<span class="sec" title="Fuente {{ c.tipo_fuente }}">sec.</span>{% endif -%}
 {%- endmacro %}
 

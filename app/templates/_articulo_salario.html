@@ -1,28 +1,8 @@
-{% extends "eje_base.html" %}
-{% block destacado %}
-{% set brecha = eje.cifra("brecha-art5") %}
-<div class="tarjeta-destacada">
-  <span class="td-rotulo">Aumento que falta para cumplir la Ley 27.795</span>
-  <span class="td-cifra">{{ num(eje, "brecha-art5") }}</span>
-  <span class="td-pie">Se pagó {{ num(eje, "pagado") }}; la ley exige {{ num(eje, "exigido") }}.
-    Poder de compra frente a noviembre de 2023: {{ num(eje, "real-nov_2023") }}.</span>
-  {% if brecha.aviso %}<span class="td-aviso">{{ brecha.aviso }}</span>{% endif %}
-</div>
-{% endblock %}
-
-{% block cuerpo %}
-<p class="seccion-sobre">Mes a mes</p>
-<h2 class="titulo-seccion">El sueldo frente a lo que exige la ley</h2>
-{% include "_grafico_salario.html" %}
-{% endblock %}
-
-{% block notas %}
+{% from "_macros.html" import num %}
 {% set d = eje.detalle %}
 {% set confirmados = d.sin_grilla|selectattr(1, "equalto", "confirmada")|list %}
 {% set sin_confirmar = d.sin_grilla|rejectattr(1, "equalto", "confirmada")|list %}
 <section class="articulo">
-  <p class="seccion-sobre">De dónde sale cada dato</p>
-  <h2 class="titulo-seccion">Cómo llegamos a este número</h2>
   <p class="entrada">Te lo contamos paso a paso. Cada número subrayado se puede tocar para ver el documento de donde sale.</p>
 
   <div class="paso">
@@ -77,4 +57,3 @@
        Justicia. La seguimos en <a href="/ley">Ley 27.795</a>.</p>
   </div>
 </section>
-{% endblock %}

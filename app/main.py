@@ -4,13 +4,13 @@ from collections import Counter
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from app import formato, graficos
 from core.carga import cargar
-from core.ejes import construir_eje, construir_ejes
+from core.ejes import construir_ejes
 
 RAIZ = Path(__file__).resolve().parent
 
@@ -30,7 +30,7 @@ def _render(request: Request, parcial: str, contexto: dict) -> HTMLResponse:
     return templates.TemplateResponse(request, "pagina_ficha.html", {**contexto, "parcial": parcial})
 
 
-# Una página liviana por eje; la portada solo presenta el sitio.
+# Todo el contenido vive en la portada; las direcciones de cada eje llevan a su sección, abierta.
 PAGINAS = {"salario": "salario", "ley": "ley", "transferencias": "ejecucion", "control": "control",
            "graduacion": "graduacion"}
 templates.env.globals.update(paginas={v: k for k, v in PAGINAS.items()})
@@ -38,18 +38,16 @@ templates.env.globals.update(paginas={v: k for k, v in PAGINAS.items()})
 
 @app.get("/", response_class=HTMLResponse)
 def inicio(request: Request):
-    return templates.TemplateResponse(request, "inicio.html", {"ejes": construir_ejes(repo)})
+    ejes = construir_ejes(repo)
+    formatos = [graficos.salario_contra_ley(ejes["salario"].serie, f) for f in graficos.FORMATOS]
+    return templates.TemplateResponse(request, "inicio.html", {"ejes": ejes, "graficos_salario": formatos})
 
 
-@app.get("/{pagina}", response_class=HTMLResponse)
-def pagina_eje(request: Request, pagina: str):
+@app.get("/{pagina}")
+def pagina_eje(pagina: str):
     if pagina not in PAGINAS:
         raise HTTPException(404, "No existe esa página")
-    eje = construir_eje(repo, PAGINAS[pagina])
-    contexto = {"eje": eje, "actual": pagina}
-    if eje.clave == "salario":
-        contexto["graficos_salario"] = [graficos.salario_contra_ley(eje.serie, f) for f in graficos.FORMATOS]
-    return templates.TemplateResponse(request, f"eje_{pagina}.html", contexto)
+    return RedirectResponse(f"/#{pagina}", status_code=301)
 
 
 @app.get("/ficha/cifra/{eje}/{clave}", response_class=HTMLResponse)

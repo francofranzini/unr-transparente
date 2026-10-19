@@ -8,7 +8,7 @@ from app.main import PAGINAS, app
 # Control mínimo del principio 2. No reemplaza la revisión humana de los textos.
 VALORATIVOS = ["brutal", "histórico", "historico", "motosierra", "ajuste", "recorte", "derroche", "desfinanci",
                "escandal", "récord", "drástic", "drastic", "catastróf", "excelente", "pésim"]
-RUTAS = ["/"] + [f"/{p}" for p in PAGINAS]
+RUTAS = ["/"]
 
 
 @pytest.fixture(scope="module")
@@ -21,10 +21,16 @@ def test_paginas_responden(cliente, ruta):
     assert cliente.get(ruta).status_code == 200
 
 
-def test_portada_enlaza_a_cada_eje(cliente):
+def test_portada_tiene_cada_seccion(cliente):
     texto = cliente.get("/").text
     for pagina in PAGINAS:
-        assert f'href="/{pagina}"' in texto
+        assert f'id="{pagina}"' in texto
+
+
+@pytest.mark.parametrize("pagina", list(PAGINAS))
+def test_direcciones_de_ejes_llevan_a_su_seccion(cliente, pagina):
+    r = cliente.get(f"/{pagina}", follow_redirects=False)
+    assert r.status_code == 301 and r.headers["location"] == f"/#{pagina}"
 
 
 def test_portada_destaca_la_brecha_del_art5(cliente):

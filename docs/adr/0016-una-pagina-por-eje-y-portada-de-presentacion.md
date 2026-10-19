@@ -1,6 +1,6 @@
 # 0016. Una página por eje, portada de presentación y una sola medición salarial visible
 
-- Estado: aceptada
+- Estado: reemplazada por el ADR 0019
 - Fecha: 2026-10-19
 - Modifica: ADR 0011 (las tres bases dejan de mostrarse) y ADR 0014 (las tres fechas de corte dejan de mostrarse).
 

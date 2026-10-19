@@ -1,0 +1,35 @@
+{% set actores = {"legislativo": ("congreso", "Congreso"), "norma": ("ejecutivo", "Poder Ejecutivo"), "judicial": ("justicia", "Justicia"), "convenio": ("acuerdo", "Acuerdo"), "paritaria": ("acuerdo", "Acuerdo")} %}
+{% set hitos = el.eventos|rejectattr("tipo", "equalto", "estado")|list|reverse|list %}
+<div class="cronologia" data-cronologia data-visibles="4">
+  <div class="filtros revelar" role="group" aria-label="Filtrar por actor">
+    <span class="filtros-rotulo">Filtrar:</span>
+    {% for clase, nombre in [("congreso", "Congreso"), ("ejecutivo", "Poder Ejecutivo"), ("justicia", "Justicia"), ("acuerdo", "Acuerdo")] %}
+    <button type="button" class="actor actor-{{ clase }}" data-filtro="{{ clase }}" aria-pressed="false"><i></i>{{ nombre }}</button>
+    {% endfor %}
+  </div>
+  <ol class="linea-v" aria-label="Cronología de la Ley 27.795, de lo más reciente a lo más antiguo">
+    {% for e in hitos %}
+    {% set clase, actor = actores.get(e.tipo, ("otro", "Otro")) %}
+    {% if loop.first or e.fecha[:4] != loop.previtem.fecha[:4] %}<li class="anio" aria-hidden="true">{{ e.fecha[:4] }}</li>{% endif %}
+    <li class="hito actor-{{ clase }}{% if e.id.startswith('ley-2024') %} antecedente{% endif %}" data-actor="{{ clase }}">
+      <span class="hito-marca"></span>
+      <time>{{ fmt.fecha_evento(e.fecha) }}</time>
+      <span class="hito-actor">{{ "Antecedente · " if e.id.startswith("ley-2024") }}{{ actor }}</span>
+      <details class="hito-detalle">
+        <summary class="hito-titulo">{{ e.titulo }}</summary>
+        <div class="hito-cuerpo">
+          {% if e.nota.startswith("Argumento del Gobierno") %}<p class="hito-argumento">{{ e.nota }}</p>{% endif %}
+          {% if e.noticias %}
+          <p class="hito-medios-rotulo">Cómo lo contaron</p>
+          <ul class="hito-medios">
+            {% for n in e.noticias %}<li><a href="{{ n.url }}" rel="noopener" target="_blank"><strong>{{ n.medio }}</strong> {{ n.titulo }}</a></li>{% endfor %}
+          </ul>
+          {% endif %}
+          <a class="hito-ficha" href="/ficha/evento/{{ e.id }}" hx-get="/ficha/evento/{{ e.id }}" hx-target="#ficha-contenido">De dónde sale este dato →</a>
+        </div>
+      </details>
+    </li>
+    {% endfor %}
+  </ol>
+  <button type="button" class="ver-mas" data-ver-mas hidden></button>
+</div>

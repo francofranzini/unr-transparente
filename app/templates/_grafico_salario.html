@@ -11,8 +11,8 @@
       {% for t in g.ticks_x %}
         <text class="eje-texto" x="{{ t.x }}" y="{{ g.alto - 8 }}" text-anchor="middle">{{ t.texto }}</text>
       {% endfor %}
-      <path class="linea exigido" d="{{ g.exigido }}"/>
-      <path class="linea pagado" d="{{ g.pagado }}"/>
+      <path class="linea exigido" d="{{ g.exigido }}" pathLength="1"/>
+      <path class="linea pagado" d="{{ g.pagado }}" pathLength="1"/>
       {% if g.pagado_no_confirmado %}<path class="linea pagado no-confirmado" d="{{ g.pagado_no_confirmado }}"/>{% endif %}
       <circle class="punto exigido" cx="{{ g.fin_exigido.x }}" cy="{{ g.fin_exigido.y }}" r="4"/>
       <circle class="punto pagado" cx="{{ g.fin_pagado.x }}" cy="{{ g.fin_pagado.y }}" r="4"/>

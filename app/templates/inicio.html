@@ -1,103 +1,132 @@
 {% extends "base.html" %}
-{% from "_macros.html" import num %}
+{% from "_macros.html" import num, linea_tiempo %}
 {% block contenido %}
-{% set es = ejes["salario"] %}
-{% set ej = ejes["ejecucion"] %}
-{% set el = ejes["ley"] %}
-{% set eg = ejes["graduacion"] %}
-{% set hoy = el.eventos|selectattr("tipo", "equalto", "estado")|list|last %}
+{% set es = ejes["salario"] %}{% set el = ejes["ley"] %}{% set ej = ejes["ejecucion"] %}
+{% set ec = ejes["control"] %}{% set eg = ejes["graduacion"] %}
 {% set brecha = es.cifra("brecha-art5") %}
+{% set hoy = el.eventos|selectattr("tipo", "equalto", "estado")|list|last %}
+{% set hoy_texto = hoy.titulo|replace("Hoy: ", "") if hoy else "" %}
 
-<section class="banda banda-portada">
-  <div class="portada-grid">
-    <div>
-      <p class="portada-sobre">Universidad Nacional de Rosario</p>
-      <h1>La universidad pública, con la fuente de cada número</h1>
-      <p class="portada-bajada">Datos oficiales sobre la UNR y su financiamiento, explicados para que cualquiera
-         pueda entenderlos. No te decimos qué pensar: te mostramos de dónde sale cada cifra.</p>
-      <a class="boton" href="#recorrido">Empezar el recorrido ↓</a>
-    </div>
-    <a class="tarjeta-destacada" href="/salario">
-      <span class="td-rotulo">Aumento que le falta al sueldo docente para cumplir la Ley 27.795</span>
-      <span class="td-cifra">{{ fmt.cifra_corta(brecha) }}</span>
-      <span class="td-pie">Profesor adjunto con dedicación exclusiva · {{ brecha.etiqueta.split("(")[1].rstrip(")") }}</span>
-      <span class="td-enlace">Ver cómo se calcula →</span>
-    </a>
+{# Portada #}
+<section class="portada">
+  <div class="revelar">
+    <p class="sobretitulo">Universidad Nacional de Rosario</p>
+    <h1>La UNR,<br>a la vista.</h1>
+    <p class="bajada">El financiamiento de la universidad pública, con la fuente de cada número.</p>
   </div>
+  <a class="cifra-portada revelar" href="#salario">
+    <span class="rotulo">Aumento que le falta al sueldo docente para cumplir la Ley 27.795</span>
+    <span class="enorme rojo" data-contar>{{ fmt.cifra_corta(brecha) }}</span>
+    <span class="pie-cifra">Profesor adjunto, dedicación exclusiva · {{ brecha.etiqueta.split("(")[1].rstrip(")") }} · Ver detalle ↓</span>
+  </a>
 </section>
 
-<section class="seccion" id="recorrido">
-  <p class="seccion-sobre">De qué se trata</p>
-  <h2>Una disputa con muchos números</h2>
-  <div class="dos-columnas">
-    <p>Desde fines de 2023, la plata de las universidades públicas está en el centro de una disputa entre las
-       universidades y el Gobierno nacional. Cada parte muestra números distintos y, muchas veces, los dos son correctos.</p>
-    <p>Depende de contra qué año se compara, qué inflación se usa o si se mira lo prometido o lo que efectivamente
-       se pagó. Acá juntamos los datos oficiales de la UNR y te mostramos cómo se calcula cada uno.</p>
+{# Motivación, antes de los datos #}
+<section class="porque revelar">
+  <blockquote>Para que cualquier persona, estudie o no en la UNR, pueda entender la discusión sobre el financiamiento sin tener que creerle a nadie.</blockquote>
+  <p>No te decimos qué pensar: cada número se puede tocar para ver el documento de donde sale. Hecho en una hackatón sobre la universidad pública.</p>
+</section>
+
+{% macro encabezado(n, titulo, pregunta) %}
+<header class="sec-encabezado revelar">
+  <p class="sec-numero">{{ n }} — {{ titulo }}</p>
+  <h2>{{ pregunta }}</h2>
+</header>
+{% endmacro %}
+
+{# 01 Salario #}
+<section class="seccion" id="salario">
+  {{ encabezado("01", "Salario docente", "¿Cuánto cobra un docente frente a lo que exige la ley?") }}
+  <div class="datos revelar">
+    <div class="dato dato-grande"><small>Aumento que falta</small><span class="rojo">{{ num(es, "brecha-art5", true) }}</span></div>
+    <div class="dato"><small>Se pagó</small>{{ num(es, "pagado", true) }}</div>
+    <div class="dato"><small>La ley exige</small>{{ num(es, "exigido", true) }}</div>
+    <div class="dato"><small>Poder de compra vs. nov-2023</small>{{ num(es, "real-nov_2023", true) }}</div>
   </div>
+  <div class="revelar dibujar">{% include "_grafico_salario.html" %}</div>
+  {% if brecha.aviso %}<p class="aviso">{{ brecha.aviso }}</p>{% endif %}
+  <details class="mas-info">
+    <summary>¿De dónde sale este número?</summary>
+    {% with eje = es %}{% include "_articulo_salario.html" %}{% endwith %}
+  </details>
 </section>
 
-<section class="seccion">
-  <p class="seccion-sobre">Qué podés ver</p>
-  <h2>Cinco preguntas, una página para cada una</h2>
-  <ul class="tarjetas">
-    <li><a class="tarjeta" href="/salario">
-      <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9.5v5M18 9.5v5"/></svg>
-      <span class="t-titulo">Salario docente</span>
-      <span class="t-dato rojo">{{ fmt.cifra_corta(brecha) }}</span>
-      <span class="t-texto">Cuánto cobra un profesor y cuánto le falta para lo que exige la Ley de Financiamiento Universitario.</span>
-    </a></li>
-    <li><a class="tarjeta" href="/ley">
-      <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M7 21h10M4 7h16M6.5 7 3.5 13a3 3 0 0 0 6 0L6.5 7ZM17.5 7l-3 6a3 3 0 0 0 6 0l-3-6Z"/></svg>
-      <span class="t-titulo">Ley 27.795</span>
-      <span class="t-dato">En la Justicia</span>
-      <span class="t-texto">La historia de la ley: el Congreso, el veto, la promulgación suspendida y los fallos.
-        {% if hoy %}{% set t = hoy.titulo|replace("Hoy: ", "") %}{{ t[0]|upper }}{{ t[1:] }}.{% endif %}</span>
-    </a></li>
-    <li><a class="tarjeta" href="/transferencias">
-      <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg>
-      <span class="t-titulo">Transferencias</span>
-      <span class="t-dato">{{ fmt.cifra_corta(ej.cifra("unr-ejecucion")) }}</span>
-      <span class="t-texto">Cuánto del presupuesto {{ ej.cifra("unr-ejecucion").periodo }} ya llegó a la UNR, frente a su crédito vigente.</span>
-    </a></li>
-    <li><a class="tarjeta" href="/control">
-      <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="m15 15 5.5 5.5M8 10.5l2 2 3.5-4"/></svg>
-      <span class="t-titulo">Control</span>
-      <span class="t-dato">AGN · SIGEN · UAI</span>
-      <span class="t-texto">Quién audita a la universidad y qué informes hay publicados.</span>
-    </a></li>
-    <li><a class="tarjeta" href="/graduacion">
-      <svg class="icono" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9.5 12 5l10 4.5L12 14 2 9.5Z"/><path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5M22 9.5V15"/></svg>
-      <span class="t-titulo">Graduación</span>
-      {% set c = eg.cifra("egresados-grado-2025") %}
-      <span class="t-dato">{{ fmt.cifra_corta(c) }}{% if c.tipo_fuente != "primaria" %}<span class="sec" title="Dato de prensa">sec.</span>{% endif %}<small> egresados de grado en 2025</small></span>
-      <span class="t-texto">Cuántas personas estudian y se reciben en la UNR.</span>
-    </a></li>
-  </ul>
+{# 02 Ley #}
+<section class="seccion" id="ley">
+  {{ encabezado("02", "Ley 27.795", "¿En qué estado está la ley de financiamiento universitario?") }}
+  {% if hoy %}
+  <div class="hoy revelar">
+    <small>Dónde está hoy</small>
+    <p>{{ hoy_texto[0]|upper }}{{ hoy_texto[1:] }}.</p>
+    <a class="enlace" href="/ficha/evento/{{ hoy.id }}" hx-get="/ficha/evento/{{ hoy.id }}" hx-target="#ficha-contenido">De dónde sale este dato →</a>
+  </div>
+  {% endif %}
+  {% include "_cronologia_ley.html" %}
 </section>
 
-<section class="seccion">
-  <p class="seccion-sobre">Cómo leer los números</p>
-  <h2>Tocá un número y mirá de dónde sale</h2>
-  <p class="nota-demo" style="margin:0 0 14px">Probá con el de abajo: se abre su ficha.</p>
-  <div class="demo">
+{# 03 Transferencias #}
+<section class="seccion" id="transferencias">
+  {{ encabezado("03", "Transferencias", "¿Cuánto del presupuesto " ~ ej.cifra("unr-ejecucion").periodo ~ " llegó a la UNR?") }}
+  <div class="datos revelar">
+    <div class="dato dato-grande"><small>Del crédito vigente</small>{{ num(ej, "unr-ejecucion", true) }}</div>
+    <div class="dato"><small>Crédito vigente UNR</small>{{ num(ej, "unr-credito_vigente", true) }}</div>
+    <div class="dato"><small>Ya transferido</small>{{ num(ej, "unr-devengado", true) }}</div>
+    <div class="dato"><small>Año transcurrido</small>{{ num(ej, "anio-transcurrido", true) }}</div>
+  </div>
+  <details class="mas-info">
+    <summary>Ver el detalle del sistema</summary>
+    <table class="tabla">
+      <thead><tr><th></th><th>Vigente</th><th>Devengado</th><th>%</th></tr></thead>
+      <tbody>
+        <tr><th>UNR</th><td data-r="Vigente">{{ num(ej, "unr-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "unr-devengado") }}</td><td data-r="%">{{ num(ej, "unr-ejecucion") }}</td></tr>
+        <tr><th>61 universidades</th><td data-r="Vigente">{{ num(ej, "sistema-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "sistema-devengado") }}</td><td data-r="%">{{ num(ej, "sistema-ejecucion") }}</td></tr>
+        <tr><th>Sin universidad asignada</th><td data-r="Vigente">{{ num(ej, "no-asignado-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "no-asignado-devengado") }}</td><td data-r="%" class="sin-dato">—</td></tr>
+      </tbody>
+    </table>
+    <p class="aviso">Transferencias del Tesoro (Programa 26). Falta comparar con lo que exigen los arts. 3 y 4 de la Ley 27.795.</p>
+  </details>
+</section>
+
+{# 04 Control #}
+<section class="seccion" id="control">
+  {{ encabezado("04", "Control", "¿Quién audita a la UNR?") }}
+  <div class="hoy revelar">
+    <small>Último control externo publicado</small>
+    <p>Informe 161/2022 de la Auditoría General de la Nación, sobre el ejercicio 2017.</p>
+    <a class="enlace" href="/ficha/evento/agn-informe-161-2022" hx-get="/ficha/evento/agn-informe-161-2022" hx-target="#ficha-contenido">De dónde sale este dato →</a>
+  </div>
+  <div class="revelar">{{ linea_tiempo(ec, 4) }}</div>
+</section>
+
+{# 05 Graduación #}
+<section class="seccion" id="graduacion">
+  {{ encabezado("05", "Graduación", "¿Cuántos estudian y se reciben?") }}
+  <div class="datos revelar">
+    {% for anio in ["2025", "2024", "2023"] %}
+    <div class="dato{{ ' dato-grande' if loop.first }}"><small>Egresados de grado {{ anio }}</small>{{ num(eg, "egresados-grado-" ~ anio, true) }}</div>
+    {% endfor %}
+  </div>
+  <div class="datos revelar">
+    <div class="dato"><small>Alumnos de grado 2024</small>{{ num(eg, "alumnos-grado-2024", true) }}</div>
+    <div class="dato"><small>Posgrado</small>{{ num(eg, "alumnos-posgrado-2024", true) }}</div>
+    <div class="dato"><small>Pregrado</small>{{ num(eg, "alumnos-pregrado-tecnicaturas-2024", true) }}</div>
+  </div>
+  <p class="aviso">Valores absolutos: para calcular una tasa de egreso hacen falta los ingresantes de cada cohorte.</p>
+</section>
+
+{# Cómo leer #}
+<section class="seccion como-leer">
+  {{ encabezado("06", "Cómo leer los números", "Tocá cualquier número y mirá de dónde sale.") }}
+  <div class="demo revelar">
     <p class="demo-frase">En {{ es.detalle.ultimo_ipc }}, a un profesor adjunto se le pagó {{ num(es, "pagado") }}.</p>
-    <div class="demo-flecha" aria-hidden="true">→</div>
+    <span class="demo-flecha" aria-hidden="true">→</span>
+    {% set d = es.cifra("pagado").fuentes[0] %}
     <div class="demo-ficha">
-      <span class="ficha-rotulo">Ficha</span>
-      {% set d = es.cifra("pagado").fuentes[0] %}
+      <small>Ficha</small>
       <strong>{{ es.cifra("pagado").etiqueta }}</strong>
-      <span>Documento: instructivo de liquidación de la Secretaría de Políticas Universitarias{% if d.pagina %}, pág. {{ d.pagina }}{% endif %}</span>
-      <span>Consultado: {{ d.consultado.strftime("%d/%m/%Y") }} · Fuente {{ d.tipo_fuente.value }}</span>
+      <span>Instructivo de liquidación de la Secretaría de Políticas Universitarias{% if d.pagina %}, pág. {{ d.pagina }}{% endif %}</span>
+      <span>Consultado el {{ d.consultado.strftime("%d/%m/%Y") }} · fuente {{ d.tipo_fuente.value }}</span>
     </div>
   </div>
-  <p class="nota-demo">Cuando un dato viene de la prensa o de un informe de terceros, lo marcamos con <span class="sec">sec.</span> y te decimos cuál es la fuente original.</p>
-</section>
-
-<section class="banda banda-cita">
-  <p class="seccion-sobre">Por qué lo hicimos</p>
-  <blockquote>Para que cualquier persona, estudie o no en la UNR, pueda entender la discusión sobre el
-    financiamiento sin tener que creerle a nadie.</blockquote>
-  <p>Lo armamos en una hackatón sobre la universidad pública. Si encontrás un error, la ficha de cada número te dice dónde verificarlo.</p>
 </section>
 {% endblock %}
