@@ -64,6 +64,6 @@ def test_textos_sin_adjetivos_valorativos(cliente, ruta):
 
 def test_transferencias_muestra_el_caso_unr_con_grafico(cliente):
     texto = cliente.get("/").text
-    assert "data-grafico-arts34" in texto
+    assert "data-bloque-arts34" in texto
     assert 'data-panel="unr-arts34-"' in texto and 'data-panel="arts34-"' in texto
     assert "−42,3 %" in texto and "−32,4 %" in texto

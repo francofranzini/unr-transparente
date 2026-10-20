@@ -34,3 +34,10 @@ Con el alcance nacional (ADR 0021), la cifra principal de la sección 03 es la d
 - **Rojo:** se extiende de «la brecha del art. 5» a **lo que falta según la Ley 27.795** (arts. 3, 4 y 5). Sigue sin usarse para otra cosa. Modifica `ESTANDAR.md` §2.
 - **Pilas de fajos** sobre los montos de la UNR: un fajo = $ 1.000 millones, redondeado (27 contra 16), así que la altura es proporcional. Los fajos caen uno por uno al entrar en pantalla (Web Animations API). Sin JavaScript o con «reducir movimiento», las pilas se ven quietas y completas. En celular, las dos pilas van lado a lado (`solo-angosto`) para que se puedan comparar.
 - Colores: naranja (`--serie-2`) para lo que correspondía y azul (`--serie-1`) para lo recibido, los mismos del gráfico.
+
+## Actualización (2026-10-19): un solo selector para cifras, fajos y gráfico
+
+- Se quitan el rótulo «El caso de la UNR» y la pregunta «¿Y a la Universidad Nacional de Rosario?». El selector «Ver: UNR / Todas las universidades» va arriba y controla a la vez la fila de cifras con fajos y el gráfico.
+- Cada vez que se cambia de vista, las cifras cuentan desde 0 y los fajos vuelven a caer (con «reducir movimiento», nada se mueve).
+- La pila de lo que correspondía tiene siempre 27 fajos y la de lo recibido, la cantidad proporcional (UNR 16, todas 18): un fajo no vale lo mismo en las dos vistas, pero en cada una la diferencia de altura es la real. Por eso no se rotula el valor del fajo.
+- Sale «Todo el sistema» de la fila de la UNR: ahora es una vista propia.
