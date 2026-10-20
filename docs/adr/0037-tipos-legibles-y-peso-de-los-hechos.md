@@ -1,6 +1,6 @@
 # 0037. Tipos de hecho legibles y con peso: el hecho principal va primero
 
-- Estado: propuesta (Nono). Se adopta si el equipo la aprueba al integrar la rama `feat/automate-news`.
+- Estado: aceptada (2026-10-20)
 - Fecha: 2026-10-20
 
 ## Contexto

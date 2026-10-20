@@ -11,6 +11,7 @@ Este documento fija cómo se ve y cómo funciona el sitio. **Es la base de cualq
 | Archivo | Estado | Quién |
 |---|---|---|
 | `data/**` (CSV y `data/eventos/*.yaml`) | Editable | Cada responsable, en los archivos de su tema |
+| `data/eventos/ley.yaml`, `data/vigia/*.yaml`, `data/archivo_web.yaml` | Editable; además los escribe el workflow del vigía cada 3 horas (ADR 0036). A mano se mantienen `data/vigia/claves_ley.yaml` y el `ignorar` de `data/fuentes.yaml` | Responsable del eje ley |
 | `app/templates/_seccion_<eje>.html` | Editable **solo el contenido**: textos, qué cifras se muestran, usando los componentes de la sección 4 | Responsable del eje |
 | `core/ejes.py` | Editable **solo la función de su eje** (`eje_<eje>`): cifras, supuestos, pendientes | Responsable del eje |
 | `core/lentes.py` | Se pueden **agregar** lentes nuevas, con tests calculados a mano. No se cambian las existentes sin acuerdo | Responsable del eje |
@@ -45,7 +46,9 @@ Este documento fija cómo se ve y cómo funciona el sitio. **Es la base de cualq
 - **Cronología de la ley:** «Línea de tiempo», vertical, de lo más antiguo a lo más reciente, dentro de un recuadro con scroll propio y el año fijo arriba; filtros por actor; detalle desplegable con «Cómo lo contaron»; recorrido «hecho por hecho» con sellos que nombran el acto (ADR 0030 y 0031, propuestas).
 - **Cronología de Control:** una por universidad, cada una en un recuadro desplegable (hoy, la UNR), con la misma plantilla que la de la ley (`_cronologia.html`), con los actores AGN, SIGEN y Procuración, auditoría interna de la UNR y convenios; debajo de la pregunta, un desplegable «Ver más» / «Ver menos» con la autarquía de las universidades y quién las audita (AGN y SIGEN), sin recuadro aparte; sin sellos, que son solo de la ley (ADR 0025, propuesta).
 - **Accesibilidad:** con «reducir movimiento» no hay animaciones; sin JavaScript se ve todo el contenido; todo se usa con teclado.
-- **Validación:** si una fila de `data/` no tiene ficha completa, la aplicación no arranca.
+- **Tipos de hecho (ADR 0037):** cada tipo tiene una etiqueta legible y un peso en `TIPOS_EVENTO`. En una misma fecha, el hecho de más peso va último en la línea de tiempo; «Dónde está hoy» lo muestra primero si es posterior al resumen, y lleva la marca «Último hecho importante».
+- **Actualización de la ley (ADR 0035 y 0036):** el vigía avisa las novedades en el issue `vigia-ley`. Lo verificable (normas de InfoLEG, votaciones del Senado, notas que coinciden con un único hito) se carga solo y se publica si pasa la validación y los tests; lo demás se carga a mano con el procedimiento del ADR 0035. «Dónde está hoy» muestra la fecha del resumen y la de consulta de las fuentes.
+- **Validación:** si una fila de `data/` no tiene ficha completa, la aplicación no arranca. La integración continua corre el validador y los tests en cada push y pull request a `main`.
 
 ## 4. Componentes disponibles para el contenido
 
@@ -83,10 +86,12 @@ Son los principios del `CLAUDE.md` (§2), que siguen vigentes:
 ## 6. Formato de los datos
 
 - **Cifras:** un CSV por tema en `data/`, con las columnas base de `Dato` (`id, valor, unidad, entidad, indicador, periodo, tipo_fuente, documento, url, pagina, consultado, nota`). Las columnas extra pasan a `dimensiones`. `id` en minúsculas con guiones, único en todo `data/`.
-- **Eventos:** `data/eventos/<tema>.yaml` (`ley.yaml`, `control.yaml`, `salario.yaml`). Campos: `id, fecha, tipo, ejes, titulo, tipo_fuente, documento, url, pagina, consultado, nota, noticias`. Los tipos son `norma`, `legislativo`, `judicial`, `dictamen`, `auditoria`, `convenio`, `paritaria` y `estado`. Un evento de `estado` registra una ausencia o la situación a una fecha; se reemplaza cuando cambia.
+- **Eventos:** `data/eventos/<tema>.yaml` (`ley.yaml`, `control.yaml`, `salario.yaml`). Campos: `id, fecha, tipo, ejes, titulo, tipo_fuente, documento, url, pagina, consultado, nota, noticias`. Los tipos son `norma`, `legislativo`, `judicial`, `dictamen`, `auditoria`, `convenio`, `paritaria` y `estado`; un tipo nuevo se agrega en `TIPOS_EVENTO` con su etiqueta y su peso (ADR 0037). Un evento de `estado` registra una ausencia o la situación a una fecha; se reemplaza cuando cambia.
 - **Noticias:** `{medio, titulo, url, fecha}` dentro del evento.
 
 ## 7. Antes de proponer un cambio (definición de terminado)
+
+- [ ] `git pull` antes de empezar: el vigía commitea en `main` cada 3 horas.
 
 - [ ] `.venv/bin/python scripts/validar_datos.py` da OK.
 - [ ] `.venv/bin/python -m pytest -q` pasa completo.

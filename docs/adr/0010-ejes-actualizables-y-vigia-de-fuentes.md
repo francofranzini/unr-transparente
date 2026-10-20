@@ -1,6 +1,6 @@
 # 0010. Ejes actualizables y vigía de fuentes
 
-- Estado: aceptada
+- Estado: aceptada; reemplazada en parte por el ADR 0036 (para la Ley 27.795 hay carga automática de lo verificable)
 - Fecha: 2026-10-19
 
 ## Contexto

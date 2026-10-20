@@ -55,7 +55,7 @@ Cinco secciones, más una función diferencial:
 - **Funcionamiento (FCEIA):** concursos docentes, proyectos de investigación y tesinas, a partir de la API de la FCEIA (sección 5.4).
 - **Diferencial: seguir el conflicto** (ADR 0024). «Reproducí el titular» quedó fuera del proyecto.
 
-Fuera del MVP: otras universidades en detalle (solo el total del sistema como contexto), ingesta automática de datos, login, edición por parte de usuarios.
+Fuera del MVP: otras universidades en detalle (solo el total del sistema como contexto), ingesta automática de datos (salvo lo verificable de la Ley 27.795, ADR 0036), login, edición por parte de usuarios.
 
 ## 4. Modelo de datos
 
@@ -80,7 +80,7 @@ nota: "Copia del anexo publicada por la UNT; buscar también la publicación ofi
 
 Los hechos sin cifra son registros `Evento` (fecha, tipo, descripción literal y la misma ficha de fuente). Tipos: hitos de negociación (leyes, vetos, decretos, acuerdos del CIN, paritarias), dictámenes, auditorías y **eventos de estado**, que registran la ausencia de información a una fecha ("no se encontraron informes publicados al 2026-10-19"), con las búsquedas realizadas como ficha.
 
-- Almacenamiento: `data/*.csv` (un archivo por indicador) y `data/eventos/*.yaml`, versionados y cargados a mano. Un validador en la integración continua rechaza cualquier fila sin ficha completa. No hay ingesta automática: el **vigía de fuentes** (`data/fuentes.yaml` + script) detecta cambios y avisa, y la carga es manual (ADR 0010).
+- Almacenamiento: `data/*.csv` (un archivo por indicador) y `data/eventos/*.yaml`, versionados. Un validador en la integración continua (`.github/workflows/validar.yml`) rechaza cualquier fila sin ficha completa. El **vigía de fuentes** (`data/fuentes.yaml` + `scripts/vigia_fuentes.py`) detecta cambios y avisa en el issue `vigia-ley` (ADR 0010 y 0035). La carga es manual, con una excepción: lo verificable de la Ley 27.795 (normas de InfoLEG, votaciones del Senado y notas de prensa que coinciden con un único hito) lo carga `scripts/actualizar_ley.py` cada 3 horas y, si pasan la validación y los tests, se commitea en `main` (ADR 0036). Los hechos que solo cuenta la prensa nunca entran solos.
 - Las lentes (sección 5.2) son funciones puras `(serie, parámetros) → serie`, y cada resultado lleva consigo la lista de supuestos aplicados para mostrarlos en pantalla.
 
 ## 5. Fuentes
@@ -201,7 +201,8 @@ La tabla de la sección 1 son los casos de prueba de esta función: las tres afi
 - **Pydantic como esquema único** para Dato, Evento y el objeto de la sección 6. Valida `data/` en el build y la salida del LLM.
 - **`core/`:** lentes y ejes, sin dependencias web, probados con pytest y valores calculados a mano.
 - **Series externas** (IPC, PBI, RIPTE, REM): un script las descarga y las guarda versionadas en `data/` con su fecha de consulta. La demo no depende de APIs en vivo.
-- **Despliegue:** local (`uvicorn`) para la demo.
+- **Despliegue:** local (`uvicorn`) y Vercel (`vercel.json`, `api/index.py`), que vuelve a publicar con cada commit en `main` (ADR 0036).
+- **Automatización (ADR 0035 y 0036):** `validar.yml` corre el validador y los tests en cada push y pull request; `vigia.yml` corre la carga automática de la ley cada 3 horas y, los lunes, la verificación de títulos y enlaces. **Como un bot commitea en `main`, hacer `git pull` antes de empezar a trabajar.**
 
 **Cómo correr:**
 ```sh
@@ -211,7 +212,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/uvicorn app.main:app --reload --reload-include '*.yaml' --reload-include '*.csv'   # http://127.0.0.1:8000
 ```
 
-**Estructura:** `core/modelos.py` (Dato, Evento), `core/carga.py` (lee y valida `data/`), `core/ejes.py` (cada número es una `Cifra` con sus Datos de origen), `app/` (FastAPI, plantillas Jinja + HTMX), `scripts/extraer_presupuesto_abierto.py` (propone filas del Programa 26 por universidad a partir del CSV de Presupuesto Abierto, para revisar antes de versionar).
+**Estructura:** `core/modelos.py` (Dato, Evento), `core/carga.py` (lee y valida `data/`), `core/ejes.py` (cada número es una `Cifra` con sus Datos de origen), `app/` (FastAPI, plantillas Jinja + HTMX), `scripts/extraer_presupuesto_abierto.py` (propone filas del Programa 26 por universidad a partir del CSV de Presupuesto Abierto, para revisar antes de versionar), `scripts/vigia_fuentes.py` y `scripts/actualizar_ley.py` (vigía y carga automática de la ley; su estado en `data/vigia/`), `scripts/verificar_enlaces.py` y `scripts/archivar_fuentes.py` (enlaces caídos y copias en la Wayback Machine, en `data/archivo_web.yaml`).
 
 ## 8. Criterios de aceptación de la demo
 
@@ -261,7 +262,9 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 - [ ] Series del REM del BCRA, con la fecha de cada encuesta.
 - [x] Presupuesto Abierto 2026 cargado en `data/ejecucion_programa26_2026.csv` (corte 16-oct-2026).
 - [ ] Descargar Presupuesto Abierto 2024 y 2025 (anual y mensual) para la lente Ley 27.795 (ADR 0014).
-- [ ] Vigía de fuentes (`data/fuentes.yaml` + script): IPC y Presupuesto Abierto primero.
+- [x] Vigía de fuentes y carga automática para la Ley 27.795 (ADR 0035 y 0036).
+- [ ] Vigía de fuentes para los demás ejes: IPC y Presupuesto Abierto primero (`data/fuentes.yaml` con su `eje`).
+- [ ] Habilitar GitHub Actions con permiso de escritura y conectar el repositorio a Vercel (ADR 0036).
 - [x] IPC mensual (`data/ipc.csv`, `scripts/descargar_ipc.py`) y grillas del cargo testigo 2023-2026 cargados. La brecha del art. 5 en ago-2026 (33,40 %) reproduce el reclamo gremial.
 - [ ] Instructivos de jul-2026 y ago-2026 (no publicados en el portal de la UNR).
 - [ ] Lente arts. 3 y 4 (gastos de funcionamiento) para reemplazar "asignado contra ejecutado" (ADR 0015).

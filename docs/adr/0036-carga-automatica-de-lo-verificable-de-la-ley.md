@@ -1,6 +1,6 @@
 # 0036. Carga automática de lo verificable de la Ley 27.795, publicada en Vercel
 
-- Estado: propuesta (Nono). Requiere acuerdo del equipo: reemplaza en parte el ADR 0010 («hay detección de cambios, pero no ingesta automática») y el ADR 0035 («el vigía detecta y avisa; nunca publica»).
+- Estado: aceptada (2026-10-20)
 - Fecha: 2026-10-20
 
 ## Contexto
