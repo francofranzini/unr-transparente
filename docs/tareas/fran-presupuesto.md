@@ -55,6 +55,7 @@ Leer antes: [`docs/ESTANDAR.md`](../ESTANDAR.md), ADR 0012, 0013, 0014 y 0015.
 - **El caso de la UNR** tiene bloque propio con gráfico acumulado de 2025 (exigido contra transferido), selector UNR / todas las universidades, tooltip por mes y tabla mes a mes con fichas (ADR 0022). Revisado en claro, oscuro y a 390 px de ancho.
 
 **Pendiente**
+- **¿Pagos en 2026 a cuenta de 2025?** Los arts. 3 y 4 mandan reconocer todo 2025, pero la ley se publicó en octubre: parte podría haberse pagado en 2026, fuera de la comparación (que es por ejercicio). Junio (82.265 M) y septiembre de 2026 (122.176 M) casi triplican lo habitual, después de un julio en 0. Buscar en el Boletín Oficial las resoluciones de la Secretaría de Educación o decisiones administrativas de 2026 que asignan fondos de funcionamiento; si alguna es a cuenta de la Ley 27.795 o de 2025, cargarla como evento y recalcular la brecha.
 - Tarea 5 (reverificar `credito_asignado_ley.csv` contra los PDF oficiales, y el acto que creó el crédito de «Universidades sin Discriminar» 2026).
 
 ## Propuestas de presentación

@@ -5,9 +5,209 @@
     <div class="dato dato-grande"><small>Aumento que falta</small><span class="rojo">{{ num(es, "brecha-art5", true) }}</span></div>
     <div class="dato"><small>Se pagó</small>{{ num(es, "pagado", true) }}</div>
     <div class="dato"><small>La ley exige</small>{{ num(es, "exigido", true) }}</div>
-    <div class="dato"><small>Poder de compra vs. nov-2023</small>{{ num(es, "real-nov_2023", true) }}</div>
+    <div class="dato"><small>Poder de compra vs. nov-2023</small><span class="rojo">{{ num(es, "real-nov_2023", true) }}</span></div>
   </div>
-  <div class="revelar dibujar">{% include "_grafico_salario.html" %}</div>
+
+  {# Billete: cuánto compra el sueldo de cada mes frente al de nov-2023 (ADR 0023). El contorno es el sueldo de
+     nov-2023; el billete azul se achica a lo que compra hoy; lo que falta va en rojo desde que rige la ley. #}
+  {% set bil = es.detalle.billete %}
+  {% set act = bil[-1] %}
+  {% set X, Y, W, H = 8, 8, 520, 230 %}
+  {% set color_falta = "var(--rojo)" if act.rige else "var(--tenue)" %}
+  <div class="revelar" data-billete='{{ bil|tojson }}'>
+    <div style="display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center">
+      <svg viewBox="0 0 {{ W + 2 * X }} {{ H + 2 * Y }}" width="{{ W + 2 * X }}" style="max-width: 100%; height: auto; flex: 1 1 22rem"
+           role="img" aria-label="Billete: el sueldo de {{ act.mes }} compra el {{ (act.proporcion * 100)|round(1) }} % de lo que compraba el de noviembre de 2023.">
+        <defs><clipPath id="mascara-sueldo"><rect data-mascara x="{{ X }}" y="{{ Y }}" width="{{ (W * act.proporcion)|round(1) }}" height="{{ H }}"/></clipPath></defs>
+        {# Contorno: el sueldo de noviembre de 2023 #}
+        <rect data-borde x="{{ X }}" y="{{ Y }}" width="{{ W }}" height="{{ H }}" rx="16" fill="none" stroke="{{ color_falta }}" stroke-width="2" stroke-dasharray="8 6"/>
+        {# El billete de hoy, achicado #}
+        <g clip-path="url(#mascara-sueldo)">
+          <rect x="{{ X }}" y="{{ Y }}" width="{{ W }}" height="{{ H }}" rx="16" fill="var(--serie-1)"/>
+          <rect x="{{ X + 14 }}" y="{{ Y + 14 }}" width="{{ W - 28 }}" height="{{ H - 28 }}" rx="10" fill="none" stroke="var(--fondo)" stroke-opacity=".5"/>
+          <circle cx="{{ X + 120 }}" cy="{{ Y + H / 2 }}" r="62" fill="none" stroke="var(--fondo)" stroke-opacity=".6" stroke-width="2"/>
+          <circle cx="{{ X + 120 }}" cy="{{ Y + H / 2 }}" r="50" fill="none" stroke="var(--fondo)" stroke-opacity=".35"/>
+          <text x="{{ X + 120 }}" y="{{ Y + H / 2 + 22 }}" text-anchor="middle" font-size="64" font-weight="900" fill="var(--fondo)">$</text>
+          {% for k in range(6) %}
+          <line x1="{{ X + 210 }}" x2="{{ X + W - 30 }}" y1="{{ Y + 70 + k * 18 }}" y2="{{ Y + 70 + k * 18 }}" stroke="var(--fondo)" stroke-opacity=".25"/>
+          {% endfor %}
+          <text x="{{ X + 210 }}" y="{{ Y + 48 }}" font-size="15" font-weight="700" fill="var(--fondo)" letter-spacing=".12em">SUELDO DOCENTE</text>
+        </g>
+        {# Lo que falta: el porcentaje en el hueco #}
+        {% set hueco = W * (1 - act.proporcion) %}
+        <text data-hueco x="{{ (X + W * act.proporcion + hueco / 2)|round(1) }}" y="{{ Y + H / 2 + 10 }}" text-anchor="middle"
+              font-size="30" font-weight="900" fill="{{ color_falta }}"{% if hueco < 60 %} visibility="hidden"{% endif %}>{{ "−" ~ ("%.1f"|format((1 - act.proporcion) * 100)).replace(".", ",") ~ " %" }}</text>
+      </svg>
+      <div style="flex: 1 1 18rem">
+        {% for c in bil %}
+        <div data-mes="{{ loop.index0 }}"{% if not loop.last %} hidden{% endif %}>
+          <div class="datos" style="margin-bottom: 12px">
+            <div class="dato dato-grande"><small>El sueldo de {{ c.mes }} compra, de lo que compraba en noviembre de 2023,</small><span>{{ num(es, "compra-" ~ c.periodo) }}</span></div>
+          </div>
+          {% if c.rige %}
+          <p>Le falta <strong class="rojo">{{ num(es, "poder-" ~ c.periodo) }}</strong>. Según la ley (art. 5), tendría que comprar lo mismo que en noviembre de 2023.</p>
+          {% else %}
+          <p>Perdió <strong>{{ num(es, "poder-" ~ c.periodo) }}</strong> de poder de compra. La ley todavía no regía: su aumento corresponde desde {{ es.detalle.vigencia_art5 }}.</p>
+          {% endif %}
+          {% if c.aviso %}<p class="aviso">{{ c.aviso }}</p>{% endif %}
+        </div>
+        {% endfor %}
+        <div data-deslizador hidden>
+          <label style="display: block; font-size: .85rem; color: var(--tenue)">Elegí un mes: <strong data-rotulo>{{ act.mes }}</strong></label>
+          <input type="range" min="0" max="{{ bil|length - 1 }}" value="{{ bil|length - 1 }}" step="1"
+                 aria-label="Mes" style="width: 100%; accent-color: var(--tinta)">
+          <p class="leyenda" style="display: flex; justify-content: space-between; margin: 0"><span>{{ bil[0].corto }}</span><span>{{ act.corto }}</span></p>
+        </div>
+      </div>
+    </div>
+    <p class="leyenda"><span class="clave pagado"></span>Lo que compra el sueldo
+      <span class="clave discontinuo" style="border-color: var(--tenue)"></span>Lo que perdió, antes de que rija la ley
+      <span class="clave discontinuo" style="border-color: var(--rojo)"></span>Lo que falta según la ley</p>
+  </div>
+  <script>
+  (() => {
+    const bloque = document.currentScript.previousElementSibling;
+    const meses = JSON.parse(bloque.dataset.billete), W = {{ W }}, X = {{ X }};
+    const mascara = bloque.querySelector("[data-mascara]"), borde = bloque.querySelector("[data-borde]");
+    const hueco = bloque.querySelector("[data-hueco]"), paneles = [...bloque.querySelectorAll("[data-mes]")];
+    const deslizador = bloque.querySelector("[data-deslizador]"), rango = deslizador.querySelector("input");
+    const rotulo = deslizador.querySelector("[data-rotulo]");
+    const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window);
+    let actual = meses[meses.length - 1].proporcion, turno = 0;
+
+    function dibujar(prop, rige, conHueco) {
+      const color = rige ? "var(--rojo)" : "var(--tenue)";
+      mascara.setAttribute("width", (W * prop).toFixed(1));
+      borde.setAttribute("stroke", color);
+      const falta = 1 - prop;
+      hueco.setAttribute("x", (X + W * prop + W * falta / 2).toFixed(1));
+      hueco.setAttribute("fill", color);
+      hueco.textContent = "−" + (falta * 100).toLocaleString("es-AR", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " %";
+      hueco.setAttribute("visibility", conHueco && W * falta >= 60 ? "visible" : "hidden");
+    }
+    // El billete se achica desde lo que compraba en noviembre de 2023 hasta lo que compra el mes elegido.
+    function achicar(desde, m, duracion) {
+      const yo = ++turno, inicio = performance.now();
+      const paso = (t) => {
+        if (yo !== turno) return;
+        const p = Math.min((t - inicio) / duracion, 1), suave = 1 - Math.pow(1 - p, 3);
+        actual = desde + (m.proporcion - desde) * suave;
+        dibujar(actual, m.rige, p === 1);
+        if (p < 1) requestAnimationFrame(paso);
+      };
+      requestAnimationFrame(paso);
+    }
+    deslizador.hidden = false;
+    rango.addEventListener("input", () => {
+      const i = Number(rango.value), m = meses[i];
+      paneles.forEach((p) => { p.hidden = Number(p.dataset.mes) !== i; });
+      rotulo.textContent = m.mes;
+      if (quieto) dibujar(m.proporcion, m.rige, true); else achicar(actual, m, 300);
+    });
+    if (!quieto) {
+      dibujar(1, meses[meses.length - 1].rige, false);
+      const obs = new IntersectionObserver((entradas) => {
+        if (!entradas.some((e) => e.isIntersecting)) return;
+        obs.disconnect();
+        achicar(1, meses[Number(rango.value)], 1800);
+      }, { threshold: 0.4 });
+      obs.observe(bloque.querySelector("svg"));
+    }
+  })();
+  </script>
+
+  {# Gráfico (ADR 0023): «exige la ley» solo desde nov-2025; antes, el sueldo de nov-2023 ajustado por IPC es una referencia #}
+  {% set serie = es.serie %}
+  {% set tope_v = [serie|map(attribute="pagado")|map("float")|max, serie|selectattr("referencia")|map(attribute="referencia")|map("float")|max]|max %}
+  {% set paso = [250000, 500000, 1000000]|select("ge", tope_v / 5)|first %}
+  {% set tope = paso * ((tope_v // paso) + 1) %}
+  {% set n = serie|length %}
+  {% set ns0 = namespace(conf=0, pub=0) %}
+  {% for p in serie %}{% if p.vigencia != "no_confirmada" %}{% set ns0.conf = loop.index0 %}{% endif %}{% if p.periodo == "2025-10" %}{% set ns0.pub = loop.index0 + 21 / 31 %}{% endif %}{% endfor %}
+  {% set formatos = {"ancho": {"w": 720, "h": 300, "izq": 64, "der": 132, "sup": 24, "inf": 28},
+                     "angosto": {"w": 360, "h": 280, "izq": 52, "der": 96, "sup": 22, "inf": 26}} %}
+  <figure class="grafico revelar" data-grafico-salario>
+    <figcaption>Sueldo básico mensual de un profesor adjunto exclusivo, en pesos de cada mes</figcaption>
+    {% for formato, f in formatos.items() %}
+    {% set uw = f.w - f.izq - f.der %}{% set uh = f.h - f.sup - f.inf %}
+    {% set ns = namespace(pag="", pag_nc="", ref="", exi="", ida="", vuelta="", puntos=[]) %}
+    {% for p in serie %}
+      {% set i = loop.index0 %}
+      {% set x = (f.izq + uw * i / (n - 1))|round(1) %}
+      {% set yp = (f.sup + uh * (1 - p.pagado|float / tope))|round(1) %}
+      {% if i <= ns0.conf %}{% set ns.pag = ns.pag ~ ("M" if i == 0 else " L") ~ x ~ "," ~ yp %}{% endif %}
+      {% if i >= ns0.conf %}{% set ns.pag_nc = ns.pag_nc ~ ("M" if i == ns0.conf else " L") ~ x ~ "," ~ yp %}{% endif %}
+      {% set yr = (f.sup + uh * (1 - p.referencia|float / tope))|round(1) if p.referencia else None %}
+      {% if p.referencia and p.periodo <= "2025-11" %}{% set ns.ref = ns.ref ~ ("M" if not ns.ref else " L") ~ x ~ "," ~ yr %}{% endif %}
+      {% if p.exigido %}
+        {% set ns.exi = ns.exi ~ ("M" if not ns.exi else " L") ~ x ~ "," ~ yr %}
+        {% set ns.ida = ns.ida ~ " " ~ x ~ "," ~ yr %}
+        {% set ns.vuelta = x ~ "," ~ yp ~ " " ~ ns.vuelta %}
+      {% endif %}
+      {% set ns.puntos = ns.puntos + [{"x": x, "mes": p.periodo, "pagado": p.pagado|float, "ref": (p.referencia|float if p.referencia else None), "rige": p.exigido is not none, "nc": p.vigencia == "no_confirmada"}] %}
+    {% endfor %}
+    {% set ult = serie[-1] %}
+    {% set xf = f.w - f.der %}
+    {% set xpub = (f.izq + uw * ns0.pub / (n - 1))|round(1) %}
+    <div class="grafico-lienzo solo-{{ formato }}" data-puntos='{{ ns.puntos|tojson }}'>
+      <svg viewBox="0 0 {{ f.w }} {{ f.h }}" role="img"
+           aria-label="Básico pagado y sueldo de noviembre de 2023 ajustado por inflación, por mes. Desde noviembre de 2025 esa actualización es lo que exige el art. 5.">
+        {% for k in range(0, (tope // paso)|int + 1) %}
+          {% set yv = (f.sup + uh * (1 - k * paso / tope))|round(1) %}
+          <line class="grilla" x1="{{ f.izq }}" x2="{{ xf }}" y1="{{ yv }}" y2="{{ yv }}"/>
+          <text class="eje-texto" x="{{ f.izq - 8 }}" y="{{ yv + 4 }}" text-anchor="end">{{ "0" if k == 0 else "$ " ~ ("%.1f"|format(k * paso / 1000000)).replace(".", ",") ~ " M" }}</text>
+        {% endfor %}
+        {% for p in ns.puntos %}{% if p.mes.endswith("-01") %}
+          <text class="eje-texto" x="{{ p.x }}" y="{{ f.h - 8 }}" text-anchor="middle">{{ p.mes[:4] }}</text>
+        {% endif %}{% endfor %}
+        <line class="cruz" x1="{{ xpub }}" x2="{{ xpub }}" y1="{{ f.sup }}" y2="{{ f.h - f.inf }}" stroke-dasharray="3 4"/>
+        <text class="eje-texto" x="{{ xpub - 4 }}" y="{{ f.sup - 8 }}" text-anchor="end">Ley publicada</text>
+        <polygon points="{{ ns.ida }} {{ ns.vuelta }}" fill="var(--rojo)" fill-opacity=".14"/>
+        <path class="linea exigido" d="{{ ns.ref }}" stroke-dasharray="2 5" stroke-opacity=".8"/>
+        <path class="linea exigido" d="{{ ns.exi }}"/>
+        <path class="linea pagado" d="{{ ns.pag }}"/>
+        {% if ns.pag_nc.count("L") %}<path class="linea pagado no-confirmado" d="{{ ns.pag_nc }}"/>{% endif %}
+        {% set ye = (f.sup + uh * (1 - ult.exigido|float / tope))|round(1) %}
+        {% set ypf = (f.sup + uh * (1 - ult.pagado|float / tope))|round(1) %}
+        <circle class="punto exigido" cx="{{ xf }}" cy="{{ ye }}" r="4"/>
+        <circle class="punto pagado" cx="{{ xf }}" cy="{{ ypf }}" r="4"/>
+        <text class="rotulo" x="{{ xf + 10 }}" y="{{ ye + 4 }}">Exige la ley</text>
+        <text class="rotulo" x="{{ xf + 10 }}" y="{{ ypf + 4 }}">Pagado</text>
+        <line class="cruz" data-cruz x1="0" x2="0" y1="{{ f.sup }}" y2="{{ f.h - f.inf }}" visibility="hidden"/>
+        <rect class="zona" x="{{ f.izq }}" y="0" width="{{ uw }}" height="{{ f.h }}"/>
+      </svg>
+      <div class="tooltip" hidden></div>
+    </div>
+    {% endfor %}
+    <p class="leyenda"><span class="clave pagado"></span>Básico pagado
+      <span class="clave pagado discontinuo"></span>escala todavía no publicada
+      <span class="clave exigido discontinuo"></span>Sueldo de nov-2023 ajustado por inflación (referencia, antes de la ley)
+      <span class="clave exigido"></span>Lo que exige la ley (desde {{ es.detalle.vigencia_art5 }})</p>
+  </figure>
+  <script>
+  (() => {
+    const fig = document.currentScript.previousElementSibling;
+    const pesos = (v) => "$ " + Math.round(v).toLocaleString("es-AR");
+    const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+    fig.querySelectorAll(".grafico-lienzo").forEach((lienzo) => {
+      const svg = lienzo.querySelector("svg"), zona = lienzo.querySelector(".zona"), cruz = lienzo.querySelector("[data-cruz]");
+      const tip = lienzo.querySelector(".tooltip"), puntos = JSON.parse(lienzo.dataset.puntos), vb = svg.viewBox.baseVal;
+      zona.addEventListener("pointermove", (ev) => {
+        const r = svg.getBoundingClientRect(), xv = (ev.clientX - r.left) * vb.width / r.width;
+        const p = puntos.reduce((a, b) => Math.abs(b.x - xv) < Math.abs(a.x - xv) ? b : a);
+        cruz.setAttribute("x1", p.x); cruz.setAttribute("x2", p.x); cruz.setAttribute("visibility", "visible");
+        const [anio, mes] = p.mes.split("-");
+        let html = `<strong>${MESES[Number(mes) - 1]}-${anio}</strong><br>Pagado: ${pesos(p.pagado)}` + (p.nc ? " <em>(escala no publicada)</em>" : "");
+        if (p.rige) html += `<br>Exige la ley: ${pesos(p.ref)}<br>Falta: ${((p.ref / p.pagado - 1) * 100).toLocaleString("es-AR", { maximumFractionDigits: 1 })} %`;
+        else if (p.ref) html += `<br>Nov-2023 + inflación: ${pesos(p.ref)}<br><em>La ley todavía no regía</em>`;
+        tip.innerHTML = html;
+        tip.hidden = false;
+        tip.style.left = Math.max(0, Math.min(p.x * r.width / vb.width + 12, r.width - tip.offsetWidth)) + "px";
+      });
+      zona.addEventListener("pointerleave", () => { tip.hidden = true; cruz.setAttribute("visibility", "hidden"); });
+    });
+  })();
+  </script>
   {% if brecha.aviso %}<p class="aviso">{{ brecha.aviso }}</p>{% endif %}
   <details class="mas-info">
     <summary>¿De dónde sale este número?</summary>

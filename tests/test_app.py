@@ -86,5 +86,29 @@ def test_textos_sin_adjetivos_valorativos(cliente, ruta):
 def test_transferencias_muestra_el_caso_unr_con_grafico(cliente):
     texto = cliente.get("/").text
     assert "data-bloque-arts34" in texto
-    assert 'data-panel="unr-arts34-"' in texto and 'data-panel="arts34-"' in texto
+    assert 'data-panel="unr-arts34-2025"' in texto and 'data-panel="arts34-2025"' in texto
+    # El año en curso, con su referencia (la ley no fija nada para 2026: ADR 0024).
+    assert 'data-panel="arts34-2026"' in texto and "−34,7 %" in texto and "−52,0 %" in texto
     assert "−42,3 %" in texto and "−32,4 %" in texto
+
+
+def test_salario_muestra_el_billete(cliente):
+    texto = cliente.get("/").text
+    assert "data-billete" in texto and 'href="/ficha/cifra/salario/compra-2026-08"' in texto
+
+
+@pytest.mark.parametrize("ficha, norma", [
+    ("ejecucion/arts34-exigido", "Ley 27.795, art. 4"),
+    ("ejecucion/arts34-relacion-2026", "la ley no lo pide"),
+    ("salario/exigido", "Ley 27.795, art. 5"),
+    ("salario/poder-2026-08", "Ley 27.795, art. 5"),
+])
+def test_las_cifras_de_la_ley_citan_la_norma(cliente, ficha, norma):
+    texto = cliente.get(f"/ficha/cifra/{ficha}", headers={"HX-Request": "true"}).text
+    assert "<dt>Norma</dt>" in texto and norma in texto
+    assert "https://www.boletinoficial.gob.ar/detalleAviso/primera/333139/20251021" in texto
+
+
+def test_antes_de_que_rija_la_ley_no_hay_norma(cliente):
+    # Mayo de 2025: pérdida de poder de compra, pero el art. 5 todavía no regía.
+    assert "<dt>Norma</dt>" not in cliente.get("/ficha/cifra/salario/poder-2025-05", headers={"HX-Request": "true"}).text
