@@ -10,115 +10,145 @@
   tipo: legislativo
   ejes: [ley]
   titulo: "Diputados no alcanza los dos tercios para insistir con la ley de financiamiento universitario de 2024 y queda firme el veto"
-  tipo_fuente: secundaria
-  documento: "Chequeado: votación en Diputados del 9-oct-2024"
-  url: https://chequeado.com/?p=86575
+  tipo_fuente: primaria
+  documento: "Cámara de Diputados de la Nación — Votación nominal, expte. 17-PE-2024 (veto de la Ley 27.757 por el Decreto 879/2024), período 142, reunión 13, acta 1"
+  url: https://votaciones.hcdn.gob.ar/votacion/5400
   consultado: 2026-10-19
-  nota: "159 votos a favor de insistir, 85 en contra y 5 abstenciones, con 249 presentes. La ley de 2024 actualizaba los gastos de funcionamiento por la inflación de 2023 y recomponía salarios."
+  nota: "Mayoría requerida: dos tercios de los votos emitidos. 160 votos afirmativos, 84 negativos, 5 abstenciones, 0 sin votar y 8 ausentes. Chequeado informó 159 a favor y 85 en contra. La Ley 27.757 actualizaba los gastos de funcionamiento por la inflación de 2023 y recomponía salarios (expte. 17-PE-2024: https://www4.hcdn.gob.ar/dependencias/dsecretaria/Periodo2024/PDF2024/TP2024/0017-PE-2024.pdf)."
   noticias:
     - {medio: "Chequeado", titulo: "Diputados: la oposición no alcanzó los 2 tercios necesarios para insistir con la Ley de Financiamiento Universitario y se mantiene el veto de Milei", url: "https://chequeado.com/?p=86575", fecha: "2024-10-09"}
-    - {medio: "Cadena 3", titulo: "Con apoyo macrista, el Gobierno mantuvo el veto al financiamiento universitario", url: "https://www.cadena3.com/noticia/politica-y-economia/diputados-respaldo-el-veto-de-milei-a-la-ley-de-financiamiento-universitario_398385"}
+    - {medio: "Cadena 3", titulo: "Con apoyo macrista, el Gobierno mantuvo el veto al financiamiento universitario", url: "https://www.cadena3.com/noticia/politica-y-economia/diputados-respaldo-el-veto-de-milei-a-la-ley-de-financiamiento-universitario_398385", fecha: "2024-10-09"}
+    - {medio: "La Nación", titulo: "Veto de Milei a la ley universitaria: el Gobierno logró sostener la medida con el apoyo de dos gobernadores del PJ y sugestivas ausencias", url: "https://www.lanacion.com.ar/politica/veto-de-milei-al-financiamiento-universitario-comenzo-una-sesion-incierta-en-diputados-en-la-que-el-nid09102024/", fecha: "2024-10-09"}
+    - {medio: "El Destape", titulo: "Veto al financiamiento universitario: cómo votó cada diputado y quiénes son los 84 que votaron a favor de Milei", url: "https://www.eldestapeweb.com/politica/universidades/veto-al-financiamiento-universitario-como-voto-cada-diputado-y-quienes-son-los-84-que-votaron-a-favor-de-milei-20241091719", fecha: "2024-10-09"}
 
 - id: ley-27795-sancion
   fecha: "2025-08-21"
   tipo: legislativo
   ejes: [ley]
   titulo: "El Senado sanciona la Ley de Financiamiento de la Educación Universitaria y Recomposición del Salario Docente"
-  tipo_fuente: secundaria
-  documento: "Ley 27.795 y Dec. 759/2025 (texto publicado por el Consejo Profesional de Ciencias Económicas de Salta)"
-  url: https://www.consejosalta.org.ar/wp-content/uploads/Ley-27.795-y-Dec-759-2025.pdf
+  tipo_fuente: primaria
+  documento: "Senado de la Nación — Acta de votación N.º 8, sesión del 21-ago-2025 (O.D. 424/2025, en general y en particular)"
+  url: https://www.senado.gob.ar/votaciones/detalleActa/2571
   consultado: 2026-10-19
-  nota: "58 votos a favor, 10 en contra y 3 abstenciones en el Senado; antes, 158 a favor en Diputados. El Gobierno anticipó un veto."
+  nota: "Senado: 58 votos afirmativos, 10 negativos, 3 abstenciones y 1 ausente. Antes, el 6-ago-2025, Diputados dio media sanción (O.D. 924, en general): 158 afirmativos, 75 negativos, 5 abstenciones, 1 sin votar y 18 ausentes (https://votaciones.hcdn.gob.ar/votacion/5702). El Gobierno anticipó un veto. Texto de la ley: Boletín Oficial, 21-oct-2025 (https://www.boletinoficial.gob.ar/detalleAviso/primera/333139/20251021)."
   noticias:
     - {medio: "Noticias NQN", titulo: "El Senado aprobó la ley de financiamiento universitario, pero Milei anticipó un nuevo veto", url: "https://www.noticiasnqn.com.ar/noticias/2025/08/22/319068-el-senado-aprobo-la-ley-de-financiamiento-universitario-pero-milei-anticipo-un-nuevo-veto", fecha: "2025-08-22"}
-    - {medio: "Diario Uno", titulo: "El Senado aprobó y convirtió en ley el financiamiento universitario que Milei prometió vetar", url: "https://www.diariouno.com.ar/politica/el-senado-aprobo-y-convirtio-ley-el-financiamiento-universitario-que-milei-prometio-vetar-n1468794"}
-    - {medio: "Tiempo de San Juan", titulo: "El Senado convirtió en ley el proyecto de financiamiento universitario y la recomposición del salario docente", url: "https://www.tiempodesanjuan.com/politica/el-senado-convirtio-ley-el-proyecto-financiamiento-universitario-y-la-recomposicion-del-salario-docente-n409646"}
+    - {medio: "Diario Uno", titulo: "El Senado aprobó y convirtió en ley el financiamiento universitario que Milei prometió vetar", url: "https://www.diariouno.com.ar/politica/el-senado-aprobo-y-convirtio-ley-el-financiamiento-universitario-que-milei-prometio-vetar-n1468794", fecha: "2025-08-21"}
+    - {medio: "Tiempo de San Juan", titulo: "El Senado convirtió en ley el proyecto de financiamiento universitario y la recomposición del salario docente", url: "https://www.tiempodesanjuan.com/politica/el-senado-convirtio-ley-el-proyecto-financiamiento-universitario-y-la-recomposicion-del-salario-docente-n409646", fecha: "2025-08-21"}
+    - {medio: "La Nación", titulo: "El Senado sancionó la ley de financiamiento universitario; hay alerta amarilla en 18 provincias", url: "https://www.lanacion.com.ar/sociedad/el-senado-sanciono-la-ley-de-financiamiento-universitario-hay-alerta-amarilla-en-18-provincias-nid22082025/", fecha: "2025-08-22"}
+    - {medio: "Tiempo Argentino", titulo: "Por amplia mayoría, el Senado también convirtió en ley el financiamiento universitario", url: "https://www.tiempoar.com.ar/ta_article/por-amplia-mayoria-el-senado-tambien-convirtio-en-ley-el-financiamiento-universitario/", fecha: "2025-08-21"}
 
 - id: ley-27795-veto
   fecha: "2025-09-10"
   tipo: norma
   ejes: [ley]
   titulo: "El Poder Ejecutivo veta la ley en su totalidad (Decreto 647/2025)"
-  tipo_fuente: secundaria
-  documento: "Ley 27.795 y Dec. 759/2025 (texto publicado por el Consejo Profesional de Ciencias Económicas de Salta)"
-  url: https://www.consejosalta.org.ar/wp-content/uploads/Ley-27.795-y-Dec-759-2025.pdf
+  tipo_fuente: primaria
+  documento: "Boletín Oficial — Decreto 647/2025, primera sección, edición suplementaria del 10-sep-2025 (BO N.º 35746, pág. 3)"
+  url: https://www.boletinoficial.gob.ar/detalleAviso/primera/5932589/20250910?suplemento=1
   consultado: 2026-10-19
-  nota: "Argumento del Gobierno, según la cobertura: la ley no especificaba fuentes de financiamiento (art. 38 de la Ley 24.156), su costo superaba el billón de pesos en 2025 y esos gastos debían discutirse en el Presupuesto 2026."
+  nota: "Argumento del Gobierno, en los considerandos del decreto: el art. 38 de la Ley 24.156 exige que «toda ley que autorice gastos no previstos en el presupuesto general deberá especificar las fuentes de los recursos a utilizar para su financiamiento». Estima el costo en $ 1.069.644.600.000 para 2025; de ese total, la recomposición salarial suma $ 617.847.532.000 en 2025, y la estima en $ 2.008.377.852.000 para 2026. Art. 1: «Obsérvase en su totalidad el Proyecto de Ley registrado bajo el Nº 27.795»."
   noticias:
     - {medio: "Canal 26", titulo: "Javier Milei vetó la ley de Financiamiento universitario", url: "https://www.canal26.com/politica/2025/09/10/javier-milei-veto-la-ley-de-financiamiento-universitario/", fecha: "2025-09-10"}
-    - {medio: "Diario de Cuyo", titulo: "Javier Milei vetó la ley de Financiamiento universitario y la envió al Congreso", url: "https://www.diariodecuyo.com.ar/argentina/javier-milei-veto-la-ley-de-financiamiento-universitario-y-la-envio-al-congreso-1769627.html"}
-    - {medio: "MDZ", titulo: "El Gobierno vetó la Ley de Financiamiento Universitario en la previa al Día del Maestro", url: "https://www.mdzol.com/politica/el-gobierno-veto-la-ley-financiamiento-universitario-la-previa-al-dia-del-maestro-n1334474"}
+    - {medio: "Diario de Cuyo", titulo: "Javier Milei vetó la ley de Financiamiento universitario y la envió al Congreso", url: "https://www.diariodecuyo.com.ar/argentina/javier-milei-veto-la-ley-de-financiamiento-universitario-y-la-envio-al-congreso-1769627.html", fecha: "2025-09-10"}
+    - {medio: "MDZ", titulo: "El Gobierno vetó la Ley de Financiamiento Universitario en la previa al Día del Maestro", url: "https://www.mdzol.com/politica/el-gobierno-veto-la-ley-financiamiento-universitario-la-previa-al-dia-del-maestro-n1334474", fecha: "2025-09-10"}
+    - {medio: "Infobae", titulo: "Javier Milei firmó el veto a la ley de financiamiento universitario y lo envió al Congreso", url: "https://www.infobae.com/politica/2025/09/10/javier-milei-veto-la-ley-de-financiamiento-universitario-y-lo-envio-al-congreso/", fecha: "2025-09-10"}
+    - {medio: "Página/12", titulo: "Javier Milei vetó la Ley de Financiamiento Universitario", url: "https://www.pagina12.com.ar/856919-javier-milei-veto-la-ley-de-financiamiento-universitario/", fecha: "2025-09-10"}
 
 - id: ley-27795-insistencia-diputados
   fecha: "2025-09-17"
   tipo: legislativo
   ejes: [ley]
   titulo: "Diputados rechaza el veto e insiste con la ley"
-  tipo_fuente: secundaria
-  documento: "ACIJ — Ley de Financiamiento Universitario (informe, mayo 2026)"
-  url: https://acij.org.ar/wp-content/uploads/2026/05/Ley-de-Financiamiento-Universitario.pdf
-  pagina: 1
+  tipo_fuente: primaria
+  documento: "Cámara de Diputados de la Nación — Votación nominal «Insistencia proyecto de ley 27.795» (período 143, reunión 14, acta 4)"
+  url: https://votaciones.hcdn.gob.ar/votacion/5766
   consultado: 2026-10-19
-  nota: "174 votos a favor de insistir, 67 en contra y 2 abstenciones, según La Voz de San Justo."
+  nota: "Mayoría requerida: dos tercios de los votos emitidos. 174 votos afirmativos, 67 negativos, 2 abstenciones, 0 sin votar y 14 ausentes."
   noticias:
-    - {medio: "La Voz de San Justo", titulo: "Diputados rechazó los vetos al financiamiento del Garrahan y universidades", url: "https://www.lavozdesanjusto.com.ar/diputados-rechazo-los-vetos-al-financiamiento-del-garrahan-y-universidades"}
+    - {medio: "La Voz de San Justo", titulo: "Diputados rechazó los vetos al financiamiento del Garrahan y universidades", url: "https://www.lavozdesanjusto.com.ar/diputados-rechazo-los-vetos-al-financiamiento-del-garrahan-y-universidades", fecha: "2025-09-17"}
     - {medio: "Diario de Cuyo", titulo: "Revés para el Gobierno: Diputados rechazó los vetos de Milei a las leyes de financiamiento universitario y de fondos para el Garrahan", url: "https://www.diariodecuyo.com.ar/politica/sesion-de-diputados-en-vivo-debaten-el-rechazo-a-los-vetos-de-javier-mieli-y-hay-expectativa-por-la-votacion-1772600.html", fecha: "2025-09-17"}
+    - {medio: "Infobae", titulo: "Contundente rechazo a los vetos de Milei: Diputados ratificó el financiamiento del Garrahan y las universidades", url: "https://www.infobae.com/politica/2025/09/17/contundente-rechazo-a-los-vetos-de-milei-diputados-ratifico-el-financiamiento-del-garrahan-y-las-universidades/", fecha: "2025-09-17"}
+    - {medio: "El Destape", titulo: "Con la presión de la calle y frente a un Milei casi sin aliados, Diputados bajó los vetos al Garrahan y universidades", url: "https://www.eldestapeweb.com/politica/congreso/con-la-presion-de-la-calle-y-frente-a-un-milei-casi-sin-aliados-diputados-bajo-los-vetos-al-garrahan-y-universidades-2025917172717", fecha: "2025-09-17"}
 
 - id: ley-27795-insistencia-senado
   fecha: "2025-10-02"
   tipo: legislativo
   ejes: [ley]
   titulo: "El Senado también rechaza el veto: con dos tercios de los votos, el proyecto es ley"
-  tipo_fuente: secundaria
-  documento: "Ley 27.795 y Dec. 759/2025 (texto publicado por el Consejo Profesional de Ciencias Económicas de Salta)"
-  url: https://www.consejosalta.org.ar/wp-content/uploads/Ley-27.795-y-Dec-759-2025.pdf
+  tipo_fuente: primaria
+  documento: "Senado de la Nación — Acta de votación N.º 10, sesión del 2-oct-2025 (insistencia en la sanción original, expte. CD-20/25)"
+  url: https://www.senado.gob.ar/votaciones/detalleActa/2598
   consultado: 2026-10-19
-  nota: "58 votos a favor, 7 en contra y 4 abstenciones."
+  nota: "Mayoría requerida: dos tercios de los votos emitidos. 58 votos afirmativos, 7 negativos, 4 abstenciones y 3 ausentes. Conforme al art. 83 de la Constitución Nacional, el proyecto es ley."
   noticias:
-    - {medio: "Tiempo Argentino", titulo: "Con una amplia mayoría, el Senado rechazó los vetos de Milei al financimiento para las universidades y el Hospital Garrahan", url: "https://www.tiempoar.com.ar/ta_article/con-una-amplia-mayoria-el-senado-rechazo-los-vetos-de-milei-al-financimiento-para-las-universidades-y-el-hospital-garrahan/"}
-    - {medio: "Elonce", titulo: "El Senado rechazó los vetos de Milei al financiamiento del Garrahan y las universidades", url: "https://www.elonce.com/uid-852974"}
+    - {medio: "Tiempo Argentino", titulo: "Con una amplia mayoría, el Senado rechazó los vetos de Milei al financimiento para las universidades y el Hospital Garrahan", url: "https://www.tiempoar.com.ar/ta_article/con-una-amplia-mayoria-el-senado-rechazo-los-vetos-de-milei-al-financimiento-para-las-universidades-y-el-hospital-garrahan/", fecha: "2025-10-02"}
+    - {medio: "Elonce", titulo: "El Senado rechazó los vetos de Milei al financiamiento del Garrahan y las universidades", url: "https://www.elonce.com/uid-852974", fecha: "2025-10-02"}
+    - {medio: "La Nación", titulo: "El Senado rechazó los vetos de Milei y dejó firmes las leyes de financiamiento universitario y de apoyo al Garrahan", url: "https://www.lanacion.com.ar/politica/el-senado-busca-imponer-el-financiamiento-a-las-universidades-y-hospitales-pediatricos-nid02102025/", fecha: "2025-10-02"}
 
 - id: ley-27795-promulgacion
   fecha: "2025-10-21"
   tipo: norma
   ejes: [ley]
   titulo: "El Gobierno promulga la ley y suspende su ejecución hasta que el Congreso determine cómo financiarla (Decreto 759/2025)"
-  tipo_fuente: secundaria
-  documento: "ACIJ — Ley de Financiamiento Universitario (informe, mayo 2026)"
-  url: https://acij.org.ar/wp-content/uploads/2026/05/Ley-de-Financiamiento-Universitario.pdf
-  pagina: 2
+  tipo_fuente: primaria
+  documento: "Boletín Oficial — Decreto 759/2025, primera sección, 21-oct-2025 (BO N.º 35774, pág. 6)"
+  url: https://www.boletinoficial.gob.ar/detalleAviso/primera/333140/20251021
   consultado: 2026-10-19
-  nota: "Argumento del Gobierno: el Congreso no indicó las fuentes de financiamiento (art. 5 de la Ley 24.629 y art. 38 de la Ley 24.156). Estimó el costo en $ 1,06 billones para 2025 y $ 2 billones para 2026."
+  nota: "Argumento del Gobierno, en el decreto: el art. 1 promulga la ley «sin perjuicio de lo dispuesto por el artículo 5° de la Ley N° 24.629» (toda ley que disponga gastos debe prever su financiamiento; si no, queda suspendida su ejecución). Los considerandos citan también el art. 38 de la Ley 24.156 y estiman el costo en $ 1.069.644.600.000 para 2025; los $ 2.008.377.852.000 que estiman para 2026 corresponden solo a la recomposición salarial."
   noticias:
-    - {medio: "Diario Uno", titulo: "Javier Milei promulgó la ley de financiamiento a las universidades, pero suspendió su aplicación", url: "https://www.diariouno.com.ar/politica/javier-milei-promulgo-la-ley-financiamiento-las-universidades-pero-suspendio-su-aplicacion-n1489191"}
-    - {medio: "Tiempo Argentino", titulo: "El Gobierno frenó la aplicación de las leyes de emergencia pediátrica y financiamiento universitario", url: "https://www.tiempoar.com.ar/ta_article/el-gobierno-promulgo-las-leyes-de-emergencia-pediatrica-y-financiamiento-universitario-pero-freno-su-aplicacion/amp/"}
+    - {medio: "Diario Uno", titulo: "Javier Milei promulgó la ley de financiamiento a las universidades, pero suspendió su aplicación", url: "https://www.diariouno.com.ar/politica/javier-milei-promulgo-la-ley-financiamiento-las-universidades-pero-suspendio-su-aplicacion-n1489191", fecha: "2025-10-21"}
+    - {medio: "Tiempo Argentino", titulo: "El Gobierno frenó la aplicación de las leyes de emergencia pediátrica y financiamiento universitario", url: "https://www.tiempoar.com.ar/ta_article/el-gobierno-promulgo-las-leyes-de-emergencia-pediatrica-y-financiamiento-universitario-pero-freno-su-aplicacion/amp/", fecha: "2025-10-21"}
+    - {medio: "Infobae", titulo: "Promulgaron las leyes de emergencia pediátrica y financiamiento universitario, pero postergaron su aplicación", url: "https://www.infobae.com/politica/2025/10/21/promulgaron-las-leyes-de-emergencia-pediatrica-y-financiamiento-universitario-pero-postergaron-su-aplicacion/", fecha: "2025-10-21"}
 
 - id: ley-27795-cautelar
   fecha: "2025-12-23"
   tipo: judicial
   ejes: [ley]
   titulo: "El juez Martín Cormick declara inaplicable la suspensión y ordena cumplir de inmediato los arts. 5 y 6 (salarios y becas)"
-  tipo_fuente: secundaria
-  documento: "iProfesional, 23-dic-2025"
-  url: https://www.iprofesional.com/legales/444695-fallo-clave-justicia-declara-inaplicable-decreto-que-freno-ley-de-financiamiento-universitario
+  tipo_fuente: primaria
+  documento: "Juzgado Contencioso Administrativo Federal N.º 11, expte. 39475/2025 («CIN y otros c/ EN - PEN - Dto 759/2025 s/ Amparo»), resolución cautelar del 23-dic-2025. Copia publicada por Class Actions Argentina (PDF con firma digital del Poder Judicial)"
+  url: https://classactionsargentina.com/wp-content/uploads/2025/12/cautelar-financiamiento-universitario.pdf
+  pagina: 8
   consultado: 2026-10-19
-  nota: "Medida cautelar en el amparo del CIN (Juzgado Contencioso Administrativo Federal N.º 11, expte. 39475/2025). Rige hasta la sentencia definitiva."
+  nota: "Resuelve «Admitir la cautelar solicitada por la actora» y ordena a la demandada «cumplir de forma inmediata con lo dispuesto en los artículos 5° y 6° de la ley 27.795». «El plazo de la presente se extiende hasta el dictado de la sentencia.» El original menciona el «decreto 795/2023» por el Decreto 759/2025."
   noticias:
     - {medio: "iProfesional", titulo: "Fallo clave: un juez declaró inaplicable el decreto que frenó la ley de financiamiento universitario", url: "https://www.iprofesional.com/legales/444695-fallo-clave-justicia-declara-inaplicable-decreto-que-freno-ley-de-financiamiento-universitario", fecha: "2025-12-23"}
-    - {medio: "Río Negro", titulo: "Financiamiento universitario: la Justicia hizo lugar a una medida cautelar y frenó el decreto de Javier Milei", url: "https://www.rionegro.com.ar/justicia/financiamiento-universitario-la-justicia-hizo-lugar-a-una-medida-cautelar-y-freno-el-decreto-de-milei-4413251/"}
+    - {medio: "Río Negro", titulo: "Financiamiento universitario: la Justicia hizo lugar a una medida cautelar y frenó el decreto de Javier Milei", url: "https://www.rionegro.com.ar/justicia/financiamiento-universitario-la-justicia-hizo-lugar-a-una-medida-cautelar-y-freno-el-decreto-de-milei-4413251/", fecha: "2025-12-23"}
     - {medio: "Canal 26", titulo: "Revés para Milei: frenaron el decreto del Gobierno que suspendía la ley de Financiamiento Universitario", url: "https://www.canal26.com/politica/2025/12/23/reves-para-milei-frenaron-el-decreto-del-gobierno-que-suspendia-la-ley-de-financiamiento-universitario/", fecha: "2025-12-23"}
+    - {medio: "Infobae", titulo: "Un juez frenó el decreto del Gobierno que suspendió la ley de financiamiento universitario", url: "https://www.infobae.com/judiciales/2025/12/23/un-juez-freno-el-decreto-del-gobierno-que-suspendio-la-ley-de-financiamiento-universitario/", fecha: "2025-12-23"}
+    - {medio: "El Destape", titulo: "La Justicia Federal hizo lugar a un amparo y ordenó al Gobierno actualizar salarios docentes y becas universitarias", url: "https://www.eldestapeweb.com/politica/ajuste/la-justicia-federal-hizo-lugar-a-un-amparo-y-ordeno-al-gobierno-actualizar-salarios-docentes-y-becas-universitarias-2025122315400", fecha: "2025-12-23"}
 
 - id: ley-27795-camara
   fecha: "2026-03-31"
   tipo: judicial
   ejes: [ley]
   titulo: "La Sala III de la Cámara Contencioso Administrativo Federal confirma la cautelar"
-  tipo_fuente: secundaria
-  documento: "ACIJ — Ley de Financiamiento Universitario (informe, mayo 2026)"
-  url: https://acij.org.ar/wp-content/uploads/2026/05/Ley-de-Financiamiento-Universitario.pdf
-  pagina: 2
+  tipo_fuente: primaria
+  documento: "Cámara Nacional de Apelaciones en lo Contencioso Administrativo Federal, Sala III, CAF 39475/2025, resolución del 31-mar-2026. Copia publicada por Class Actions Argentina (PDF con firma digital del Poder Judicial)"
+  url: https://classactionsargentina.com/wp-content/uploads/2026/04/2026-03-31-cncafed-sala-iii_cin-c.-pen-cautelar-financiamiento-universitario.pdf
+  pagina: 22
   consultado: 2026-10-19
-  nota: "La Cámara sostuvo que el Ejecutivo no puede suspender una ley del Congreso invocando otra ley anterior del mismo Congreso."
+  nota: "«SE RESUELVE: confirmar la resolución de primera instancia que admitió la medida cautelar solicitada en autos.» Firman dos jueces (Sergio G. Fernández y Jorge E. Morán). Según el informe de ACIJ, la Cámara sostuvo que el Ejecutivo no puede suspender una ley del Congreso invocando otra ley anterior del mismo Congreso."
+  noticias:
+    - {medio: "Infobae", titulo: "La Justicia ratificó que el Gobierno debe ejecutar de inmediato la ley de financiamiento universitario", url: "https://www.infobae.com/judiciales/2026/03/31/la-justicia-ratifico-que-el-gobierno-debe-ejecutar-la-ley-de-financiamiento-universitario/", fecha: "2026-03-31"}
+    - {medio: "Página/12", titulo: "La Ley de Financiamiento Universitario y los argumentos “poco serios” del Gobierno", url: "https://www.pagina12.com.ar/2026/04/01/la-ley-de-financiamiento-universitario-y-los-argumentos-poco-serios-del-gobierno/", fecha: "2026-04-01"}
+    - {medio: "La Capital", titulo: "Ley de financiamiento universitario: confirmaron la aplicación del aumento salarial", url: "https://www.lacapital.com.ar/informacion-general/ley-financiamiento-universitario-confirmaron-la-aplicacion-del-aumento-salarial-n10251919.html", fecha: "2026-03-31"}
+
+- id: ley-27795-suspension-cautelar
+  fecha: "2026-04-24"
+  tipo: judicial
+  ejes: [ley]
+  titulo: "El juez suspende provisoriamente la ejecución de la cautelar mientras se tramita el recurso extraordinario del Gobierno"
+  tipo_fuente: secundaria
+  documento: "Diario Judicial, 4-ago-2026"
+  url: https://www.diariojudicial.com/news-104084-la-cautelar-sigue-en-pie
+  consultado: 2026-10-19
+  nota: "El Gobierno presentó el recurso extraordinario el 17-abr-2026. El CIN apeló la suspensión el 27-abr. Texto de la resolución: pendiente."
+  noticias:
+    - {medio: "Ámbito", titulo: "Marcha atrás de la Justicia sobre la ley de Financiamiento Universitario: suspendieron provisoriamente su implementación", url: "https://www.ambito.com/politica/marcha-atras-la-justicia-la-ley-financiamiento-universitario-suspendieron-provisoriamente-su-implementacion-n6270847", fecha: "2026-04-25"}
+    - {medio: "Minutouno", titulo: "La Justicia suspendió la cautelar que obliga al Gobierno a cumplir con la Ley de Financiamiento Universitario", url: "https://www.minutouno.com/politica/la-justicia-suspendio-la-cautelar-que-obliga-al-gobierno-cumplir-la-ley-financiamiento-universitario-n6270810", fecha: "2026-04-25"}
+    - {medio: "APF Digital", titulo: "Las universidades apelaron la suspensión de la ley de Financiamiento y piden que el gobierno transfiera los fondos", url: "https://www.apfdigital.com.ar/noticias/2026/04/28/453567-las-universidades-apelaron-la-suspension-de-la-ley-de-financiamiento-y-piden-que-el-gobierno-transfiera-los-fondos", fecha: "2026-04-28"}
 
 - id: ley-27795-recurso-corte
   fecha: "2026-05-07"
@@ -129,9 +159,14 @@
   documento: "Infobae, 7-may-2026"
   url: https://www.infobae.com/judiciales/2026/05/07/habilitaron-al-gobierno-a-acudir-a-la-corte-suprema-por-la-ley-de-financiamiento-universitario/
   consultado: 2026-10-19
+  nota: "Según la cobertura, que cita un comunicado del Ministerio de Capital Humano, el recurso se concedió con efecto suspensivo: la cautelar quedó suspendida hasta la decisión de la Corte. Texto de la resolución: pendiente."
   noticias:
     - {medio: "Infobae", titulo: "Habilitaron al Gobierno a acudir a la Corte Suprema por la Ley de Financiamiento Universitario", url: "https://www.infobae.com/judiciales/2026/05/07/habilitaron-al-gobierno-a-acudir-a-la-corte-suprema-por-la-ley-de-financiamiento-universitario/", fecha: "2026-05-07"}
     - {medio: "Canal 26", titulo: "El conflicto universitario llegará a la Corte Suprema: la Justicia habilitó el reclamo del Gobierno contra la Ley de Financiamiento", url: "https://www.canal26.com/politica/2026/05/07/el-conflicto-universitario-llega-a-la-corte-suprema-la-justicia-habilito-el-reclamo-del-gobierno-contra-la-ley-de-financiamiento/", fecha: "2026-05-07"}
+    - {medio: "Página/12", titulo: "Financiamiento universitario: la Corte Suprema revisará la cautelar contra el Gobierno", url: "https://www.pagina12.com.ar/2026/05/07/financiamiento-universitario-la-corte-suprema-revisara-la-cautelar-contra-el-gobierno/", fecha: "2026-05-07"}
+    - {medio: "La Capital", titulo: "Financiamiento universitario: la Cámara concedió un recurso al gobierno y demora la definición", url: "https://www.lacapital.com.ar/politica/financiamiento-universitario-la-camara-concedio-un-recurso-al-gobierno-y-demora-la-definicion-n10258180.html", fecha: "2026-05-07"}
+    - {medio: "Perfil", titulo: "La Justicia suspendió la cautelar por financiamiento universitario tras un recurso del Gobierno", url: "https://www.perfil.com/noticias/judiciales/la-justicia-suspendio-la-cautelar-por-financiamiento-universitario-tras-un-recurso-del-gobierno.phtml", fecha: "2026-05-07"}
+    - {medio: "elDiarioAR", titulo: "Suspendieron una cautelar sobre el financiamiento universitario tras un recurso del Gobierno", url: "https://www.eldiarioar.com/politica/suspendieron-cautelar-financiamiento-universitario-recurso-gobierno_1_13204617.html", fecha: "2026-05-07"}
 
 - id: ley-27795-acuerdo-junio-2026
   fecha: "2026-06-10"
@@ -145,51 +180,97 @@
   nota: "Según la cobertura, incluye 20 % más para gastos de funcionamiento desde junio y paritarias al menos cada tres meses. El instructivo de junio de 2026 confirma el nuevo básico (ver Salario)."
   noticias:
     - {medio: "Ámbito", titulo: "El Gobierno y las universidades firmaron un acuerdo por financiamiento y salarios", url: "https://www.ambito.com/politica/el-gobierno-y-las-universidades-firmaron-un-acuerdo-financiamiento-y-salarios-n6287397", fecha: "2026-06-10"}
-    - {medio: "La Capital", titulo: "El gobierno y las universidades firmaron un acuerdo por financiamiento y salarios", url: "https://www.lacapital.com.ar/politica/el-gobierno-y-las-universidades-firmaron-un-acuerdo-financiamiento-y-salarios-n10263887.html"}
+    - {medio: "La Capital", titulo: "El gobierno y las universidades firmaron un acuerdo por financiamiento y salarios", url: "https://www.lacapital.com.ar/politica/el-gobierno-y-las-universidades-firmaron-un-acuerdo-financiamiento-y-salarios-n10263887.html", fecha: "2026-06-10"}
     - {medio: "Los Andes", titulo: "El Gobierno y las universidades acordaron una suba salarial, pero el conflicto sigue abierto", url: "https://www.losandes.com.ar/politica/el-gobierno-y-las-universidades-acordaron-una-suba-salarial-pero-el-conflicto-sigue-abierto-n5994399", fecha: "2026-06-10"}
-    - {medio: "MDZ", titulo: "El Gobierno anunció un acuerdo con los rectores de las universidades, aunque los gremios se distancian", url: "https://www.mdzol.com/politica/el-gobierno-anuncio-un-acuerdo-los-rectores-las-universidades-aunque-los-gremios-se-distancian-n1540634"}
+    - {medio: "MDZ", titulo: "El Gobierno anunció un acuerdo con los rectores de las universidades, aunque los gremios se distancian", url: "https://www.mdzol.com/politica/el-gobierno-anuncio-un-acuerdo-los-rectores-las-universidades-aunque-los-gremios-se-distancian-n1540634", fecha: "2026-06-10"}
+    - {medio: "El Destape", titulo: "Universidades: el Gobierno anunció un acuerdo, pero los gremios advierten que \"la lucha continúa\"", url: "https://www.eldestapeweb.com/politica/universidades-gobierno-anuncio-llego-acuerdo-gremios-cin-202661017426", fecha: "2026-06-10"}
+    - {medio: "La Nación", titulo: "Tras más de dos años de conflicto, el Gobierno y las universidades firmaron un acuerdo por el financiamiento", url: "https://www.lanacion.com.ar/sociedad/tras-casi-tres-anos-de-conflicto-el-gobierno-y-los-rectores-firmaron-un-acuerdo-por-el-nid10062026/", fecha: "2026-06-10"}
 
 - id: ley-27795-corte
   fecha: "2026-06-25"
   tipo: judicial
   ejes: [ley]
   titulo: "La Corte Suprema rechaza el recurso del Gobierno: la cautelar queda firme"
-  tipo_fuente: secundaria
-  documento: "Palabras del Derecho, 25-jun-2026"
-  url: https://www.palabrasdelderecho.com.ar/articulo/6834/Financiamiento-universitario-la-Corte-dejo-firme-la-cautelar-que-ordeno-actualizar-salarios-docentes-y-becas-estudiantiles
+  tipo_fuente: primaria
+  documento: "Corte Suprema de Justicia de la Nación, CAF 39475/2025/5/CS2, 25-jun-2026 (Rosatti, Rosenkrantz, Lorenzetti). Copia enlazada por Palabras del Derecho"
+  url: https://drive.google.com/file/d/1eJGiLzH5zlb2fYle9qtFoskocUurNAR7/view
+  pagina: 1
   consultado: 2026-10-19
-  nota: "La Corte recordó que «las resoluciones que conceden, rechazan o modifican medidas cautelares, por regla, no constituyen sentencias definitivas». No resolvió el fondo del caso."
+  nota: "La Corte recordó que «el pronunciamiento que acuerda, deniega o modifica una medida cautelar no reviste el carácter de sentencia definitiva o equiparable a tal a los fines del recurso extraordinario». No resolvió el fondo del caso. Remite también a lo resuelto el 4-jun-2026 sobre la recusación planteada por el Gobierno."
   noticias:
     - {medio: "Canal 26", titulo: "La Corte Suprema dejó firme la cautelar que obliga a aplicar la ley de financiamiento universitario", url: "https://www.canal26.com/politica/2026/06/25/la-corte-suprema-dejo-firme-la-cautelar-que-obliga-a-aplicar-la-ley-de-financiamiento-universitario/", fecha: "2026-06-25"}
     - {medio: "Noticias NQN", titulo: "La Corte Suprema dejó firme una cautelar a favor del financiamiento universitario", url: "https://www.noticiasnqn.com.ar/amp/noticias/2026/06/25/341125-la-corte-suprema-dejo-firme-una-cautelar-a-favor-del-financiamiento-universitario", fecha: "2026-06-25"}
+    - {medio: "La Nación", titulo: "La Corte Suprema dejó firme el fallo que obligó a aumentar salarios y becas por la ley de financiamiento universitario", url: "https://www.lanacion.com.ar/politica/la-corte-suprema-dejo-firme-el-fallo-que-obligo-a-aumentar-salarios-universitarios-y-becas-nid25062026/", fecha: "2026-06-25"}
+    - {medio: "Página/12", titulo: "La Corte Suprema le ordena al Gobierno aplicar la ley de financiamiento universitario", url: "https://www.pagina12.com.ar/2026/06/25/la-corte-suprema-le-ordena-al-gobierno-aplicar-la-ley-de-financiamiento-universitario/", fecha: "2026-06-25"}
+    - {medio: "Infobae", titulo: "La Corte Suprema dejó firme la cautelar que obliga al Estado a aplicar dos artículos de la ley de financiamiento universitario", url: "https://www.infobae.com/judiciales/2026/06/25/la-corte-suprema-dejo-firme-la-cautelar-que-obliga-al-estado-a-aplicar-la-ley-de-financiamiento-universitario/", fecha: "2026-06-25"}
+
+- id: ley-27795-levantamiento-rechazado
+  fecha: "2026-08-31"
+  tipo: judicial
+  ejes: [ley]
+  titulo: "El juez rechaza el pedido del Gobierno de levantar la cautelar a partir del acuerdo del 10 de junio y le pide un informe de cumplimiento en tres días"
+  tipo_fuente: primaria
+  documento: "Juzgado Contencioso Administrativo Federal N.º 11, expte. 39475/2025/2 (incidente de medida cautelar), resolución firmada el 31-ago-2026. Copia publicada por InfoGremiales"
+  url: https://www.infogremiales.com.ar/wp-content/uploads/2026/09/doc1782327944.pdf
+  pagina: 11
+  consultado: 2026-10-19
+  nota: "Resuelve: «Denegar el levantamiento de la medida cautelar dictada a favor de las accionantes» y requerir a la demandada que «en el término de 3 (tres) días» emita un informe de cumplimiento. El Gobierno había pedido el levantamiento el 14-jul-2026."
+  noticias:
+    - {medio: "InfoGremiales", titulo: "En la previa de la paritaria, la justicia rechazó la presentación del Gobierno y ratificó que debe cumplir la ley de Financiamiento Universitario", url: "https://www.infogremiales.com.ar/en-la-previa-de-la-paritaria-la-justicia-rechazo-la-presentacion-del-gobierno-y-ratifico-que-debe-cumplir-la-ley-de-financiamiento-universitario/", fecha: "2026-09-01"}
 
 - id: ley-27795-intimacion
+  fecha: "2026-09-22"
+  tipo: judicial
+  ejes: [ley]
+  titulo: "El juez intima al Gobierno a cumplir la cautelar en cinco días, bajo apercibimiento de multas por cada día de demora"
+  tipo_fuente: primaria
+  documento: "Cámara Contencioso Administrativo Federal, Sala III, CAF 39475/2025/2/1/RH3, resolución del 15-oct-2026, que transcribe la providencia del juez. Copia publicada por Class Actions Argentina (PDF con firma digital del Poder Judicial)"
+  url: https://classactionsargentina.com/wp-content/uploads/2026/10/2026-10-15-cnacfed-sala-iii_cin-c.-pen-admite-queja-en-ejecucion.pdf
+  pagina: 1
+  consultado: 2026-10-19
+  nota: "Texto de la providencia: intima a que «dé efectivo cumplimiento de la medida cautelar dictada en autos, en un plazo perentorio de cinco (5) días, bajo apercibimiento de aplicar astreintes por cada día de demora». El Gobierno apeló el 24-sep."
+  noticias:
+    - {medio: "Infobae", titulo: "Conflicto universitario: la Justicia intimó al Gobierno para que cumpla con la Ley de Financiamiento", url: "https://www.infobae.com/politica/2026/09/22/conflicto-universitario-la-justicia-intimo-al-gobierno-para-que-cumpla-con-la-ley-de-financiamiento/", fecha: "2026-09-22"}
+    - {medio: "Tiempo Argentino", titulo: "La Justicia intimó al gobierno a cumplir con la Ley de Financiamiento Universitario", url: "https://www.tiempoar.com.ar/ta_article/la-justicia-intimo-al-gobierno-a-cumplir-con-la-ley-de-financiamiento-universitario", fecha: "2026-09-22"}
+    - {medio: "La Capital", titulo: "Financiamiento universitario: la Justicia le dio cinco días al gobierno nacional para cumplir la ley", url: "https://www.lacapital.com.ar/politica/financiamiento-universitario-la-justicia-le-dio-cinco-dias-al-gobierno-nacional-cumplir-la-ley-n10282537.html", fecha: "2026-09-22"}
+    - {medio: "Noticias NQN", titulo: "Financiamiento universitario: el Gobierno apelará el fallo que le dio cinco días", url: "https://www.noticiasnqn.com.ar/noticias/2026/09/25/354085-financiamiento-universitario-el-gobierno-apelara-el-fallo-que-le-dio-cinco-dias", fecha: "2026-09-25"}
+
+- id: ley-27795-intimacion-ampliacion
   fecha: "2026-09-30"
   tipo: judicial
   ejes: [ley]
-  titulo: "El juez intima al Gobierno a cumplir la cautelar en cinco días"
-  tipo_fuente: secundaria
-  documento: "Minutouno, 30-sep-2026"
-  url: https://www.minutouno.com/la-justicia-volvio-intimar-al-gobierno-que-cumpla-la-ley-financiamiento-universitario-n6328549
+  titulo: "El juez rechaza la revocatoria del Gobierno, deniega su apelación y amplía los fundamentos de la intimación"
+  tipo_fuente: primaria
+  documento: "Cámara Contencioso Administrativo Federal, Sala III, CAF 39475/2025/2/1/RH3, resolución del 15-oct-2026, que transcribe la providencia del juez. Copia publicada por Class Actions Argentina (PDF con firma digital del Poder Judicial)"
+  url: https://classactionsargentina.com/wp-content/uploads/2026/10/2026-10-15-cnacfed-sala-iii_cin-c.-pen-admite-queja-en-ejecucion.pdf
+  pagina: 1
   consultado: 2026-10-19
-  nota: "El Gobierno citó como avances órdenes de pago y convocatorias a paritarias; el juez consideró que no se alcanzó el incremento del 312,19 % de inflación acumulada que menciona la resolución."
+  nota: "Deniega la apelación «por inexistencia de agravio concreto y actual». Según el escrito del Gobierno que transcribe la Cámara, el juez señaló que para el período dic-2023 a jun-2026 debía alcanzarse un aumento del 312,19 %. La prensa informa un nuevo plazo de cinco días; el texto de la Cámara no lo menciona."
   noticias:
-    - {medio: "Minutouno", titulo: "La Justicia volvió a intimar al Gobierno para que cumpla con la Ley de Financiamiento universitario", url: "https://www.minutouno.com/la-justicia-volvio-intimar-al-gobierno-que-cumpla-la-ley-financiamiento-universitario-n6328549", fecha: "2026-09-30"}
-    - {medio: "Noticias NQN", titulo: "Financiamiento universitario: el Gobierno apelará el fallo que le dio cinco días", url: "https://www.noticiasnqn.com.ar/noticias/2026/09/25/354085-financiamiento-universitario-el-gobierno-apelara-el-fallo-que-le-dio-cinco-dias", fecha: "2026-09-25"}
+    - {medio: "Infobae", titulo: "La Justicia extendió por cinco días la intimación al Gobierno para cumplir con la Ley de Financiamiento Universitario", url: "https://www.infobae.com/judiciales/2026/09/30/la-justicia-extendio-por-cinco-dias-la-intimacion-al-gobierno-para-cumplir-con-la-ley-de-financiamiento-universitario/", fecha: "2026-09-30"}
+    - {medio: "Infobae", titulo: "Conflicto universitario: la Justicia intimó al Gobierno para que cumpla con la Ley de Financiamiento", url: "https://www.infobae.com/politica/2026/09/22/conflicto-universitario-la-justicia-intimo-al-gobierno-para-que-cumpla-con-la-ley-de-financiamiento/", fecha: "2026-09-22"}
+    - {medio: "Tiempo Argentino", titulo: "La Justicia intimó al gobierno a cumplir con la Ley de Financiamiento Universitario", url: "https://www.tiempoar.com.ar/ta_article/la-justicia-intimo-al-gobierno-a-cumplir-con-la-ley-de-financiamiento-universitario", fecha: "2026-09-22"}
+    - {medio: "La Capital", titulo: "Financiamiento universitario: la Justicia le dio cinco días al gobierno nacional para cumplir la ley", url: "https://www.lacapital.com.ar/politica/financiamiento-universitario-la-justicia-le-dio-cinco-dias-al-gobierno-nacional-cumplir-la-ley-n10282537.html", fecha: "2026-09-22"}
+    - {medio: "Ámbito", titulo: "La Justicia volvió a intimar al Gobierno y le dio cinco días para que cumpla la ley de Financiamiento Universitario", url: "https://www.ambito.com/politica/la-justicia-volvio-intimar-al-gobierno-que-cumpla-la-ley-financiamiento-universitario-n6328398", fecha: "2026-09-30"}
+    - {medio: "Rosario3", titulo: "La Justicia volvió a intimar al Gobierno por el financiamiento universitario: le dio cinco días para cumplir", url: "https://www.rosario3.com/informaciongeneral/la-justicia-volvio-a-intimar-al-gobierno-por-el-financiamiento-universitario-le-dio-cinco-dias-para-cumplir-20260930-0064.html", fecha: "2026-09-30"}
 
 - id: ley-27795-fallo-fondo
   fecha: "2026-10-06"
   tipo: judicial
   ejes: [ley]
   titulo: "Sentencia de fondo: el juez declara inconstitucional la suspensión del Decreto 759/2025 y ordena aplicar la ley"
-  tipo_fuente: secundaria
-  documento: "Infobae, 6-oct-2026"
-  url: https://www.infobae.com/judiciales/2026/10/06/la-justicia-ordeno-al-gobierno-aplicar-la-ley-de-financiamiento-universitario-y-declaro-inconstitucional-el-decreto-que-la-frenaba/
+  tipo_fuente: primaria
+  documento: "Juzgado Contencioso Administrativo Federal N.º 11, exptes. 39475/2025 (CIN) y 39324/2025 (UBA, acumulado), sentencia del 6-oct-2026. Copia publicada por Class Actions Argentina (PDF con firma digital del Poder Judicial)"
+  url: https://classactionsargentina.com/wp-content/uploads/2026/10/2026-10-06-jncafed-10_cin-c.-en-sentencia_de_fondo.pdf
+  pagina: 49
   consultado: 2026-10-19
-  nota: "Según la cobertura, el juez consideró que la promulgación condicionada funcionó como un veto no previsto en la Constitución. El Gobierno sostiene que no dispuso la suspensión de la ley."
+  nota: "Falla: «ordenar al Poder Ejecutivo el cumplimiento inmediato de la Ley de financiamiento universitario con el dictado de las normas reglamentarias y ejecutorias necesarias a tal fin». Costas a la demandada. El Gobierno sostiene que no dispuso la suspensión de la ley."
   noticias:
     - {medio: "Infobae", titulo: "La Justicia ordenó al Gobierno aplicar la Ley de Financiamiento Universitario y declaró inconstitucional el decreto que la frenaba", url: "https://www.infobae.com/judiciales/2026/10/06/la-justicia-ordeno-al-gobierno-aplicar-la-ley-de-financiamiento-universitario-y-declaro-inconstitucional-el-decreto-que-la-frenaba/", fecha: "2026-10-06"}
     - {medio: "Microjuris", titulo: "#Fallos Se declara la inconstitucionalidad del decreto N° 759/2025 que suspendió la Ley N° 27.795 de Financiamiento de la Educación Universitaria y se ordena su cumplimiento inmediato", url: "https://aldiaargentina.microjuris.com/2026/10/08/fallos-se-declara-la-inconstitucionalidad-del-decreto-n-759-2025-que-suspendio-la-ley-n-27-795-de-financiamiento-de-la-educacion-universitaria-y-se-ordena-su-cumplimiento-inmediato/", fecha: "2026-10-08"}
+    - {medio: "Página/12", titulo: "La Justicia declaró la inconstitucionalidad del decreto que frenaba la Ley de Financiamiento Universitario", url: "https://www.pagina12.com.ar/2026/10/06/la-justicia-declaro-la-inconstitucionalidad-del-decreto-que-frenaba-la-ley-de-financiamiento-universitario/", fecha: "2026-10-06"}
+    - {medio: "La Nación", titulo: "Declaran inconstitucional el decreto con el que el Gobierno frenó la Ley de Financiamiento Universitario", url: "https://www.lanacion.com.ar/sociedad/fallo-de-primera-instancia-declaran-inconstitucional-el-decreto-con-el-que-el-gobierno-freno-el-nid06102026/", fecha: "2026-10-06"}
+    - {medio: "Perfil", titulo: "El Gobierno contraataca: apelará el fallo a favor de las universidades y le cierra la puerta a cualquier negociación", url: "https://www.perfil.com/noticias/politica/la-justicia-declaro-inconstitucional-el-freno-de-milei-a-la-ley-de-financiamiento-universitario-y-ordeno-aplicarla.phtml", fecha: "2026-10-06"}
 
 - id: ley-27795-apelacion
   fecha: "2026-10-09"
@@ -203,28 +284,51 @@
   nota: "Argumento del Gobierno (Ministerio de Capital Humano): la sentencia causa un «gravamen irreparable» y se basa en «una interpretación arbitraria y fragmentaria del régimen presupuestario aplicable»."
   noticias:
     - {medio: "iProfesional", titulo: "Financiamiento universitario: el Gobierno apeló el fallo, pero sigue vigente la cautelar", url: "https://www.iprofesional.com/legales/466299-fondos-universitarios-justicia-mantiene-salarios-becas-gobierno", fecha: "2026-10-09"}
-    - {medio: "Perfil", titulo: "El Gobierno contraataca: apelará el fallo a favor de las universidades y le cierra la puerta a cualquier negociación", url: "https://www.perfil.com/noticias/politica/la-justicia-declaro-inconstitucional-el-freno-de-milei-a-la-ley-de-financiamiento-universitario-y-ordeno-aplicarla.phtml"}
+    - {medio: "La Nación", titulo: "Conflicto con las universidades: La Justicia suspende el fallo que declara inconstitucional el decreto de Milei, pero no la obligación de pagar", url: "https://www.lanacion.com.ar/politica/la-justicia-suspende-el-fallo-que-declara-inconstitucional-el-decreto-de-milei-pero-no-la-obligacion-nid09102026/", fecha: "2026-10-09"}
+    - {medio: "Tiempo Argentino", titulo: "El gobierno apeló la orden judicial de aplicar la Ley de Financiamiento Universitario, pero debe cumplir la cautelar vigente", url: "https://www.tiempoar.com.ar/ta_article/el-gobierno-apelo-la-orden-judicial-de-aplicar-la-ley-de-financiamiento-universitario-pero-debe-cumplir-la-cautelar-vigente/", fecha: "2026-10-09"}
+    - {medio: "La Capital", titulo: "Financiamiento universitario: el juez aceptó la apelación del gobierno, pero sostuvo el cumplimiento de la ley", url: "https://www.lacapital.com.ar/politica/financiamiento-universitario-el-juez-acepto-la-apelacion-del-gobierno-pero-sostuvo-el-cumplimiento-la-ley-n10285865.html", fecha: "2026-10-09"}
 
 - id: ley-27795-multa
   fecha: "2026-10-14"
   tipo: judicial
   ejes: [ley]
-  titulo: "El juez fija una multa de $ 100.000 diarios al jefe de Gabinete por incumplir la cautelar; el Gobierno anuncia que apelará"
+  titulo: "El juez fija una multa de $ 100.000 diarios al titular de la Jefatura de Gabinete por incumplir la cautelar; el Gobierno anuncia que apelará"
   tipo_fuente: secundaria
   documento: "La Política Online, 14-oct-2026"
   url: https://www.lapoliticaonline.com/politica/la-justicia-le-impuso-a-santilli-una-multa-de-100-mil-pesos-diarios-por-el-ajuste-a-las-universidades/
   consultado: 2026-10-19
-  nota: "El Gobierno sostiene que la resolución no impone una sanción personal al jefe de Gabinete."
+  nota: "El Gobierno sostiene que la resolución no impone una sanción personal al jefe de Gabinete. Ese mismo día el juez rechazó el pedido del Gobierno de dejar sin efecto la ejecución de la cautelar. Texto de la resolución: pendiente."
   noticias:
     - {medio: "La Política Online", titulo: "La Justicia le impuso a Santilli una multa de 100 mil pesos diarios por el ajuste a las universidades", url: "https://www.lapoliticaonline.com/politica/la-justicia-le-impuso-a-santilli-una-multa-de-100-mil-pesos-diarios-por-el-ajuste-a-las-universidades/", fecha: "2026-10-14"}
-    - {medio: "Perfil", titulo: "Quién es Martín Cormick, el juez que multó al Gobierno por incumplir la Ley de Financiamiento Universitario y la reforma laboral", url: "https://www.perfil.com/noticias/actualidad/quien-es-martin-cormick-el-juez-que-multo-al-gobierno-por-incumplir-la-ley-de-financiamiento-universitario.phtml"}
+    - {medio: "Perfil", titulo: "Quién es Martín Cormick, el juez que multó al Gobierno por incumplir la Ley de Financiamiento Universitario y la reforma laboral", url: "https://www.perfil.com/noticias/actualidad/quien-es-martin-cormick-el-juez-que-multo-al-gobierno-por-incumplir-la-ley-de-financiamiento-universitario.phtml", fecha: "2026-10-15"}
+    - {medio: "Infobae", titulo: "Financiamiento universitario: la Justicia impuso una multa diaria al Gobierno por incumplir una medida cautelar", url: "https://www.infobae.com/judiciales/2026/10/14/financiamiento-universitario-la-justicia-impuso-una-multa-diaria-al-gobierno-por-incumplir-una-medida-cautelar/", fecha: "2026-10-14"}
+    - {medio: "Página/12", titulo: "El Gobierno deberá pagar una multa por no cumplir la Ley de Financiamiento Universitario", url: "https://www.pagina12.com.ar/2026/10/14/el-gobierno-debera-pagar-una-multa-por-no-cumplir-la-ley-de-financiamiento-universitario/", fecha: "2026-10-14"}
+    - {medio: "La Nación", titulo: "A un día de la marcha universitaria, la Justicia multó al Gobierno y Santilli deberá pagar $100.000 por día", url: "https://www.lanacion.com.ar/sociedad/a-un-dia-de-la-marcha-universitaria-la-justicia-multo-al-gobierno-y-santilli-debera-pagar-100000-por-nid14102026/", fecha: "2026-10-14"}
+
+- id: ley-27795-queja-camara
+  fecha: "2026-10-15"
+  tipo: judicial
+  ejes: [ley]
+  titulo: "La Sala III admite la queja del Gobierno y concede su apelación contra la intimación del 22 de septiembre"
+  tipo_fuente: primaria
+  documento: "Cámara Contencioso Administrativo Federal, Sala III, CAF 39475/2025/2/1/RH3, resolución del 15-oct-2026 (Fernández, López Castiñeira, Morán). Copia publicada por Class Actions Argentina (PDF con firma digital del Poder Judicial)"
+  url: https://classactionsargentina.com/wp-content/uploads/2026/10/2026-10-15-cnacfed-sala-iii_cin-c.-pen-admite-queja-en-ejecucion.pdf
+  pagina: 7
+  consultado: 2026-10-19
+  nota: "Resuelve «hacer lugar al presente recurso de queja por apelación denegada» y conceder «en relación (conf. art. 243 del CPCCN)» la apelación contra la providencia del 22-sep-2026, sin adelantar opinión «acerca del cabal cumplimiento o no de la medida cautelar». No dice qué efecto tiene la apelación sobre las multas: la prensa informa que quedaron suspendidas provisoriamente; otras lecturas sostienen que siguen vigentes."
+  noticias:
+    - {medio: "Infobae", titulo: "Financiamiento Universitario: la Justicia suspendió las multas al Gobierno por la actualización de los salarios docentes", url: "https://www.infobae.com/politica/2026/10/15/financiamiento-universitario-la-justicia-suspendio-provisoriamente-la-cautelar-que-ordeno-actualizar-salarios-docentes-y-no-docentes/", fecha: "2026-10-15"}
+    - {medio: "La Nación", titulo: "La Justicia suspendió las multas al Gobierno por no aplicar la ley de Financiamiento Universitario", url: "https://www.lanacion.com.ar/politica/la-justicia-suspendio-las-multas-al-gobierno-por-la-no-aplicacion-de-la-ley-de-financiamiento-nid15102026/", fecha: "2026-10-15"}
+    - {medio: "El Destape", titulo: "Financiamiento Universitario: a menos de 24 horas de la sanción, la Justicia suspendió las multas al Gobierno", url: "https://www.eldestapeweb.com/politica/financiamiento-universitario-menos-24-horas-sancion-justicia-suspendio-multas-gobierno-20261015171127", fecha: "2026-10-15"}
+    - {medio: "MDZ", titulo: "La Justicia frenó provisoriamente las multas al Gobierno por el financiamiento universitario", url: "https://www.mdzol.com/politica/2026/10/15/la-justicia-freno-provisoriamente-las-multas-al-gobierno-por-el-financiamiento-universitario-1988524.html", fecha: "2026-10-15"}
 
 - id: estado-ley-27795-octubre-2026
   fecha: "2026-10-19"
   tipo: estado
   ejes: [ley]
-  titulo: "Hoy: la cautelar sobre salarios y becas está firme; la Cámara debe resolver la apelación de la sentencia de fondo"
+  titulo: "Hoy: la cautelar sobre salarios y becas está firme; la Cámara tiene pendientes la apelación de la sentencia de fondo y la de la intimación, y no aclaró si las multas quedan suspendidas"
   tipo_fuente: secundaria
   documento: "Elaboración propia a partir de los eventos anteriores"
-  url: https://www.iprofesional.com/legales/466299-fondos-universitarios-justicia-mantiene-salarios-becas-gobierno
+  url: https://classactionsargentina.com/wp-content/uploads/2026/10/2026-10-15-cnacfed-sala-iii_cin-c.-pen-admite-queja-en-ejecucion.pdf
   consultado: 2026-10-19
+  nota: "No se encontraron resoluciones posteriores al 15-oct-2026 al día de la consulta."
