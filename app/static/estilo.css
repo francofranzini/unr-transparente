@@ -200,15 +200,20 @@ text.rotulo { fill: var(--tinta); font-size: 12px; font-weight: 700; text-transf
 .actor-congreso { --c: var(--actor-congreso); } .actor-ejecutivo { --c: var(--actor-ejecutivo); }
 .actor-justicia { --c: var(--actor-justicia); } .actor-acuerdo { --c: var(--actor-acuerdo); } .actor-otro { --c: var(--tenue); }
 
-/* Cronología vertical (Ley 27.795), de lo más reciente a lo más antiguo */
-.linea-v { list-style: none; margin: 0; padding: 0 0 0 30px; position: relative; max-width: 52rem;
+/* Cronología vertical (Ley 27.795), de lo más antiguo a lo más reciente, con scroll propio (ADR 0030) */
+.cronologia-guia { margin: 0 0 10px; font-size: .85rem; color: var(--tenue); }
+.cronologia-scroll { max-width: 52rem; max-height: min(60vh, 36rem); overflow: hidden auto; padding: 0 20px 0 16px;
+                     border-block: 1px solid var(--linea); scrollbar-color: var(--tenue) transparent; scrollbar-gutter: stable; }
+.cronologia-scroll:focus-visible { outline: 2px solid var(--tinta); outline-offset: 4px; }
+.linea-v { list-style: none; margin: 0; padding: 20px 0 28px 30px; position: relative;
            background: linear-gradient(var(--linea), var(--linea)) 7px 0 / 1.5px 100% no-repeat; }
-.anio { margin: 8px 0 12px -30px; font-weight: 900; font-size: 1.1rem; background: var(--fondo); }
+/* El año queda arriba del recuadro mientras se recorren sus hechos. */
+.anio { position: sticky; top: 0; z-index: 1; margin: 0 0 12px -30px; padding: 8px 0 4px; font-weight: 900; font-size: 1.1rem;
+        background: var(--fondo); }
 .hito { position: relative; padding: 0 0 24px; }
 .hito-marca { position: absolute; left: -30px; top: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--c);
               border: 3px solid var(--fondo); box-shadow: 0 0 0 1.5px var(--c); transition: transform .2s; }
 .hito:hover .hito-marca { transform: scale(1.3); }
-.antecedente .hito-marca { background: var(--fondo); }
 .hito time { font-weight: 900; font-size: .92rem; margin-right: 10px; }
 .hito-actor { font-size: .72rem; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; color: var(--tenue); }
 .hito-detalle > summary { list-style: none; cursor: pointer; }
@@ -229,9 +234,41 @@ text.rotulo { fill: var(--tinta); font-size: 12px; font-weight: 700; text-transf
 .hito-medios a { text-decoration: none; color: var(--tenue); } .hito-medios a:hover { color: var(--tinta); text-decoration: underline; }
 .hito-medios strong { color: var(--tinta); }
 .hito-ficha { font-size: .88rem; font-weight: 700; color: var(--acento); }
-.ver-mas { font: inherit; font-weight: 900; font-size: .92rem; color: var(--tinta); background: transparent; cursor: pointer;
-           border: 1px solid var(--tinta); border-radius: 999px; padding: 8px 18px; margin: 4px 0 0 30px; transition: background .2s, color .2s; }
-.ver-mas:hover { background: var(--tinta); color: var(--fondo); }
+
+/* Recorrido hecho por hecho, con sellos (ADR 0031). Los controles solo aparecen con JavaScript. */
+.cronologia-titulo { margin: 0 0 2px; font-size: 1.35rem; font-weight: 900; }
+.recorrido-modos { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: -6px 0 14px; }
+.recorrido-pista { font-size: .85rem; color: var(--tenue); }
+.recorrido-boton { font: inherit; font-weight: 900; font-size: .9rem; color: var(--tinta); background: transparent; cursor: pointer;
+                   border: 1px solid var(--tinta); border-radius: 999px; padding: 7px 16px; transition: background .2s, color .2s, opacity .2s; }
+.recorrido-boton:hover:not(:disabled), .recorrido-boton[aria-pressed="true"] { background: var(--tinta); color: var(--fondo); }
+.recorrido-boton:disabled { opacity: .35; cursor: default; }
+.recorrido-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 52rem; margin-top: 14px; }
+.recorrido-modos[hidden], .recorrido-nav[hidden], .recorrido-pista[hidden] { display: none; }
+.recorrido-contador { font-weight: 900; font-size: .92rem; font-variant-numeric: tabular-nums; text-align: center; }
+
+.sello { display: none; }
+.cronologia-scroll.modo-carrusel { max-height: none; overflow: visible; min-height: 17rem; }
+.modo-carrusel .linea-v { background: none; padding-block: 28px; }
+.modo-carrusel .hito { transition-delay: 0s; }
+.modo-carrusel .hito-titulo { font-size: 1.3rem; }
+.modo-carrusel .sello { display: flex; flex-direction: column; align-items: center; gap: 2px; width: fit-content; max-width: 100%;
+                        margin: 30px 0 6px 6px; padding: 9px 22px 8px; color: var(--c); text-align: center; text-transform: uppercase;
+                        border: 3px solid var(--c); border-radius: 8px; box-shadow: inset 0 0 0 3px var(--fondo), inset 0 0 0 5px var(--c);
+                        transform: rotate(-4deg); opacity: .92; }
+.sello b { font-size: clamp(1.2rem, 5.5vw, 2.1rem); font-weight: 900; letter-spacing: .08em; line-height: 1.05; }
+.sello small { font-size: .68rem; font-weight: 900; letter-spacing: .1em; }
+@media (prefers-reduced-motion: no-preference) {
+  .sello.estampar { animation: estampar .55s cubic-bezier(.2, .9, .3, 1.2) both; }
+  .modo-carrusel.golpe { animation: golpe .3s .42s ease-out; }
+}
+@keyframes estampar {
+  0% { opacity: 0; transform: scale(2.6) rotate(-12deg); }
+  55% { opacity: 1; transform: scale(.94) rotate(-3deg); }
+  75% { transform: scale(1.03) rotate(-4.5deg); }
+  100% { opacity: .92; transform: scale(1) rotate(-4deg); }
+}
+@keyframes golpe { 0%, 100% { translate: 0; } 25% { translate: 0 3px; } 50% { translate: -2px -1px; } 75% { translate: 1px 1px; } }
 
 /* Entrada escalonada de cada hecho */
 @media (prefers-reduced-motion: no-preference) {
