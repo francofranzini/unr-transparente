@@ -4,8 +4,8 @@ Tres frentes en paralelo, sobre la base fijada en [`docs/ESTANDAR.md`](../ESTAND
 
 | Persona | Frente | Sección del sitio | Archivo de tareas |
 |---|---|---|---|
-| **Nono** | Cronología de la Ley 27.795 | 02 — `#ley` | [`nono-cronologia-ley.md`](nono-cronologia-ley.md) |
-| **Fran** | Presupuesto y transferencias | 03 — `#transferencias` | [`fran-presupuesto.md`](fran-presupuesto.md) |
+| **Nono** | Cronología de la Ley 27.795 | 03 — `#ley` | [`nono-cronologia-ley.md`](nono-cronologia-ley.md) |
+| **Fran** | Presupuesto y transferencias | 02 — `#transferencias` | [`fran-presupuesto.md`](fran-presupuesto.md) |
 | **Tero** | Auditorías y control | 04 — `#control` | [`tero-auditorias.md`](tero-auditorias.md) |
 
 Salario (01) lo toma Fran (rama `fran/salario`, billete de poder de compra, ADR 0023). Graduación quedó fuera del sitio (ADR 0024); sus pendientes, al final de este archivo.
