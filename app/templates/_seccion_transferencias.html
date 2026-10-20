@@ -48,7 +48,7 @@
     {% set k_tr = prefijo ~ ("transferido" if ley else "tr-" ~ a) %}
     {% set recibidos = (FAJOS * ej.cifra(k_tr).valor / ej.cifra(k_ref).valor)|round|int %}
     {% set color = "--serie-2" if ley else "--tenue" %}
-    {% set r_ref = mayus ~ " correspondían" if ley else "Referencia (la ley no lo fija)" %}
+    {% set r_ref = mayus ~ " correspondían" if ley else "Referencia" %}
     {% set r_rel = r_recibido ~ ", frente a lo que " ~ minus ~ " correspondía" if ley else r_recibido ~ ", frente a la referencia" %}
     <div data-panel="{{ prefijo }}{{ a }}" data-cifras{% if not (prefijo == "arts34-" and a == "2025") %} hidden{% endif %}>
       <div class="datos" style="align-items: flex-end">
@@ -135,7 +135,7 @@
       <p class="leyenda" data-anio="2025"><span class="clave exigido"></span>Lo que la ley (publicada en octubre de 2025) manda reconocer por cada mes de 2025
         <span class="clave pagado"></span>Se transfirió (devengado)</p>
       {% if anios|length > 1 %}
-      <p class="leyenda" data-anio="{{ actual }}" hidden><span class="clave discontinuo" style="border-color: var(--tenue)"></span>Referencia: la regla del art. 4 extendida a {{ actual }} (la ley no la pide)
+      <p class="leyenda" data-anio="{{ actual }}" hidden><span class="clave discontinuo" style="border-color: var(--tenue)"></span>Referencia
         <span class="clave pagado"></span>Se transfirió (devengado)</p>
       {% endif %}
     </figure>
@@ -213,7 +213,7 @@
         const r = svg.getBoundingClientRect(), xv = (ev.clientX - r.left) * vb.width / r.width;
         const p = puntos.reduce((a, b) => Math.abs(b.x - xv) < Math.abs(a.x - xv) ? b : a);
         cruz.setAttribute("x1", p.x); cruz.setAttribute("x2", p.x); cruz.setAttribute("visibility", "visible");
-        tip.innerHTML = `<strong>Enero a ${p.mes}</strong><br>${ley ? "La ley manda reconocer" : "Referencia (la ley no la fija)"}: ${m(p.exigido)}<br>Se transfirió: ${m(p.transferido)}`;
+        tip.innerHTML = `<strong>Enero a ${p.mes}</strong><br>${ley ? "La ley manda reconocer" : "Referencia"}: ${m(p.exigido)}<br>Se transfirió: ${m(p.transferido)}`;
         tip.hidden = false;
         tip.style.left = Math.max(0, Math.min(p.x * r.width / vb.width + 12, r.width - tip.offsetWidth)) + "px";
       });
