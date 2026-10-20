@@ -9,7 +9,7 @@
 
 ## 1. Qué es
 
-> **Un monitor público del financiamiento universitario, medido contra la Ley 27.795: qué dice la ley, qué transfiere la Nación y qué hacen las universidades con eso, con la fuente de cada número y actualizado a medida que avanza el conflicto** (ADR 0024).
+> **Un monitor del financiamiento universitario frente a la Ley 27.795, con la fuente de cada número** (ADR 0024).
 
 Alcance: **el sistema universitario nacional**; la Universidad Nacional de Rosario (UNR) queda como caso de detalle (ADR 0021). Se basa en **documentos oficiales** y está pensado para cualquier ciudadano, no solo para estudiantes.
 

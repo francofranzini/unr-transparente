@@ -144,3 +144,16 @@ def test_dias_de_sueldo_a_mano():
     puntos = {p.periodo: p for p in lentes.serie_vigente(grillas, "2024-01")}
     assert lentes.dias_de_sueldo(puntos, ipc, "2024-01").valor == Decimal("22.5")
     assert lentes.dias_de_sueldo(puntos, ipc, "2023-11").valor == Decimal("30")
+
+
+def test_referencia_art4_en_2025_es_lo_que_manda_la_ley_y_sigue_en_2026():
+    partida = lentes.partida_arts_3_4([_devengado("2024-09", "100")], "nivel_sep_2024")
+    ipc = _ipc_arts_3_4()
+    assert [r.valor for r in lentes.referencia_art4(partida, ipc, "2025")] == \
+        [r.valor for r in lentes.meses_art4(partida, ipc)]
+    # 2026: IPC dic-2025 = 240 y feb-2026 = 255 (sin abr-2026). Factor = 1,5 × IPC ÷ 150.
+    ipc["2025-12"] = _dato("2025-12", "240", "ipc")
+    ipc["2026-02"] = _dato("2026-02", "255", "ipc")
+    meses = lentes.referencia_art4(partida, ipc, "2026")
+    # Ene-feb: 100 × 1,5 × 240/150 = 240; mar-abr: 100 × 1,5 × 255/150 = 255; después no hay IPC.
+    assert [r.valor for r in meses] == [Decimal("240"), Decimal("240"), Decimal("255"), Decimal("255")]

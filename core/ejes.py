@@ -69,7 +69,7 @@ def _cociente(clave: str, etiqueta: str, num: Cifra, den: Cifra) -> Cifra:
 
 
 def eje_ejecucion(repo: Repositorio, anio: str = "2026") -> Eje:
-    eje = Eje("ejecucion", "Transferencias", "¿Recibieron las universidades lo que les correspondía por ley en 2025?")
+    eje = Eje("ejecucion", "Transferencias", "¿Reciben las universidades lo que les corresponde por ley?")
 
     def por_universidad(indicador: str) -> list[Dato]:
         return [d for d in repo.buscar(indicador=indicador, periodo=anio, actividad="")
@@ -193,6 +193,42 @@ def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str
                       "transferido": float(acum_transferido) / 1e6})
     eje.detalle.setdefault("acumulado", {})[prefijo] = serie
 
+    # Año en curso: la ley no fija cuánto corresponde. Referencia en gris: la regla del art. 4 extendida (ADR 0024).
+    referencia = lentes.referencia_art4(partida, ipc, anio)
+    del_anio = [d for d in devengado if d.periodo.startswith(f"{anio}-")
+                and d.dimensiones.get("actividad_id") in lentes.ACTIVIDADES_ARTS_3_4]
+    completos = sorted({d.periodo for d in del_anio if "Mes en curso" not in d.nota})
+    ventana = lentes._meses(f"{anio}-01", f"{anio}-12")[:min(len(referencia), len(completos))]
+    if anio != "2025" and ventana:
+        hasta = mes_largo(ventana[-1])
+        acum_ref = acum_tr = Decimal(0)
+        f_ref: tuple[Dato, ...] = ()
+        f_tr: tuple[Dato, ...] = ()
+        serie_anio = []
+        for mes, ref_mes in zip(ventana, referencia):
+            datos_mes = tuple(d for d in del_anio if d.periodo == mes)
+            acum_ref += ref_mes.valor
+            acum_tr += sum(d.valor for d in datos_mes)
+            f_ref = tuple({d.id: d for d in f_ref + ref_mes.fuentes}.values())
+            f_tr += datos_mes
+            etiqueta = f"enero a {MESES_LARGOS[int(mes[5:]) - 1]} de {anio}" if mes[5:] != "01" else f"enero de {anio}"
+            eje.cifras.append(Cifra(f"{prefijo}acum-ref-{mes}", f"{quien}: referencia, {etiqueta}", acum_ref,
+                                    "ARS corrientes", mes, f_ref, calculo=CALC_REFERENCIA))
+            eje.cifras.append(Cifra(f"{prefijo}acum-tr-{mes}", f"{quien}: transferido, {etiqueta}", acum_tr,
+                                    "ARS corrientes", mes, f_tr, calculo="Devengado acumulado, actividades 14, 15, 16 y 25"))
+            serie_anio.append({"mes": mes_legible(mes), "exigido": float(acum_ref) / 1e6,
+                               "transferido": float(acum_tr) / 1e6})
+        eje.cifras.append(Cifra(f"{prefijo}ref-{anio}", f"{quien}: referencia, enero a {hasta}", acum_ref,
+                                "ARS corrientes", anio, f_ref, calculo=CALC_REFERENCIA))
+        eje.cifras.append(Cifra(f"{prefijo}tr-{anio}", f"{quien}: transferido, enero a {hasta}", acum_tr,
+                                "ARS corrientes", anio, f_tr, calculo="Devengado de los meses completos"))
+        eje.cifras.append(Cifra(f"{prefijo}relacion-{anio}",
+                                f"{quien}: lo transferido frente a la referencia, enero a {hasta}",
+                                (acum_tr / acum_ref - 1) * 100, "porcentaje", anio, f_ref + f_tr,
+                                calculo="(Transferido ÷ referencia − 1) × 100. La referencia no es un monto que fije la ley."))
+        eje.detalle.setdefault("acumulado_actual", {})[prefijo] = serie_anio
+        eje.detalle["ventana_actual"] = f"enero a {hasta}"
+
     if not detalle:
         return
 
@@ -246,6 +282,11 @@ def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str
     if sin_asignar:
         eje.cifras.append(Cifra(f"{prefijo}sin-asignar", "Transferido en 2025 sin universidad asignada", sum(d.valor for d in sin_asignar), "ARS corrientes", "2025",
                                 tuple(sin_asignar), calculo="Devengado de «Universidades sin Discriminar», actividades 14, 15, 16 y 25"))
+
+
+CALC_REFERENCIA = ("La regla del art. 4 extendida a este año: partida de septiembre de 2024 × inflación de mayo a "
+                   "diciembre de 2024 × inflación acumulada al inicio de cada bimestre. La ley no lo pide: es una "
+                   "referencia (ADR 0024).")
 
 
 MESES_ABREV = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]

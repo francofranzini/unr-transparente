@@ -224,3 +224,20 @@ def dias_de_sueldo(puntos: dict[str, Punto], ipc: dict[str, Dato], mes: str, bas
     valor = DIAS_DEL_MES * (1 + variacion.valor / 100)
     return Resultado(valor, variacion.fuentes, variacion.supuestos + [
         f"Días de sueldo = {DIAS_DEL_MES} × salario real del mes ÷ salario real de la base."])
+
+
+def referencia_art4(partida: Resultado, ipc: dict[str, Dato], anio: str) -> list[Resultado]:
+    """La regla del art. 4 (actualización bimestral por IPC) aplicada a cualquier año, mes a mes (ADR 0024).
+
+    Para 2025 es lo que la ley manda. Para otros años la ley no lo pide: es solo una referencia. Cada bimestre usa
+    el IPC del último mes del bimestre anterior (enero-febrero, el de diciembre del año anterior). Devuelve los
+    meses cuyo IPC de referencia ya está publicado."""
+    f3 = factor_art3(ipc)
+    meses = []
+    for b in range(6):
+        referencia = f"{int(anio) - 1}-12" if b == 0 else f"{anio}-{2 * b:02d}"
+        if referencia not in ipc:
+            break
+        valor = partida.valor * f3.valor * ipc[referencia].valor / ipc[MES_FINAL_ART3].valor
+        meses += [Resultado(valor, partida.fuentes + f3.fuentes + (ipc[referencia],))] * 2
+    return meses
