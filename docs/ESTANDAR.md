@@ -1,4 +1,4 @@
-# Estándar de UNR Transparente
+# Estándar de Universidad Transparente
 
 Este documento fija cómo se ve y cómo funciona el sitio. **Es la base de cualquier modificación.** A partir de acá el trabajo es sobre los **contenidos** (datos, eventos, textos), no sobre la presentación.
 
@@ -25,7 +25,8 @@ Este documento fija cómo se ve y cómo funciona el sitio. **Es la base de cualq
 
 ## 2. Identidad visual (congelada)
 
-- **Nombre:** «UNR Transparente», siempre con «sitio independiente» visible. No se usa el logo ni el escudo de la UNR.
+- **Nombre:** «Universidad Transparente» (ADR 0021), siempre con «sitio independiente» visible. No se usa el logo ni el escudo de ninguna universidad.
+- **Alcance:** el sistema universitario nacional. La UNR aparece solo como caso de detalle donde un dato lo requiere, rotulada como tal.
 - **Paleta de papel y tinta** (variables en `estilo.css`): fondo crema `#f2efe4` con cuadrícula tenue, papel `#ebe7d8`, tinta azul marino `#141b34`. En modo oscuro se invierte (fondo `#141b34`, tinta `#f2efe4`). No se agregan colores.
 - **Rojo** (`--rojo`): reservado para la brecha del art. 5 (lo que le falta al sueldo). No se usa para nada más.
 - **Colores de actores** (Congreso azul, Poder Ejecutivo naranja, Justicia verde, Acuerdo amarillo) y **series del gráfico** (pagado azul, exigido naranja): validados para daltonismo; no se cambian.

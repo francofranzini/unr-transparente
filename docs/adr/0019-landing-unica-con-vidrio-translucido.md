@@ -25,7 +25,7 @@
 
 ## Actualización (2026-10-19): nombre, landing continua y cronología filtrable
 
-- **Nombre del sitio: «UNR Transparente».** Siempre acompañado de «sitio independiente» en la barra y en el pie, para que no se confunda con un sitio oficial de la universidad.
+- **Nombre del sitio: «UNR Transparente».** _(Reemplazado por «Universidad Transparente» en el ADR 0021.)_ Siempre acompañado de «sitio independiente» en la barra y en el pie, para que no se confunda con un sitio oficial de la universidad.
 - **Sin tarjetas.** El contenido es parte de la página, como en la referencia: secciones numeradas («01 — Salario docente») separadas por una línea fina; los datos van en una fila separada por líneas verticales, sin recuadros. Lo secundario (artículo de Salario, detalle de transferencias) queda detrás de un «ver más».
 - **La motivación va justo después de la portada,** antes de los datos.
 - **Cronología de la ley:**

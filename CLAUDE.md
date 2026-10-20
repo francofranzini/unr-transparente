@@ -9,7 +9,7 @@
 
 ## 1. Qué es
 
-Un portal que muestra el estado financiero y de funcionamiento de una universidad pública argentina (piloto: **Universidad Nacional de Rosario, UNR**) a partir de **documentos oficiales**, para cualquier ciudadano, no solo estudiantes.
+Un portal que muestra el estado financiero y de funcionamiento de una universidad pública argentina (alcance: **el sistema universitario nacional**; la Universidad Nacional de Rosario, UNR, queda como caso de detalle en áreas específicas, ADR 0021) a partir de **documentos oficiales**, para cualquier ciudadano, no solo estudiantes.
 
 **Tesis del producto:** el ruido sobre el financiamiento universitario no viene de datos distintos, sino de **elecciones metodológicas ocultas**: qué inflación se usa, contra qué año se compara, si se mide lo asignado o lo ejecutado, y si la cifra es de "educación", "educación superior" o "universidades". El portal **no elige una lente: las hace explícitas y deja cambiarlas**.
 
@@ -37,7 +37,7 @@ Las fuentes de estas afirmaciones están en la sección 9.
 
 **Forma de trabajo (ADR 0017):** los ejes son fijos y se actualizan de a uno. El foco es la disputa Universidades–Nación; en qué gasta internamente la UNR queda fuera por ahora. Cada página de eje termina con un artículo «De dónde sale cada dato».
 
-**Navegación (ADR 0019):** una sola página en `/` («UNR Transparente») con secciones numeradas sin tarjetas; `/salario`, `/ley`, etc. redirigen a `/#eje`. Estética de vidrio translúcido sobre auras con los tonos de la UNR.
+**Navegación (ADR 0019):** una sola página en `/` («Universidad Transparente», ADR 0021) con secciones numeradas sin tarjetas; `/salario`, `/ley`, etc. redirigen a `/#eje`. Estética de vidrio translúcido sobre auras con los tonos de la UNR.
 
 **Eje central (ADR 0015):** el conflicto Universidades–Nación, medido contra lo que exige la Ley 27.795. La portada muestra la brecha del art. 5 para el cargo testigo y el estado de la ley, con la posición del Poder Ejecutivo.
 
@@ -266,4 +266,5 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 - [ ] Texto de la Ley 27.795 y de los Decs. 647/2025 y 759/2025 desde el Boletín Oficial, y textos de las resoluciones judiciales (fuente primaria; ADR 0018).
 - [x] Cronología de la ley con cobertura de prensa (ADR 0018). Para actualizarla: agregar el Evento en `data/eventos/ley.yaml` con su ficha y sus `noticias` (títulos tal como se publicaron).
 - [ ] Permiso y crédito para la API de la FCEIA.
-- [x] Nombre del portal: «UNR Transparente», siempre con «sitio independiente» (ADR 0019).
+- [x] Nombre del portal: «Universidad Transparente», siempre con «sitio independiente» (ADR 0019, renombrado en el ADR 0021).
+- [ ] Reorientar el contenido de cada sección al sistema universitario nacional; la UNR queda como caso de detalle (ADR 0021).
