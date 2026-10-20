@@ -33,21 +33,20 @@
   {% set mas_alta = (ej.cifra("unr-arts34-exigido").valor / 1000000000)|round|int %}
   <div class="datos revelar" style="align-items: flex-end">
     <div class="dato dato-grande"><small>Recibió, frente a lo que le correspondía</small><span class="rojo">{{ num(ej, "unr-arts34-relacion", true) }}</span></div>
-    <div class="dato">{{ pila("unr-arts34-exigido", "--serie-2", mas_alta) }}<small>Le correspondían</small>{{ num(ej, "unr-arts34-exigido", true) }}</div>
-    <div class="dato">{{ pila("unr-arts34-transferido", "--serie-1", mas_alta) }}<small>Recibió</small>{{ num(ej, "unr-arts34-transferido", true) }}</div>
+    <div class="dato"><small>Le correspondían</small>{{ pila("unr-arts34-exigido", "--serie-2", mas_alta) }}{{ num(ej, "unr-arts34-exigido", true) }}</div>
+    <div class="dato"><small>Recibió</small>{{ pila("unr-arts34-transferido", "--serie-1", mas_alta) }}{{ num(ej, "unr-arts34-transferido", true) }}</div>
     <div class="dato"><small>Todo el sistema</small><span class="rojo">{{ num(ej, "arts34-relacion", true) }}</span></div>
     {# En celular, las dos pilas lado a lado para que se comparen #}
     <div class="solo-angosto" style="flex-basis: 100%">
       <div style="display: flex; gap: 24px; align-items: flex-end">
-        <div>{{ pila("unr-arts34-exigido", "--serie-2", mas_alta, "") }}<small>Le correspondían</small></div>
-        <div>{{ pila("unr-arts34-transferido", "--serie-1", mas_alta, "") }}<small>Recibió</small></div>
+        <div><small>Le correspondían</small>{{ pila("unr-arts34-exigido", "--serie-2", mas_alta, "") }}</div>
+        <div><small>Recibió</small>{{ pila("unr-arts34-transferido", "--serie-1", mas_alta, "") }}</div>
       </div>
     </div>
   </div>
-  <p class="aviso">Cada fajo representa $ 1.000 millones (redondeado).</p>
   <script>
   (() => {
-    const fila = document.currentScript.previousElementSibling.previousElementSibling;
+    const fila = document.currentScript.previousElementSibling;
     if (matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
     const pilas = [...fila.querySelectorAll("[data-pila]")];
     pilas.forEach((p) => p.querySelectorAll("[data-fajo]").forEach((f) => { f.style.opacity = 0; }));
