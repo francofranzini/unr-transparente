@@ -44,4 +44,4 @@ Las fichas de las cifras que aplican la ley no citaban la ley: mostraban los dat
 - Transferencias 2025 (lo que correspondía, brechas, bimestres, acumulados): arts. 3 y 4. Inflación de mayo a diciembre de 2024: art. 3.
 - Referencias de años que la ley no regula (2026): «art. 4, extendido a otro año: la ley no lo pide».
 - Salario: brecha y «exige la ley», art. 5 (incluye la cláusula de actualización mensual no inferior a la inflación, que es la que vale para 2026). Días sin cubrir: art. 5 solo desde noviembre de 2025.
-- Para 2026, Transferencias muestra dos lecturas, porque la ley no dice qué pasa después de 2025: seguir actualizando (−34,7 % todas; −52,0 % UNR) o el monto de diciembre de 2025 como piso sin ajuste (−24,2 %; −44,3 %).
+- Para 2026, Transferencias muestra dos lecturas, porque la ley no dice qué pasa después de 2025: seguir actualizando (−34,7 % todas; −52,0 % UNR) o el monto de diciembre de 2025 como piso sin actualizar (−24,2 %; −44,3 %).

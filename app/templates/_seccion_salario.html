@@ -152,7 +152,7 @@
     {% set xpub = (f.izq + uw * ns0.pub / (n - 1))|round(1) %}
     <div class="grafico-lienzo solo-{{ formato }}" data-puntos='{{ ns.puntos|tojson }}'>
       <svg viewBox="0 0 {{ f.w }} {{ f.h }}" role="img"
-           aria-label="Básico pagado y sueldo de noviembre de 2023 ajustado por inflación, por mes. Desde noviembre de 2025 ese ajuste es lo que exige el art. 5.">
+           aria-label="Básico pagado y sueldo de noviembre de 2023 ajustado por inflación, por mes. Desde noviembre de 2025 esa actualización es lo que exige el art. 5.">
         {% for k in range(0, (tope // paso)|int + 1) %}
           {% set yv = (f.sup + uh * (1 - k * paso / tope))|round(1) %}
           <line class="grilla" x1="{{ f.izq }}" x2="{{ xf }}" y1="{{ yv }}" y2="{{ yv }}"/>

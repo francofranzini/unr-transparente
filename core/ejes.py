@@ -274,13 +274,13 @@ def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str
                                 calculo="(Transferido ÷ referencia − 1) × 100. La referencia no es un monto que fije la ley."))
         eje.detalle.setdefault("acumulado_actual", {})[prefijo] = serie_anio
         eje.detalle["ventana_actual"] = f"enero a {hasta}"
-        # Otra lectura: el monto que la ley fija para fin de 2025 como piso, sin ajuste posterior.
+        # Otra lectura: el monto que la ley fija para fin de 2025 como piso, sin actualizar después.
         ultimo_bim = lentes.bimestres_art4(partida, ipc)[-1]
         piso = ultimo_bim.valor / 2 * len(ventana)
         eje.cifras.append(Cifra(f"{prefijo}piso-{anio}", f"{quien}: piso de diciembre de 2025, enero a {hasta}", piso,
                                 "ARS corrientes", anio, ultimo_bim.fuentes,
                                 calculo=f"Monto mensual de noviembre-diciembre de 2025 según el art. 4 × {len(ventana)} "
-                                        "meses, sin ajuste. La ley no lo pide: es otra lectura posible (ADR 0024)."))
+                                        "meses, sin actualizar. La ley no lo pide: es otra lectura posible (ADR 0024)."))
         eje.cifras.append(Cifra(f"{prefijo}relacion-piso-{anio}",
                                 f"{quien}: lo transferido frente al piso de diciembre de 2025, enero a {hasta}",
                                 (acum_tr / piso - 1) * 100, "porcentaje", anio, ultimo_bim.fuentes + f_tr,
