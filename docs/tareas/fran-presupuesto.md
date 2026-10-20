@@ -22,20 +22,20 @@ Leer antes: [`docs/ESTANDAR.md`](../ESTANDAR.md), ADR 0012, 0013, 0014 y 0015.
 ## Tareas
 
 ### 1. Decidir y registrar
-- [ ] Decidir el monto de partida (A o B) con el equipo y registrarlo en un ADR (`0020`).
+- [x] Decidir el monto de partida (A o B) con el equipo y registrarlo en un ADR (`0020`).
 
 ### 2. Cargar los datos
-- [ ] Extender `scripts/extraer_presupuesto_abierto.py` (o crear uno nuevo) para la apertura **mensual** por actividad, y generar `data/presupuesto_unr_mensual_2024.csv` y `…_2025.csv` con la ficha completa.
-- [ ] Volver a extraer 2026 con la última actualización de Presupuesto Abierto.
+- [x] Extender `scripts/extraer_presupuesto_abierto.py` (o crear uno nuevo) para la apertura **mensual** por actividad, y generar `data/presupuesto_unr_mensual_2024.csv` y `…_2025.csv` con la ficha completa.
+- [x] Volver a extraer 2026 con la última actualización de Presupuesto Abierto (sigue siendo la del 16-oct-2026).
 
 ### 3. Calcular
-- [ ] Agregar en `core/lentes.py` la lente de los arts. 3 y 4: art. 3 (IPC de mayo a diciembre de 2024, al 1-ene-2025) y art. 4 (actualización bimestral por IPC durante 2025, tomando a cuenta los aumentos otorgados).
-- [ ] Tests con valores calculados a mano en `tests/test_lentes.py`.
-- [ ] Cifras nuevas en `eje_ejecucion` (`core/ejes.py`), con su cálculo explicado.
+- [x] Agregar en `core/lentes.py` la lente de los arts. 3 y 4: art. 3 (IPC de mayo a diciembre de 2024, al 1-ene-2025) y art. 4 (actualización bimestral por IPC durante 2025, tomando a cuenta los aumentos otorgados).
+- [x] Tests con valores calculados a mano en `tests/test_lentes.py`.
+- [x] Cifras nuevas en `eje_ejecucion` (`core/ejes.py`), con su cálculo explicado.
 
 ### 4. Mostrar (solo con componentes del estándar)
-- [ ] En `_seccion_transferencias.html`: fila de datos con lo que exigía la ley, lo transferido y la diferencia; la medición alternativa (B) visible; el 88 % frente al presupuesto pasa a segundo plano, dentro de un `mas-info`.
-- [ ] Un artículo «¿De dónde sale este número?» con pasos (`.articulo` / `.paso`), con el mismo tono que el de Salario.
+- [x] En `_seccion_transferencias.html`: fila de datos con lo que exigía la ley, lo transferido y la diferencia; la medición alternativa (B) visible; el 88 % frente al presupuesto pasa a segundo plano, dentro de un `mas-info`.
+- [x] Un artículo «¿De dónde sale este número?» con pasos (`.articulo` / `.paso`), con el mismo tono que el de Salario.
 
 ### 5. Verificar datos existentes
 - [ ] `data/credito_asignado_ley.csv`: reverificar contra los PDF los valores de 2021 y 2026 (tienen la nota «reverificar»), y reemplazar las copias de terceros (UNT, El Tucumano) por la publicación oficial.
@@ -43,8 +43,20 @@ Leer antes: [`docs/ESTANDAR.md`](../ESTANDAR.md), ADR 0012, 0013, 0014 y 0015.
 
 ## Avances
 
-_(Completar a medida que se avanza.)_
+**2026-10-19**
+- Opción A como principal y B visible (ADR 0020). La partida A pasó de julio a **septiembre de 2024**: en el sistema, julio todavía está por debajo del nivel estable; para la UNR da lo mismo.
+- Con el cambio de alcance (ADR 0021), la sección muestra **el sistema universitario** y la UNR como caso de detalle.
+- Datos: `data/presupuesto_sistema_mensual_{2024,2025,2026}.csv` (actividades 14, 15, 16 y 25, suma de las universidades más «sin asignar» aparte) y `data/presupuesto_unr_mensual_{2024,2025,2026}.csv` (todas las actividades de la UNR). Script: `scripts/extraer_presupuesto_abierto_mensual.py {unr|sistema} …`.
+- Resultado 2025, sistema: exigido 606.157 M, transferido 410.017 M → **47,8 % más** (B: 27,1 %). UNR: 27.267 M contra 15.733 M → 73,3 % más.
+- «Universidades sin Discriminar» tuvo devengado 0 en estas actividades en 2024 y 2025: la duda sobre si sumarlo no aplica.
+- En 2024 parte de las partidas se financió con «Crédito Interno»; se suman todas las fuentes y la nota de cada fila lo detalla.
+- El 88 % del presupuesto 2026 pasó a un «ver más», ahora con las 61 universidades primero.
+
+**Pendiente**
+- Tarea 5 (reverificar `credito_asignado_ley.csv` contra los PDF oficiales, y el acto que creó el crédito de «Universidades sin Discriminar» 2026).
+- Revisar la página en modo claro, oscuro y en celular.
 
 ## Propuestas de presentación
 
-_(Anotar acá, sin implementarlas.)_
+- Un gráfico de barras por bimestre (exigido contra transferido) en lugar de la tabla, con los colores ya validados del gráfico de Salario (pagado azul, exigido naranja).
+- Un selector de universidad para la línea de detalle: los datos mensuales por universidad están en Presupuesto Abierto.

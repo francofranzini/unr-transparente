@@ -110,14 +110,96 @@ def eje_ejecucion(repo: Repositorio, anio: str = "2026") -> Eje:
                             Decimal(dia) / Decimal(dias_anio) * 100, "porcentaje", anio, (unr["devengado"],),
                             calculo=f"Día {dia} de {dias_anio} (fecha de corte del dato)"))
 
+    _arts_3_4(repo, eje, anio, "SISTEMA_UNIVERSITARIO", "arts34-", "Universidades nacionales", detalle=True)
+    _arts_3_4(repo, eje, anio, "UNR", "unr-arts34-", "UNR")
+
     eje.supuestos = [
         "Transferencias del Tesoro (Programa 26); no incluye recursos propios.",
         "El año transcurrido es una referencia: las transferencias no son parejas mes a mes.",
         "El crédito sin universidad asignada va aparte (ADR 0013).",
+        "Arts. 3 y 4: lo exigido se calcula sobre lo devengado, porque en 2024 y 2025 el crédito vigente de cada "
+        "universidad fue el de 2023 prorrogado y los aumentos se pagaron por fuera (ADR 0020).",
+        "Arts. 3 y 4: la cifra principal es la suma de las universidades nacionales; la UNR va como caso de detalle "
+        "(ADR 0021).",
     ]
-    eje.pendientes = ["Lo que exigen los arts. 3 y 4 de la Ley 27.795 (gastos de funcionamiento) frente a lo "
-                      "transferido."]
+    eje.pendientes = ["Texto de la Ley 27.795 desde el Boletín Oficial (hoy se cita una copia de un tercero).",
+                      "Los arts. 3 y 4 no fijan una fórmula para 2026: lo transferido en 2026 se muestra sin "
+                      "un «exigido»."]
     return eje
+
+
+def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str, quien: str,
+              detalle: bool = False) -> None:
+    """Ley 27.795, arts. 3 y 4: lo que correspondía transferir en 2025 frente a lo transferido (ADR 0020).
+
+    `entidad` es SISTEMA_UNIVERSITARIO (cifra principal) o UNR (caso de detalle, ADR 0021). Con `detalle`, agrega
+    la partida B, el IPC del art. 3, los bimestres y lo transferido en el año en curso, para el artículo."""
+    ipc = lentes.serie_por_periodo(repo.buscar(indicador="ipc_nivel_general"))
+    devengado = [d for d in repo.buscar(entidad=entidad, indicador="devengado") if "actividad_id" in d.dimensiones]
+    transferido = lentes.transferido_arts_3_4(devengado, "2025")
+    eje.cifras.append(Cifra(f"{prefijo}transferido", f"{quien} — Devengado 2025, actividades 14, 15, 16 y 25",
+                            transferido.valor, "ARS corrientes", "2025", transferido.fuentes,
+                            calculo=f"Suma de {len(transferido.fuentes)} registros mensuales"))
+
+    opciones = (("nivel_sep_2024", ""), ("promedio_2024", "-b")) if detalle else (("nivel_sep_2024", ""),)
+    for opcion, sufijo in opciones:
+        partida = lentes.partida_arts_3_4(devengado, opcion)
+        nombre = lentes.PARTIDAS_ARTS_3_4[opcion]
+        eje.cifras.append(Cifra(f"{prefijo}partida{sufijo}", f"{quien} — Partida: {nombre}", partida.valor,
+                                "ARS corrientes", "2024", partida.fuentes,
+                                calculo=("Suma de las actividades 14, 15, 16 y 25 en septiembre de 2024"
+                                         if opcion == "nivel_sep_2024" else
+                                         f"Suma de {len(partida.fuentes)} registros de 2024 ÷ 12")))
+        exigido = lentes.exigido_arts_3_4(partida, ipc)
+        eje.cifras.append(Cifra(f"{prefijo}exigido{sufijo}",
+                                f"{quien} — Exigido por los arts. 3 y 4 en 2025 (partida: {nombre})",
+                                exigido.valor, "ARS corrientes", "2025", exigido.fuentes,
+                                calculo=" ".join(exigido.supuestos)))
+        eje.cifras.append(Cifra(f"{prefijo}brecha{sufijo}",
+                                f"{quien} — Cuánto más exigía la ley que lo transferido (partida: {nombre})",
+                                (exigido.valor / transferido.valor - 1) * 100, "porcentaje", "2025",
+                                exigido.fuentes + transferido.fuentes,
+                                calculo="(Exigido 2025 ÷ devengado 2025 − 1) × 100"))
+        eje.cifras.append(Cifra(f"{prefijo}faltante{sufijo}",
+                                f"{quien} — Exigido menos transferido en 2025 (partida: {nombre})",
+                                exigido.valor - transferido.valor, "ARS corrientes", "2025",
+                                exigido.fuentes + transferido.fuentes, calculo="Exigido 2025 − devengado 2025"))
+    if not detalle:
+        return
+
+    f3 = lentes.factor_art3(ipc)
+    eje.cifras.append(Cifra(f"{prefijo}ipc-art3", "Aumento de precios (IPC), de mayo a diciembre de 2024",
+                            (f3.valor - 1) * 100, "porcentaje", "2024-12", f3.fuentes,
+                            calculo="(IPC dic-2024 ÷ IPC abr-2024 − 1) × 100"))
+
+    partida = lentes.partida_arts_3_4(devengado, "nivel_sep_2024")
+    meses_2025 = lentes._meses("2025-01", "2025-12")
+    for i, bimestre in enumerate(lentes.bimestres_art4(partida, ipc), start=1):
+        meses = meses_2025[2 * i - 2:2 * i]
+        etiqueta = f"{MESES_LARGOS[int(meses[0][5:]) - 1]} y {MESES_LARGOS[int(meses[1][5:]) - 1]} de 2025"
+        eje.cifras.append(Cifra(f"{prefijo}exigido-bim{i}", f"{quien} — Exigido, {etiqueta}", bimestre.valor,
+                                "ARS corrientes", meses[1], bimestre.fuentes,
+                                calculo="Partida × 2 meses × IPC acumulado desde abr-2024 hasta el mes de referencia"))
+        datos = [d for d in transferido.fuentes if d.periodo in meses]
+        eje.cifras.append(Cifra(f"{prefijo}transferido-bim{i}", f"{quien} — Devengado, {etiqueta}",
+                                sum(d.valor for d in datos), "ARS corrientes", meses[1], tuple(datos),
+                                calculo=f"Suma de {len(datos)} registros mensuales"))
+
+    actual = lentes.transferido_arts_3_4(devengado, anio)
+    if actual.fuentes:
+        corte = actual.fuentes[0].dimensiones["fecha_corte"]
+        eje.cifras.append(Cifra(f"{prefijo}transferido-actual",
+                                f"{quien} — Devengado {anio}, actividades 14, 15, 16 y 25, al {corte}",
+                                actual.valor, "ARS corrientes", anio, actual.fuentes,
+                                calculo=f"Suma de {len(actual.fuentes)} registros mensuales"))
+        eje.detalle["corte_actual"] = mes_largo(corte[:7])
+
+    sin_asignar = [d for d in repo.buscar(entidad="CREDITO_NO_ASIGNADO", indicador="devengado")
+                   if d.dimensiones.get("actividad_id") in lentes.ACTIVIDADES_ARTS_3_4 and d.periodo.startswith("2025-")]
+    if sin_asignar:
+        eje.cifras.append(Cifra(f"{prefijo}sin-asignar", "Devengado 2025 sin universidad asignada, actividades 14, "
+                                "15, 16 y 25", sum(d.valor for d in sin_asignar), "ARS corrientes", "2025",
+                                tuple(sin_asignar), calculo=f"Suma de {len(sin_asignar)} registros mensuales"))
 
 
 MESES_ABREV = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]

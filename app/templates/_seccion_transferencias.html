@@ -1,22 +1,114 @@
-{% from "_macros.html" import num, encabezado, linea_tiempo %}
+{% from "_macros.html" import num, encabezado %}
 <section class="seccion" id="transferencias">
-  {{ encabezado("03", "Transferencias", "¿Cuánto del presupuesto " ~ ej.cifra("unr-ejecucion").periodo ~ " llegó a la UNR?") }}
+  {{ encabezado("03", "Transferencias", "¿Recibieron las universidades lo que la ley exigía para funcionar en 2025?") }}
   <div class="datos revelar">
-    <div class="dato dato-grande"><small>Del crédito vigente</small>{{ num(ej, "unr-ejecucion", true) }}</div>
-    <div class="dato"><small>Crédito vigente UNR</small>{{ num(ej, "unr-credito_vigente", true) }}</div>
-    <div class="dato"><small>Ya transferido</small>{{ num(ej, "unr-devengado", true) }}</div>
-    <div class="dato"><small>Año transcurrido</small>{{ num(ej, "anio-transcurrido", true) }}</div>
+    <div class="dato dato-grande"><small>La ley exigía, por encima de lo transferido</small>{{ num(ej, "arts34-brecha", true) }}</div>
+    <div class="dato"><small>La ley exigía</small>{{ num(ej, "arts34-exigido", true) }}</div>
+    <div class="dato"><small>Se transfirió</small>{{ num(ej, "arts34-transferido", true) }}</div>
+    <div class="dato"><small>Diferencia</small>{{ num(ej, "arts34-faltante", true) }}</div>
   </div>
+  <p class="aviso">Gastos de funcionamiento, hospitales, ciencia y técnica y extensión de las universidades nacionales
+     durante 2025 (arts. 3 y 4 de la Ley 27.795). Si se parte del promedio mensual de 2024 en lugar del monto de
+     septiembre de 2024, la ley exigía {{ num(ej, "arts34-exigido-b") }}: {{ num(ej, "arts34-brecha-b") }} más que lo
+     transferido.</p>
+  <p class="aviso">Un caso: a la Universidad Nacional de Rosario (UNR) la ley le exigía transferir
+     {{ num(ej, "unr-arts34-exigido") }} y recibió {{ num(ej, "unr-arts34-transferido") }}, es decir
+     {{ num(ej, "unr-arts34-brecha") }} más.</p>
+
   <details class="mas-info">
-    <summary>Ver el detalle del sistema</summary>
+    <summary>¿De dónde sale este número?</summary>
+    <section class="articulo">
+      <p class="entrada">Te lo contamos paso a paso. Cada número subrayado se puede tocar para ver el documento de donde sale.</p>
+
+      <div class="paso">
+        <h3><span>1</span>Qué exige la ley</h3>
+        <p>La <a href="https://www.consejosalta.org.ar/wp-content/uploads/Ley-27.795-y-Dec-759-2025.pdf">Ley 27.795 de Financiamiento Universitario</a>
+           no habla solo de sueldos. Su artículo 3 dice que el Poder Ejecutivo «actualizará al 1º de enero de 2025»
+           los gastos de funcionamiento de las universidades según la inflación «comprendida entre el 1º de mayo al
+           31 de diciembre de 2024». El artículo 4 agrega que durante 2025 esos montos se actualizan «de forma
+           bimestral» por la misma inflación, y que los aumentos que el Gobierno ya haya dado se toman «a cuenta».</p>
+        <p>Los dos artículos nombran cuatro partidas del presupuesto: funcionamiento (actividad 14), hospitales
+           universitarios (15), ciencia y técnica (16) y extensión (25). Los sueldos van por otro artículo, el 5,
+           que contamos en <a href="#salario">Salario docente</a>.</p>
+      </div>
+
+      <div class="paso">
+        <h3><span>2</span>Cuánto se transfirió</h3>
+        <p>El Ministerio de Economía publica, mes a mes, cuánto le transfiere a cada universidad en
+           <a href="https://www.presupuestoabierto.gob.ar/">Presupuesto Abierto</a>. Sumamos lo devengado a todas las
+           universidades nacionales en esas cuatro partidas: lo que la Nación ya ejecutó a su favor, no lo que
+           figuraba en el presupuesto.</p>
+        <p>Usamos lo devengado porque en 2024 y 2025 no hubo presupuesto nuevo: rigió el de 2023, prorrogado, y los
+           aumentos se pagaron por fuera de lo asignado a cada universidad. Presupuesto Abierto también tiene una
+           línea «Universidades sin Discriminar», sin universidad asignada; en estas cuatro partidas, en 2025, tuvo
+           {{ num(ej, "arts34-sin-asignar") }} devengado: todo lo transferido figura a nombre de alguna universidad.</p>
+        <p>En 2025, para las cuatro partidas de la ley, las universidades recibieron {{ num(ej, "arts34-transferido") }}.</p>
+      </div>
+
+      <div class="paso">
+        <h3><span>3</span>Desde qué monto se parte</h3>
+        <p>La ley dice que hay que actualizar «el monto» de los gastos de funcionamiento, pero no dice de qué mes.
+           A mediados de 2024 el monto mensual subió, y desde agosto quedó casi igual hasta noviembre. Partimos de
+           septiembre de 2024: {{ num(ej, "arts34-partida") }} por mes para todo el sistema. Es el monto que regía
+           durante el período de inflación que cuenta el artículo 3, y es el mismo criterio que usamos para el
+           sueldo: el último valor vigente antes del período que actualiza la ley.</p>
+        <p>Otra forma de leerlo es partir del promedio de todo 2024, que incluye los meses anteriores a ese aumento:
+           {{ num(ej, "arts34-partida-b") }} por mes. Con ese punto de partida la diferencia es menor, y por eso la
+           mostramos al lado.</p>
+      </div>
+
+      <div class="paso">
+        <h3><span>4</span>La cuenta</h3>
+        <div class="cuenta">
+          <p>Entre mayo y diciembre de 2024 los precios subieron {{ num(ej, "arts34-ipc-art3") }} (IPC del INDEC).</p>
+          <p>Con el artículo 3, el monto mensual de partida sube en esa proporción desde enero de 2025.</p>
+          <p>Con el artículo 4, cada dos meses se vuelve a actualizar con la inflación acumulada hasta el bimestre anterior.</p>
+          <p class="resultado">Sumando los doce meses, la ley exigía {{ num(ej, "arts34-exigido") }}. Se transfirió
+             {{ num(ej, "arts34-transferido") }}: la ley exigía <strong>{{ num(ej, "arts34-brecha") }}</strong> más.</p>
+        </div>
+        <table class="tabla">
+          <thead><tr><th>Bimestre de 2025</th><th>La ley exigía</th><th>Se transfirió</th></tr></thead>
+          <tbody>
+            {% for nombre in ["Enero y febrero", "Marzo y abril", "Mayo y junio", "Julio y agosto", "Septiembre y octubre", "Noviembre y diciembre"] %}
+            <tr><th>{{ nombre }}</th><td data-r="La ley exigía">{{ num(ej, "arts34-exigido-bim" ~ loop.index) }}</td><td data-r="Se transfirió">{{ num(ej, "arts34-transferido-bim" ~ loop.index) }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <p class="aviso">Las transferencias no son parejas mes a mes: junio y diciembre traen montos más altos. Por
+           eso la comparación que vale es la del año completo.</p>
+        <p>La misma cuenta para la UNR, partiendo de {{ num(ej, "unr-arts34-partida") }} por mes en septiembre de
+           2024, da {{ num(ej, "unr-arts34-exigido") }} exigidos contra {{ num(ej, "unr-arts34-transferido") }}
+           transferidos: {{ num(ej, "unr-arts34-brecha") }} más. La diferencia con el total del sistema muestra que
+           el resultado cambia de una universidad a otra.</p>
+      </div>
+
+      <div class="paso">
+        <h3><span>5</span>Lo que este número no dice</h3>
+        <p>No incluye sueldos ni recursos propios de las universidades. Tampoco dice qué pasa en 2026: los artículos
+           3 y 4 solo fijan cómo actualizar en 2025. En 2026, hasta {{ ej.detalle.corte_actual }}, las universidades
+           recibieron {{ num(ej, "arts34-transferido-actual") }} para esas cuatro partidas; no calculamos un
+           «exigido» para ese año.</p>
+        <p>El Poder Ejecutivo condicionó la ejecución de la ley a que el presupuesto incluya los fondos, y la
+           disputa sigue en la Justicia. La seguimos en <a href="#ley">Ley 27.795</a>.</p>
+      </div>
+    </section>
+  </details>
+
+  <details class="mas-info">
+    <summary>¿Cuánto del presupuesto {{ ej.cifra("sistema-ejecucion").periodo }} llegó a las universidades?</summary>
+    <p>Del crédito vigente {{ ej.cifra("sistema-ejecucion").periodo }} de las 61 universidades nacionales, ya se
+       transfirió {{ num(ej, "sistema-ejecucion") }} ({{ num(ej, "sistema-devengado") }} de
+       {{ num(ej, "sistema-credito_vigente") }}). Como referencia, a esa fecha había pasado
+       {{ num(ej, "anio-transcurrido") }} del año.</p>
     <table class="tabla">
       <thead><tr><th></th><th>Vigente</th><th>Devengado</th><th>%</th></tr></thead>
       <tbody>
-        <tr><th>UNR</th><td data-r="Vigente">{{ num(ej, "unr-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "unr-devengado") }}</td><td data-r="%">{{ num(ej, "unr-ejecucion") }}</td></tr>
         <tr><th>61 universidades</th><td data-r="Vigente">{{ num(ej, "sistema-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "sistema-devengado") }}</td><td data-r="%">{{ num(ej, "sistema-ejecucion") }}</td></tr>
         <tr><th>Sin universidad asignada</th><td data-r="Vigente">{{ num(ej, "no-asignado-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "no-asignado-devengado") }}</td><td data-r="%" class="sin-dato">—</td></tr>
+        <tr><th>UNR (caso)</th><td data-r="Vigente">{{ num(ej, "unr-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "unr-devengado") }}</td><td data-r="%">{{ num(ej, "unr-ejecucion") }}</td></tr>
       </tbody>
     </table>
-    <p class="aviso">Transferencias del Tesoro (Programa 26). Falta comparar con lo que exigen los arts. 3 y 4 de la Ley 27.795.</p>
+    <p class="aviso">Transferencias del Tesoro (Programa 26). Las transferencias no son parejas mes a mes (aguinaldo en
+       junio y diciembre), así que el año transcurrido es solo una referencia.</p>
   </details>
 </section>
