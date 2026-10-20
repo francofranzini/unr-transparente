@@ -14,21 +14,10 @@
 {%- endmacro %}
 <section class="seccion" id="transferencias">
   {{ encabezado("03", "Transferencias", "¿Recibieron las universidades lo que les correspondía por ley en 2025?") }}
-  <div class="datos revelar">
-    <div class="dato dato-grande"><small>Se transfirió, frente a lo que correspondía</small><span class="rojo">{{ num(ej, "arts34-relacion", true) }}</span></div>
-    <div class="dato"><small>Correspondían</small>{{ num(ej, "arts34-exigido", true) }}</div>
-    <div class="dato"><small>Se transfirió</small>{{ num(ej, "arts34-transferido", true) }}</div>
-  </div>
-  <p class="aviso">Funcionamiento, hospitales, ciencia y técnica y extensión (arts. 3 y 4 de la Ley 27.795).
-     La ley es de octubre de 2025, pero manda actualizar estos montos desde enero de ese año.
-     El Poder Ejecutivo suspendió su ejecución
-     (<a href="{{ evento }}ley-27795-promulgacion" hx-get="{{ evento }}ley-27795-promulgacion" hx-target="#ficha-contenido">Decreto 759/2025</a>);
-     un juez declaró inconstitucional esa suspensión y el Gobierno apeló
-     (<a href="{{ evento }}ley-27795-fallo-fondo" hx-get="{{ evento }}ley-27795-fallo-fondo" hx-target="#ficha-contenido">octubre de 2026</a>).</p>
 
   {# UNR / todas las universidades: un selector para las cifras con fajos y el gráfico (ADR 0022) #}
-  {% set entidades = [("unr-arts34-", "UNR", "Recibió, frente a lo que le correspondía", "Le correspondían", "Recibió"),
-                      ("arts34-", "Todas las universidades", "Recibieron, frente a lo que les correspondía", "Les correspondían", "Recibieron")] %}
+  {% set entidades = [("arts34-", "Todas las universidades", "Recibieron, frente a lo que les correspondía", "Les correspondían", "Recibieron"),
+                      ("unr-arts34-", "UNR", "Recibió, frente a lo que le correspondía", "Le correspondían", "Recibió")] %}
   {% set FAJOS = 27 %}
   <div data-bloque-arts34>
     <div class="filtros revelar" role="group" aria-label="Elegir qué universidades mostrar">
@@ -189,6 +178,13 @@
     });
   })();
   </script>
+
+  <p class="aviso">Funcionamiento, hospitales, ciencia y técnica y extensión (arts. 3 y 4 de la Ley 27.795).
+     La ley es de octubre de 2025, pero manda actualizar estos montos desde enero de ese año.
+     El Poder Ejecutivo suspendió su ejecución
+     (<a href="{{ evento }}ley-27795-promulgacion" hx-get="{{ evento }}ley-27795-promulgacion" hx-target="#ficha-contenido">Decreto 759/2025</a>);
+     un juez declaró inconstitucional esa suspensión y el Gobierno apeló
+     (<a href="{{ evento }}ley-27795-fallo-fondo" hx-get="{{ evento }}ley-27795-fallo-fondo" hx-target="#ficha-contenido">octubre de 2026</a>).</p>
 
   <details class="mas-info">
     <summary>¿De dónde sale este número?</summary>

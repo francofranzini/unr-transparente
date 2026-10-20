@@ -41,3 +41,4 @@ Con el alcance nacional (ADR 0021), la cifra principal de la sección 03 es la d
 - Cada vez que se cambia de vista, las cifras cuentan desde 0 y los fajos vuelven a caer (con «reducir movimiento», nada se mueve).
 - La pila de lo que correspondía tiene siempre 27 fajos y la de lo recibido, la cantidad proporcional (UNR 16, todas 18): un fajo no vale lo mismo en las dos vistas, pero en cada una la diferencia de altura es la real. Por eso no se rotula el valor del fajo.
 - Sale «Todo el sistema» de la fila de la UNR: ahora es una vista propia.
+- Se quita la fila del sistema que estaba entre el título y el selector (repetía la vista «Todas»). El selector arranca en **Todas las universidades**. El párrafo con el contexto de la ley (retroactividad, Dec. 759/2025 y sentencia) pasa debajo del gráfico: es donde se muestran las dos posiciones (ESTANDAR §5.3).
