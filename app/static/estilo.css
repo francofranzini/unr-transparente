@@ -135,6 +135,21 @@ nav a:hover { color: var(--acento); }
 .mas-info[open] > summary::before { transform: rotate(45deg); }
 .mas-info::details-content { block-size: 0; overflow: clip; transition: block-size .45s ease, content-visibility .45s allow-discrete; }
 .mas-info[open]::details-content { block-size: auto; }
+/* Rótulo de un desplegable que cambia al abrirlo: «Ver más» / «Ver menos» (ADR 0025) */
+details:not([open]) > summary .si-abierto, details[open] > summary .si-cerrado { display: none; }
+/* Texto de presentación de una sección, antes de su cronología (ADR 0025) */
+.presentacion { max-width: 52rem; margin: 0 0 36px; }
+/* Una cronología por universidad, cada una en su recuadro desplegable (ADR 0025) */
+.universidad { max-width: 54rem; margin: 12px 0 0; padding: 0 20px; border: 1px solid var(--linea); border-radius: 14px; }
+.universidad[open] { padding-bottom: 18px; }
+@media (max-width: 600px) { .universidad { padding-inline: 12px; } }
+.universidad > summary { list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; padding: 14px 0; }
+.universidad > summary::-webkit-details-marker { display: none; }
+.universidad > summary::before { content: "▸"; display: inline-block; font-size: .9rem; transition: transform .2s; }
+.universidad[open] > summary::before { transform: rotate(90deg); }
+.universidad-nombre { font-weight: 900; font-size: 1.1rem; }
+.universidad-cuenta { font-size: .85rem; color: var(--tenue); }
+.universidad .aviso { margin-top: 0; }
 .articulo { margin-top: 14px; }
 .entrada { color: var(--tenue); margin: 0 0 14px; }
 .paso { padding: 14px 0 14px 18px; margin: 0 0 4px; border-left: 2px solid var(--linea); max-width: 46rem; }
@@ -249,6 +264,8 @@ text.rotulo { fill: var(--tinta); font-size: 12px; font-weight: 700; text-transf
 
 .sello { display: none; }
 .cronologia-scroll.modo-carrusel { max-height: none; overflow: visible; min-height: 17rem; }
+/* Sin sellos (p. ej. Control, ADR 0025) no hace falta reservar su lugar. */
+.cronologia-scroll.modo-carrusel:not(:has(.sello)) { min-height: 0; }
 .modo-carrusel .linea-v { background: none; padding-block: 28px; }
 .modo-carrusel .hito { transition-delay: 0s; }
 .modo-carrusel .hito-titulo { font-size: 1.3rem; }

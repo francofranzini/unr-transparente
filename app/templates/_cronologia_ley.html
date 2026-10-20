@@ -1,52 +1,7 @@
-{% set actores = {"legislativo": ("congreso", "Congreso"), "norma": ("ejecutivo", "Poder Ejecutivo"), "judicial": ("justicia", "Justicia"), "convenio": ("acuerdo", "Acuerdo"), "paritaria": ("acuerdo", "Acuerdo")} %}
-{# De lo más antiguo a lo más reciente, dentro de un recuadro con scroll propio (ADR 0030), o de a un hecho con sellos (ADR 0031). #}
-{% set hitos = el.eventos|rejectattr("tipo", "equalto", "estado")|list %}
-{% set sellos = el.detalle.get("sellos", {}) %}
-<div class="cronologia" data-cronologia>
-  <h3 class="cronologia-titulo">Línea de tiempo</h3>
-  <p class="cronologia-guia">De lo más antiguo a lo más reciente: del veto de 2024 a hoy.</p>
-  <div class="filtros revelar" role="group" aria-label="Filtrar por actor">
-    <span class="filtros-rotulo">Filtrar:</span>
-    {% for clase, nombre in [("congreso", "Congreso"), ("ejecutivo", "Poder Ejecutivo"), ("justicia", "Justicia"), ("acuerdo", "Acuerdo")] %}
-    <button type="button" class="actor actor-{{ clase }}" data-filtro="{{ clase }}" aria-pressed="false"><i></i>{{ nombre }}</button>
-    {% endfor %}
-  </div>
-  <div class="recorrido-modos" hidden data-modos>
-    <button type="button" class="recorrido-boton" data-modo="carrusel" aria-pressed="false">Recorrer hecho por hecho ▸</button>
-    <span class="recorrido-pista" data-pista-lista>o desplazate dentro del recuadro.</span>
-  </div>
-  <div class="cronologia-scroll" data-cronologia-scroll tabindex="0" role="region" aria-label="Cronología de la Ley 27.795">
-  <ol class="linea-v" aria-label="Cronología de la Ley 27.795, de lo más antiguo a lo más reciente">
-    {% for e in hitos %}
-    {% set clase, actor = actores.get(e.tipo, ("otro", "Otro")) %}
-    {% if loop.first or e.fecha[:4] != loop.previtem.fecha[:4] %}<li class="anio" aria-hidden="true">{{ e.fecha[:4] }}</li>{% endif %}
-    <li class="hito actor-{{ clase }}{% if e.id.startswith('ley-2024') %} antecedente{% endif %}" data-actor="{{ clase }}">
-      <span class="hito-marca"></span>
-      <time>{{ fmt.fecha_evento(e.fecha) }}</time>
-      <span class="hito-actor">{{ "Antecedente · " if e.id.startswith("ley-2024") }}{{ actor }}</span>
-      <details class="hito-detalle">
-        <summary class="hito-titulo">{{ e.titulo }}</summary>
-        <div class="hito-cuerpo">
-          {% if e.nota.startswith("Argumento del Gobierno") %}<p class="hito-argumento">{{ e.nota }}</p>{% endif %}
-          {% if e.noticias %}
-          <p class="hito-medios-rotulo">Cómo lo contaron</p>
-          <ul class="hito-medios">
-            {% for n in e.noticias %}<li><a href="{{ n.url }}" rel="noopener" target="_blank"><strong>{{ n.medio }}</strong> {{ n.titulo }}</a></li>{% endfor %}
-          </ul>
-          {% endif %}
-          <a class="hito-ficha" href="/ficha/evento/{{ e.id }}" hx-get="/ficha/evento/{{ e.id }}" hx-target="#ficha-contenido">De dónde sale este dato →</a>
-        </div>
-      </details>
-      {% if e.id in sellos %}{% set texto, detalle = sellos[e.id] %}
-      <span class="sello" aria-hidden="true"><b>{{ texto }}</b><small>{{ detalle }}</small></span>
-      {% endif %}
-    </li>
-    {% endfor %}
-  </ol>
-  </div>
-  <div class="recorrido-nav" hidden data-nav>
-    <button type="button" class="recorrido-boton" data-paso="-1">◂ Anterior</button>
-    <span class="recorrido-contador" data-contador aria-live="polite"></span>
-    <button type="button" class="recorrido-boton" data-paso="1">Siguiente ▸</button>
-  </div>
-</div>
+{# Cronología de la Ley 27.795 (ADR 0030 y 0031), con la plantilla común de _cronologia.html (ADR 0025). #}
+{% from "_cronologia.html" import cronologia %}
+{{ cronologia(el.eventos, "la Ley 27.795", "De lo más antiguo a lo más reciente: del veto de 2024 a hoy.",
+              filtros=[("congreso", "Congreso"), ("ejecutivo", "Poder Ejecutivo"), ("justicia", "Justicia"), ("acuerdo", "Acuerdo")],
+              actores_tipo={"legislativo": ("congreso", "Congreso"), "norma": ("ejecutivo", "Poder Ejecutivo"),
+                            "judicial": ("justicia", "Justicia"), "convenio": ("acuerdo", "Acuerdo"), "paritaria": ("acuerdo", "Acuerdo")},
+              sellos=el.detalle.get("sellos", {}), antecedente="ley-2024") }}

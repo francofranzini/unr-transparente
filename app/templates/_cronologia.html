@@ -1,0 +1,61 @@
+{# Cronología reutilizable (ADR 0025, a partir de los ADR 0030 y 0031): de lo más antiguo a lo más reciente, dentro de
+   un recuadro con scroll propio, con filtros por actor y recorrido «hecho por hecho» con sellos.
+   - eventos: los del eje (los de tipo «estado» no se listan: van en el recuadro de la sección).
+   - nombre: para los rótulos accesibles («Cronología de …»).
+   - filtros: [(clase, rótulo)]; la clase es la de un actor de estilo.css (congreso, ejecutivo, justicia, acuerdo).
+   - actores_tipo / actores_id: {tipo o id de evento: (clase, rótulo)}; el id manda sobre el tipo.
+   - sellos: {id de evento: (texto, detalle)}.
+   - antecedente: prefijo de id de los hechos que se muestran como antecedente.
+   - titulo y guia: vacíos cuando la sección ya los pone afuera (p. ej. Control, una cronología por universidad). #}
+{% macro cronologia(eventos, nombre, guia, filtros, actores_tipo={}, actores_id={}, sellos={}, antecedente="", titulo="Línea de tiempo") %}
+{% set hitos = eventos|rejectattr("tipo", "equalto", "estado")|list %}
+<div class="cronologia" data-cronologia>
+  {% if titulo %}<h3 class="cronologia-titulo">{{ titulo }}</h3>{% endif %}
+  {% if guia %}<p class="cronologia-guia">{{ guia }}</p>{% endif %}
+  <div class="filtros revelar" role="group" aria-label="Filtrar por actor">
+    <span class="filtros-rotulo">Filtrar:</span>
+    {% for clase, rotulo in filtros %}
+    <button type="button" class="actor actor-{{ clase }}" data-filtro="{{ clase }}" aria-pressed="false"><i></i>{{ rotulo }}</button>
+    {% endfor %}
+  </div>
+  <div class="recorrido-modos" hidden data-modos>
+    <button type="button" class="recorrido-boton" data-modo="carrusel" aria-pressed="false">Recorrer hecho por hecho ▸</button>
+    <span class="recorrido-pista" data-pista-lista>o desplazate dentro del recuadro.</span>
+  </div>
+  <div class="cronologia-scroll" data-cronologia-scroll tabindex="0" role="region" aria-label="Cronología de {{ nombre }}">
+  <ol class="linea-v" aria-label="Cronología de {{ nombre }}, de lo más antiguo a lo más reciente">
+    {% for e in hitos %}
+    {% set clase, actor = actores_id.get(e.id) or actores_tipo.get(e.tipo, ("otro", "Otro")) %}
+    {% set es_antecedente = antecedente and e.id.startswith(antecedente) %}
+    {% if loop.first or e.fecha[:4] != loop.previtem.fecha[:4] %}<li class="anio" aria-hidden="true">{{ e.fecha[:4] }}</li>{% endif %}
+    <li class="hito actor-{{ clase }}{% if es_antecedente %} antecedente{% endif %}" data-actor="{{ clase }}">
+      <span class="hito-marca"></span>
+      <time>{{ fmt.fecha_evento(e.fecha) }}</time>
+      <span class="hito-actor">{{ "Antecedente · " if es_antecedente }}{{ actor }}</span>
+      <details class="hito-detalle">
+        <summary class="hito-titulo">{{ e.titulo }}</summary>
+        <div class="hito-cuerpo">
+          {% if e.nota.startswith("Argumento del Gobierno") %}<p class="hito-argumento">{{ e.nota }}</p>{% endif %}
+          {% if e.noticias %}
+          <p class="hito-medios-rotulo">Cómo lo contaron</p>
+          <ul class="hito-medios">
+            {% for n in e.noticias %}<li><a href="{{ n.url }}" rel="noopener" target="_blank"><strong>{{ n.medio }}</strong> {{ n.titulo }}</a></li>{% endfor %}
+          </ul>
+          {% endif %}
+          <a class="hito-ficha" href="/ficha/evento/{{ e.id }}" hx-get="/ficha/evento/{{ e.id }}" hx-target="#ficha-contenido">De dónde sale este dato →</a>
+        </div>
+      </details>
+      {% if e.id in sellos %}{% set texto, detalle = sellos[e.id] %}
+      <span class="sello" aria-hidden="true"><b>{{ texto }}</b><small>{{ detalle }}</small></span>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ol>
+  </div>
+  <div class="recorrido-nav" hidden data-nav>
+    <button type="button" class="recorrido-boton" data-paso="-1">◂ Anterior</button>
+    <span class="recorrido-contador" data-contador aria-live="polite"></span>
+    <button type="button" class="recorrido-boton" data-paso="1">Siguiente ▸</button>
+  </div>
+</div>
+{% endmacro %}
