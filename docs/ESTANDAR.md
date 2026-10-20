@@ -25,6 +25,7 @@ Este documento fija cómo se ve y cómo funciona el sitio. **Es la base de cualq
 
 ## 2. Identidad visual (congelada)
 
+- **Identidad (ADR 0024):** «Un monitor público del financiamiento universitario, medido contra la Ley 27.795: qué dice la ley, qué transfiere la Nación y qué hacen las universidades con eso, con la fuente de cada número y actualizado a medida que avanza el conflicto». La lente de la ley se declara; las demás elecciones metodológicas quedan a la vista.
 - **Nombre:** «Universidad Transparente» (ADR 0021), siempre con «sitio independiente» visible. No se usa el logo ni el escudo de ninguna universidad.
 - **Alcance:** el sistema universitario nacional. La UNR aparece solo como caso de detalle donde un dato lo requiere, rotulada como tal.
 - **Paleta de papel y tinta** (variables en `estilo.css`): fondo crema `#f2efe4` con cuadrícula tenue, papel `#ebe7d8`, tinta azul marino `#141b34`. En modo oscuro se invierte (fondo `#141b34`, tinta `#f2efe4`). No se agregan colores.

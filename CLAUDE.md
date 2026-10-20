@@ -9,9 +9,11 @@
 
 ## 1. Qué es
 
-Un portal que muestra el estado financiero y de funcionamiento de una universidad pública argentina (alcance: **el sistema universitario nacional**; la Universidad Nacional de Rosario, UNR, queda como caso de detalle en áreas específicas, ADR 0021) a partir de **documentos oficiales**, para cualquier ciudadano, no solo estudiantes.
+> **Un monitor público del financiamiento universitario, medido contra la Ley 27.795: qué dice la ley, qué transfiere la Nación y qué hacen las universidades con eso, con la fuente de cada número y actualizado a medida que avanza el conflicto** (ADR 0024).
 
-**Tesis del producto:** el ruido sobre el financiamiento universitario no viene de datos distintos, sino de **elecciones metodológicas ocultas**: qué inflación se usa, contra qué año se compara, si se mide lo asignado o lo ejecutado, y si la cifra es de "educación", "educación superior" o "universidades". El portal **no elige una lente: las hace explícitas y deja cambiarlas**.
+Alcance: **el sistema universitario nacional**; la Universidad Nacional de Rosario (UNR) queda como caso de detalle (ADR 0021). Se basa en **documentos oficiales** y está pensado para cualquier ciudadano, no solo para estudiantes.
+
+**Tesis del producto:** el ruido sobre el financiamiento universitario no viene de datos distintos, sino de **elecciones metodológicas ocultas**: qué inflación se usa, contra qué año se compara, si se mide lo asignado o lo ejecutado, y si la cifra es de "educación", "educación superior" o "universidades". El portal **declara su lente, lo que exige la Ley 27.795, y hace explícitas las demás para que se puedan cambiar** (ADR 0024; antes la tesis era no elegir ninguna). El diferencial es seguir el conflicto: los gráficos suman períodos y estados de la ley a medida que hay datos nuevos, y muestran las mejoras con el mismo énfasis que las pérdidas.
 
 Ejemplo real que motiva el proyecto. Las tres cifras salen del mismo presupuesto 2026:
 
