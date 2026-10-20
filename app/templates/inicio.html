@@ -2,7 +2,7 @@
 {% from "_macros.html" import num, encabezado %}
 {% block contenido %}
 {% set es = ejes["salario"] %}{% set el = ejes["ley"] %}{% set ej = ejes["ejecucion"] %}
-{% set ec = ejes["control"] %}{% set eg = ejes["graduacion"] %}
+{% set ec = ejes["control"] %}
 {% set brecha = es.cifra("brecha-art5") %}
 {% set hoy = el.eventos|selectattr("tipo", "equalto", "estado")|list|last %}
 {% set hoy_texto = hoy.titulo|replace("Hoy: ", "") if hoy else "" %}
@@ -36,11 +36,9 @@
 
 {% include "_seccion_control.html" %}
 
-{% include "_seccion_graduacion.html" %}
-
 {# Cómo leer #}
 <section class="seccion como-leer">
-  {{ encabezado("06", "Cómo leer los números", "Tocá cualquier número y mirá de dónde sale.") }}
+  {{ encabezado("05", "Cómo leer los números", "Tocá cualquier número y mirá de dónde sale.") }}
   <div class="demo revelar">
     <p class="demo-frase">En {{ es.detalle.ultimo_ipc }}, a un profesor adjunto se le pagó {{ num(es, "pagado") }}.</p>
     <span class="demo-flecha" aria-hidden="true">→</span>

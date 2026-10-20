@@ -31,8 +31,7 @@ def _render(request: Request, parcial: str, contexto: dict) -> HTMLResponse:
 
 
 # Todo el contenido vive en la portada; las direcciones de cada eje llevan a su sección, abierta.
-PAGINAS = {"salario": "salario", "ley": "ley", "transferencias": "ejecucion", "control": "control",
-           "graduacion": "graduacion"}
+PAGINAS = {"salario": "salario", "ley": "ley", "transferencias": "ejecucion", "control": "control"}
 templates.env.globals.update(paginas={v: k for k, v in PAGINAS.items()})
 
 

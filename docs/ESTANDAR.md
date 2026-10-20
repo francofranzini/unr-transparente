@@ -37,7 +37,7 @@ Este documento fija cómo se ve y cómo funciona el sitio. **Es la base de cualq
 
 ## 3. Funcionalidades (congeladas)
 
-- **Orden y anclas de las secciones:** `#salario` (01), `#ley` (02), `#transferencias` (03), `#control` (04), `#graduacion` (05), «Cómo leer los números» (06). Las direcciones `/salario`, `/ley`, etc. redirigen a su ancla.
+- **Orden y anclas de las secciones:** `#salario` (01), `#ley` (02), `#transferencias` (03), `#control` (04), «Cómo leer los números» (05). Graduación quedó fuera (ADR 0024). Las direcciones `/salario`, `/ley`, etc. redirigen a su ancla.
 - **Cada número abre su ficha** (documento, página, fecha de consulta, tipo de fuente, cálculo). Se escribe siempre con `num(eje, clave)`; nunca un número a mano en una plantilla.
 - **Cifras que cuentan desde 0:** `num(eje, clave, true)` en las filas de datos.
 - **Cronología de la ley:** «Línea de tiempo», vertical, de lo más antiguo a lo más reciente, dentro de un recuadro con scroll propio y el año fijo arriba; filtros por actor; detalle desplegable con «Cómo lo contaron»; recorrido «hecho por hecho» con sellos que nombran el acto (ADR 0030 y 0031, propuestas).
