@@ -1,0 +1,27 @@
+# Controles de cada cambio (ADR 0032): toda fila de data/ con ficha completa y los tests completos.
+# No usa la red: los controles que dependen de páginas externas corren en vigia.yml.
+name: Validar datos y tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Ficha completa en data/
+        run: python scripts/validar_datos.py
+      - name: Tests
+        run: python -m pytest -q

@@ -371,7 +371,10 @@ def eje_ley(repo: Repositorio) -> Eje:
     faltan = set(SELLOS_LEY) - ids
     if faltan:
         raise ValueError(f"Sellos de eventos que no existen en ley.yaml: {sorted(faltan)}")
-    eje.detalle = {"sellos": SELLOS_LEY}
+    # «Revisado el …» (ADR 0032): la fecha del evento de estado, que se reemplaza en cada revisión.
+    estado = max((e for e in eje.eventos if e.tipo == "estado"), key=lambda e: e.fecha, default=None)
+    revisado = f"{int(estado.fecha[8:10])} de {mes_largo(estado.fecha[:7])}" if estado and len(estado.fecha) == 10 else ""
+    eje.detalle = {"sellos": SELLOS_LEY, "revisado": revisado}
     eje.supuestos = []
     eje.pendientes = ["Lente por artículo (arts. 3, 4 y 5) para la UNR: requiere Presupuesto Abierto 2024-2025, "
                       "IPC y grillas salariales.",

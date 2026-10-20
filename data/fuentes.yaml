@@ -1,0 +1,56 @@
+# Fuentes vigiladas (ADR 0010 y 0032). Las revisa scripts/vigia_fuentes.py; no las carga la aplicación.
+#
+# Campos: id, eje, nombre, url, metodo (enlaces | feed) y, según el método:
+#   patron  — expresión regular que debe cumplir el enlace (enlaces)
+#   filtro  — expresión regular sobre el título o la fila (opcional)
+#   bloque  — etiqueta HTML que separa filas, p. ej. "tr", para tomar el texto de la fila como título (enlaces)
+#   ignorar — enlaces ya revisados que no corresponden a un hecho nuevo. Anotar por qué, en un comentario.
+#
+# Un enlace citado en cualquier evento de data/eventos/ ya no es novedad. En los feeds, solo cuenta lo publicado desde
+# la fecha del evento de estado del eje (la última revisión cargada).
+# Diputados (votaciones.hcdn.gob.ar) tiene reCAPTCHA en la portada: se revisa a mano.
+
+# --- Ley 27.795 ------------------------------------------------------------------------------------------------------
+
+- id: infoleg-ley-27795-vinculos
+  eje: ley
+  nombre: "InfoLEG — normas que modifican o complementan la Ley 27.795"
+  url: https://servicios.infoleg.gob.ar/infolegInternet/verVinculos.do?modo=2&id=419006
+  metodo: enlaces
+  patron: "verNorma\\.do.*\\?id=\\d+"
+  ignorar:
+    - https://servicios.infoleg.gob.ar/infolegInternet/verNorma.do?id=417371  # Dto. 647/2025: cargado (ley-27795-veto, BO)
+    - https://servicios.infoleg.gob.ar/infolegInternet/verNorma.do?id=419007  # Dto. 759/2025: cargado (ley-27795-promulgacion, BO)
+
+- id: senado-votaciones
+  eje: ley
+  nombre: "Senado — actas de votación del período"
+  url: https://www.senado.gob.ar/votaciones/actas
+  metodo: enlaces
+  bloque: tr
+  patron: "/votaciones/detalleActa/\\d+"
+  filtro: "27\\.795|financiamiento\\s+(de\\s+la\\s+educaci[oó]n\\s+)?universitari"
+  ignorar: []
+
+- id: cin-noticias
+  eje: ley
+  nombre: "CIN — noticias (parte actora en la causa)"
+  url: https://www.cin.edu.ar/feed/
+  metodo: feed
+  filtro: "27\\.795|financiamiento\\s+universitario|cautelar|Cormick|C[aá]mara|Corte\\s+Suprema"
+  ignorar: []
+
+- id: gnews-causa-cin
+  eje: ley
+  nombre: "Google Noticias — causa CIN (expte. 39475/2025) y Class Actions Argentina"
+  url: "https://news.google.com/rss/search?q=%2239475/2025%22+OR+site:classactionsargentina.com+CIN&hl=es-419&gl=AR&ceid=AR:es-419"
+  metodo: feed
+  filtro: "\\bCIN\\b|27\\.795|39475|financiamiento\\s+(de\\s+la\\s+educaci[oó]n\\s+)?universitari"
+  ignorar: []
+
+- id: gnews-ley-financiamiento
+  eje: ley
+  nombre: "Google Noticias — ley de financiamiento universitario (aviso temprano; nunca es la fuente del hecho)"
+  url: "https://news.google.com/rss/search?q=%22ley+de+financiamiento+universitario%22+(juez+OR+C%C3%A1mara+OR+Corte+OR+decreto+OR+Senado+OR+Diputados)&hl=es-419&gl=AR&ceid=AR:es-419"
+  metodo: feed
+  ignorar: []

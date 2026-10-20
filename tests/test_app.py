@@ -75,6 +75,13 @@ def test_recorrido_de_la_ley_con_sellos(cliente):
     assert "<b>Vetada</b><small>Decreto 647/2025</small>" in html
 
 
+def test_donde_esta_hoy_muestra_la_fecha_de_revision(cliente):
+    # ADR 0032: el atraso se muestra; la fecha sale del evento de estado, no se escribe a mano.
+    estado = max((e for e in repo.eventos_de("ley") if e.tipo == "estado"), key=lambda e: e.fecha)
+    assert re.search(rf"Dónde está hoy · revisado el {int(estado.fecha[8:])} de \w+ de {estado.fecha[:4]}",
+                     cliente.get("/").text)
+
+
 @pytest.mark.parametrize("ruta", RUTAS)
 def test_textos_sin_adjetivos_valorativos(cliente, ruta):
     # Los títulos de prensa se citan tal como se publicaron; el control aplica al texto propio del portal.

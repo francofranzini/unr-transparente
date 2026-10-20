@@ -1,0 +1,88 @@
+# Vigía de fuentes de la Ley 27.795 (ADR 0010 y 0032). Detecta y avisa en un issue; nunca carga datos.
+# - Todos los días: novedades en las fuentes de data/fuentes.yaml (eje ley).
+# - Los lunes: títulos de prensa, enlaces caídos y copias en la Wayback Machine.
+# Todo se escribe en un único issue abierto con la etiqueta «vigia-ley»: si ya existe, se comenta ahí.
+name: Vigía de fuentes de la ley
+
+on:
+  schedule:
+    - cron: "0 12 * * *"   # todos los días, 9:00 de Argentina
+    - cron: "0 13 * * 1"   # los lunes, 10:00 de Argentina
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  ETIQUETA: vigia-ley
+  TITULO: "Novedades en fuentes de la Ley 27.795"
+
+jobs:
+  novedades:
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 12 * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Revisar fuentes
+        # A mano, desde la última revisión cargada; programado, desde ayer, para no repetir lo ya avisado.
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then desde="--desde $(date -u -d yesterday +%F)"; fi
+          python scripts/vigia_fuentes.py --eje ley $desde --salida informe.md
+      - name: Avisar en el issue
+        if: hashFiles('informe.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create "$ETIQUETA" --color 2A78D6 --description "Avisos del vigía de fuentes de la ley" --force
+          numero=$(gh issue list --label "$ETIQUETA" --state open --json number --jq '.[0].number')
+          if [ -n "$numero" ]; then
+            gh issue comment "$numero" --body-file informe.md
+          else
+            gh issue create --title "$TITULO" --label "$ETIQUETA" --body-file informe.md
+          fi
+
+  enlaces:
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '0 13 * * 1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Títulos, enlaces y copias
+        id: revisar
+        run: |
+          set +e
+          python scripts/verificar_titulos.py > titulos.txt; titulos=$?
+          python scripts/verificar_enlaces.py > enlaces.txt; enlaces=$?
+          python scripts/archivar_fuentes.py --revisar > archivo.txt
+          {
+            echo "Revisión semanal del $(date -u +%d/%m/%Y)."
+            echo
+            echo "### Títulos de prensa (\`scripts/verificar_titulos.py\`)"; echo '```'; cat titulos.txt; echo '```'
+            echo "### Enlaces (\`scripts/verificar_enlaces.py\`)"; echo '```'; cat enlaces.txt; echo '```'
+            echo "### Copias en la Wayback Machine"; echo; tail -n 1 archivo.txt
+            echo "Para registrarlas: \`.venv/bin/python scripts/archivar_fuentes.py --guardar\`."
+          } > revision.md
+          cat revision.md >> "$GITHUB_STEP_SUMMARY"
+          if [ $titulos -ne 0 ] || [ $enlaces -ne 0 ]; then echo "fallo=1" >> "$GITHUB_OUTPUT"; fi
+      - name: Avisar en el issue
+        if: steps.revisar.outputs.fallo == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create "$ETIQUETA" --color 2A78D6 --description "Avisos del vigía de fuentes de la ley" --force
+          numero=$(gh issue list --label "$ETIQUETA" --state open --json number --jq '.[0].number')
+          if [ -n "$numero" ]; then
+            gh issue comment "$numero" --body-file revision.md
+          else
+            gh issue create --title "$TITULO" --label "$ETIQUETA" --body-file revision.md
+          fi
