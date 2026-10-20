@@ -49,7 +49,6 @@
           {% else %}
           <p>Perdió <strong>{{ num(es, "poder-" ~ c.periodo) }}</strong> de poder de compra. La ley todavía no regía: su aumento corresponde desde {{ es.detalle.vigencia_art5 }}.</p>
           {% endif %}
-          {% if c.aviso %}<p class="aviso">{{ c.aviso }}</p>{% endif %}
         </div>
         {% endfor %}
         <div data-deslizador hidden>
@@ -208,7 +207,6 @@
     });
   })();
   </script>
-  {% if brecha.aviso %}<p class="aviso">{{ brecha.aviso }}</p>{% endif %}
   <details class="mas-info">
     <summary>¿De dónde sale este número?</summary>
     {% with eje = es %}{% include "_articulo_salario.html" %}{% endwith %}

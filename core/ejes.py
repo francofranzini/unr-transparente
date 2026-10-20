@@ -383,7 +383,7 @@ def _aviso_vigencia(punto: lentes.Punto) -> str:
     mes, desde = mes_largo(punto.periodo), mes_largo(punto.fuentes[0].periodo)
     if punto.vigencia == Vigencia.CONFIRMADA:
         return f"Para {mes} rige la escala de {desde}: un documento confirma que no hubo cambios."
-    return (f"La UNR todavía no publicó la escala de {mes}. Usamos la de {desde}, la última disponible; "
+    return (f"No hay escala publicada para {mes}. Usamos la de {desde}, la última disponible; "
             f"si hubo un aumento en el medio, este número cambia.")
 
 
