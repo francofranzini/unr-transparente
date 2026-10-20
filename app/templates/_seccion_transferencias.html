@@ -137,10 +137,10 @@
       <details class="mas"><summary>¿De dónde salen los datos?</summary>
         <p>Lo transferido, de <a href="https://www.presupuestoabierto.gob.ar/">Presupuesto Abierto</a> (Ministerio de Economía).
            La inflación, del IPC del INDEC. Qué hay que calcular, de los arts. 3 y 4 de la
-           <a href="https://www.consejosalta.org.ar/wp-content/uploads/Ley-27.795-y-Dec-759-2025.pdf">Ley 27.795</a>.</p></details>
-      <details class="mas"><summary>¿Por qué «devengado» y no el presupuesto?</summary>
-        <p>En 2024 y 2025 rigió el presupuesto de 2023 prorrogado: los aumentos no figuran en el crédito de cada
-           universidad, pero sí en lo devengado. Lo que no tiene universidad asignada sumó {{ num(ej, "arts34-sin-asignar") }}.</p></details>
+           <a href="https://www.boletinoficial.gob.ar/detalleAviso/primera/333139/20251021">Ley 27.795, tal como se publicó en el Boletín Oficial</a>.</p></details>
+      <details class="mas"><summary>¿Por qué no usamos el presupuesto?</summary>
+        <p>Partimos de la ley, no del presupuesto: el presupuesto es justamente lo que no la incluye. Medimos lo que
+           efectivamente se transfirió (el «devengado»). Lo transferido sin universidad asignada sumó {{ num(ej, "arts34-sin-asignar") }}.</p></details>
       <details class="mas"><summary>¿Por qué septiembre de 2024?</summary>
         <p>La ley no dice de qué mes es «el monto». Septiembre es el monto que regía después del aumento de mitad de 2024.
            Partiendo del promedio de todo 2024 ({{ num(ej, "arts34-partida-b") }} por mes), correspondían
@@ -173,17 +173,4 @@
     </section>
   </details>
 
-  <details class="mas-info">
-    <summary>¿Cuánto del presupuesto {{ ej.cifra("sistema-ejecucion").periodo }} llegó a las universidades?</summary>
-    <p>Del crédito vigente {{ ej.cifra("sistema-ejecucion").periodo }} ya se transfirió {{ num(ej, "sistema-ejecucion") }};
-       había pasado {{ num(ej, "anio-transcurrido") }} del año.</p>
-    <table class="tabla">
-      <thead><tr><th></th><th>Vigente</th><th>Devengado</th><th>%</th></tr></thead>
-      <tbody>
-        <tr><th>61 universidades</th><td data-r="Vigente">{{ num(ej, "sistema-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "sistema-devengado") }}</td><td data-r="%">{{ num(ej, "sistema-ejecucion") }}</td></tr>
-        <tr><th>Sin universidad asignada</th><td data-r="Vigente">{{ num(ej, "no-asignado-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "no-asignado-devengado") }}</td><td data-r="%" class="sin-dato">—</td></tr>
-        <tr><th>UNR (caso)</th><td data-r="Vigente">{{ num(ej, "unr-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "unr-devengado") }}</td><td data-r="%">{{ num(ej, "unr-ejecucion") }}</td></tr>
-      </tbody>
-    </table>
-  </details>
 </section>

@@ -31,4 +31,9 @@ En 2024 y 2025 rigió el presupuesto 2023 prorrogado: el crédito vigente de cad
 
 - Datos: `data/presupuesto_sistema_mensual_AAAA.csv` y `data/presupuesto_unr_mensual_AAAA.csv` (2024-2026), generados con `scripts/extraer_presupuesto_abierto_mensual.py`.
 - El cálculo exploratorio previo de la opción B (≈ 20.400 M para la UNR) omitía la actividad 25; con ella da 20.702 M.
-- Pendiente: el texto de la ley desde el Boletín Oficial (hoy se cita una copia de un tercero).
+
+## Actualización (2026-10-19): fuente oficial y fuera el presupuesto
+
+- **Texto de la ley:** se cita el Boletín Oficial del 21-oct-2025 (https://www.boletinoficial.gob.ar/detalleAviso/primera/333139/20251021). Los arts. 3 y 4 coinciden palabra por palabra con la copia del Consejo Profesional de Salta usada antes.
+- **Dec. 759/2025** (https://www.boletinoficial.gob.ar/detalleAviso/primera/333140/20251021): promulga la ley «sin perjuicio de lo dispuesto por el artículo 5° de la Ley N° 24.629». La cita a la Ley 24.629 (normas complementarias para la ejecución del presupuesto) es correcta: no es una errata por la 24.156, como sospechaba el ADR 0014.
+- **El presupuesto queda fuera de la sección:** se parte de la ley, y el presupuesto es lo que no la incluye. Se quita el desplegable «¿Cuánto del presupuesto 2026 llegó…?». Las cifras de crédito se siguen calculando en `eje_ejecucion` porque las usan tests existentes (ESTANDAR §1: no se borran tests).

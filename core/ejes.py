@@ -69,7 +69,7 @@ def _cociente(clave: str, etiqueta: str, num: Cifra, den: Cifra) -> Cifra:
 
 
 def eje_ejecucion(repo: Repositorio, anio: str = "2026") -> Eje:
-    eje = Eje("ejecucion", "Transferencias", f"¿Cuánto del crédito {anio} llegó a las universidades?")
+    eje = Eje("ejecucion", "Transferencias", "¿Recibieron las universidades lo que les correspondía por ley en 2025?")
 
     def por_universidad(indicador: str) -> list[Dato]:
         return [d for d in repo.buscar(indicador=indicador, periodo=anio, actividad="")
@@ -122,8 +122,7 @@ def eje_ejecucion(repo: Repositorio, anio: str = "2026") -> Eje:
         "Arts. 3 y 4: la cifra principal es la suma de las universidades nacionales; la UNR va como caso de detalle "
         "(ADR 0021).",
     ]
-    eje.pendientes = ["Texto de la Ley 27.795 desde el Boletín Oficial (hoy se cita una copia de un tercero).",
-                      "Los arts. 3 y 4 no fijan una fórmula para 2026: lo transferido en 2026 se muestra sin "
+    eje.pendientes = ["Los arts. 3 y 4 no fijan una fórmula para 2026: lo transferido en 2026 se muestra sin "
                       "un «exigido»."]
     return eje
 

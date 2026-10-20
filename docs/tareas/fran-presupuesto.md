@@ -59,6 +59,9 @@ Leer antes: [`docs/ESTANDAR.md`](../ESTANDAR.md), ADR 0012, 0013, 0014 y 0015.
 
 ## Propuestas de presentación
 
+- **Para Nono (`data/eventos/ley.yaml`):** los eventos de sanción, veto e insistencia del Senado citan la copia del Consejo de Salta; la ley oficial está en el Boletín Oficial (https://www.boletinoficial.gob.ar/detalleAviso/primera/333139/20251021) y el Dec. 759/2025 en https://www.boletinoficial.gob.ar/detalleAviso/primera/333140/20251021.
+- **Para Salario (`_articulo_salario.html`):** el enlace a la ley apunta a la misma copia; cambiarlo por el del Boletín Oficial.
+- Quitar de `eje_ejecucion` las cifras de crédito y su test si el equipo acuerda que el presupuesto queda fuera del portal.
 - **Para Salario (art. 5):** el mismo problema de «exige»: la ley es de octubre de 2025 y actualiza desde diciembre de 2023, con el aumento efectivo «al mes siguiente de la publicación». Revisar el verbo y marcar sanción y publicación en su gráfico, como en Transferencias (ADR 0022).
 - Las fichas son legibles si los rótulos, cálculos y notas son cortos; sugerir el mismo criterio a los demás ejes.
 - Si se adopta el gráfico del ADR 0022, mover su geometría a `app/graficos.py` y el sombreado a `estilo.css` (archivos congelados).
