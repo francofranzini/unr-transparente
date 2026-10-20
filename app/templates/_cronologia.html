@@ -7,8 +7,10 @@
    - sellos: {id de evento: (texto, detalle)}.
    - antecedente: prefijo de id de los hechos que se muestran como antecedente.
    - titulo y guia: vacíos cuando la sección ya los pone afuera (p. ej. Control, una cronología por universidad).
-   - transicion: en el recorrido, el paso de un hecho al siguiente se desliza en lugar de cambiar de golpe. #}
-{% macro cronologia(eventos, nombre, guia, filtros, actores_tipo={}, actores_id={}, sellos={}, antecedente="", titulo="Línea de tiempo", transicion=False) %}
+   - transicion: en el recorrido, el paso de un hecho al siguiente se desliza en lugar de cambiar de golpe.
+   - importante: id del hecho que se marca como «Último hecho importante» (ADR 0037). Cada hecho tiene un ancla
+     #hito-<id> para enlazarlo desde otra parte de la página. #}
+{% macro cronologia(eventos, nombre, guia, filtros, actores_tipo={}, actores_id={}, sellos={}, antecedente="", titulo="Línea de tiempo", transicion=False, importante="") %}
 {% set hitos = eventos|rejectattr("tipo", "equalto", "estado")|list %}
 <div class="cronologia" data-cronologia{% if transicion %} data-transicion{% endif %}>
   {% if titulo %}<h3 class="cronologia-titulo">{{ titulo }}</h3>{% endif %}
@@ -29,10 +31,11 @@
     {% set clase, actor = actores_id.get(e.id) or actores_tipo.get(e.tipo, ("otro", "Otro")) %}
     {% set es_antecedente = antecedente and e.id.startswith(antecedente) %}
     {% if loop.first or e.fecha[:4] != loop.previtem.fecha[:4] %}<li class="anio" aria-hidden="true">{{ e.fecha[:4] }}</li>{% endif %}
-    <li class="hito actor-{{ clase }}{% if es_antecedente %} antecedente{% endif %}" data-actor="{{ clase }}">
+    <li class="hito actor-{{ clase }}{% if es_antecedente %} antecedente{% endif %}{% if e.id == importante %} hito-importante{% endif %}" data-actor="{{ clase }}" id="hito-{{ e.id }}">
       <span class="hito-marca"></span>
       <time>{{ fmt.fecha_evento(e.fecha) }}</time>
       <span class="hito-actor">{{ "Antecedente · " if es_antecedente }}{{ actor }}</span>
+      {% if e.id == importante %}<span class="hito-etiqueta">Último hecho importante</span>{% endif %}
       <details class="hito-detalle">
         <summary class="hito-titulo">{{ e.titulo }}</summary>
         <div class="hito-cuerpo">

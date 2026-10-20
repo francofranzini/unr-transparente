@@ -129,6 +129,69 @@ def test_control_explica_quien_controla_debajo_de_la_pregunta(cliente):
     assert 'class="hoy' not in control and "Último control externo" not in control
 
 
+def test_donde_esta_hoy_muestra_la_fecha_del_resumen(cliente):
+    # ADR 0035 y 0036: el atraso se muestra. La fecha del resumen sale del evento de estado; la de consulta, del vigía.
+    estado = max((e for e in repo.eventos_de("ley") if e.tipo == "estado"), key=lambda e: e.fecha)
+    # Una sola fecha si coincide con la consulta de fuentes; si no, «resumen del … · fuentes consultadas el …».
+    assert re.search(rf"Dónde está hoy · (resumen del )?{int(estado.fecha[8:])} de \w+ de {estado.fecha[:4]}",
+                     cliente.get("/").text)
+
+
+def test_la_ficha_muestra_el_tipo_con_una_etiqueta_legible(cliente):
+    # ADR 0037: «estado», «judicial», etc. son valores internos; el lector ve una etiqueta.
+    from core.ejes import TIPOS_EVENTO
+    for evento in repo.eventos_de("ley"):
+        ficha = cliente.get(f"/ficha/evento/{evento.id}", headers={"HX-Request": "true"}).text
+        assert f"<dt>Tipo</dt><dd>{TIPOS_EVENTO[evento.tipo][0]}</dd>" in ficha
+
+
+def test_la_linea_de_tiempo_marca_el_ultimo_hecho_importante(cliente):
+    # ADR 0037: un solo hecho marcado, el mismo que destaca «Dónde está hoy», con un ancla para llegar desde el recuadro.
+    from core.ejes import eje_ley
+    eje = eje_ley(repo)
+    ley = _seccion(cliente.get("/").text, "ley")
+    assert ley.count(" hito-importante") == 1 and ley.count("Último hecho importante") == 1
+    importante = eje.detalle["importante"]
+    assert f'id="hito-{importante.id}"' in ley
+    marcado = ley[:ley.index(f'id="hito-{importante.id}"')]
+    assert marcado.rindex(" hito-importante") > marcado.rindex("<li")
+    if eje.detalle["destacado"]:
+        assert importante.id == eje.detalle["destacado"].id and f'href="#hito-{importante.id}"' in ley
+
+
+def test_en_una_misma_fecha_el_hecho_de_mas_peso_queda_ultimo():
+    from core.ejes import ordenar_cronologia
+    estado = next(e for e in repo.eventos if e.tipo == "estado" and "ley" in e.ejes)
+    fallo = estado.model_copy(update={"id": "x-fallo", "tipo": "judicial"})
+    acuerdo = estado.model_copy(update={"id": "x-acuerdo", "tipo": "convenio"})
+    assert [e.id for e in ordenar_cronologia([fallo, estado, acuerdo])] == [estado.id, "x-acuerdo", "x-fallo"]
+
+
+def test_donde_esta_hoy_destaca_el_mismo_hecho_que_cierra_la_cronologia(cliente):
+    # ADR 0037: el hecho de más peso desde el resumen va primero en el recuadro, y es el último de la línea de tiempo.
+    from core.ejes import eje_ley
+    eje = eje_ley(repo)
+    destacado = eje.detalle["destacado"]
+    ley = _seccion(cliente.get("/").text, "ley")
+    hitos = [e for e in eje.eventos if e.tipo != "estado"]
+    if destacado:
+        assert destacado.id == hitos[-1].id
+        recuadro = ley[ley.index('class="hoy'):ley.index("</div>", ley.index('class="hoy'))]
+        assert recuadro.index(destacado.titulo) < recuadro.index('class="hoy-resumen"')
+
+
+def test_un_hecho_posterior_al_resumen_genera_el_aviso():
+    from core.carga import Repositorio
+    from core.ejes import eje_ley
+    eventos = list(repo.eventos)
+    estado = next(e for e in eventos if e.tipo == "estado" and "ley" in e.ejes)
+    nuevo = estado.model_copy(update={"id": "ley-27795-prueba", "tipo": "judicial", "fecha": "2099-01-01",
+                                      "titulo": "Hecho de prueba"})
+    eje = eje_ley(Repositorio(datos=repo.datos, eventos=eventos + [nuevo]))
+    assert [e.id for e in eje.detalle["posteriores"]] == ["ley-27795-prueba"]
+    assert eje.detalle["destacado"].id == "ley-27795-prueba"  # el hecho nuevo pasa al frente
+
+
 @pytest.mark.parametrize("ruta", RUTAS)
 def test_textos_sin_adjetivos_valorativos(cliente, ruta):
     # Los títulos de prensa se citan tal como se publicaron; el control aplica al texto propio del portal.

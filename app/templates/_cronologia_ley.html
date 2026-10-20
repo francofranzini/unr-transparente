@@ -4,4 +4,5 @@
               filtros=[("congreso", "Congreso"), ("ejecutivo", "Poder Ejecutivo"), ("justicia", "Justicia"), ("acuerdo", "Acuerdo")],
               actores_tipo={"legislativo": ("congreso", "Congreso"), "norma": ("ejecutivo", "Poder Ejecutivo"),
                             "judicial": ("justicia", "Justicia"), "convenio": ("acuerdo", "Acuerdo"), "paritaria": ("acuerdo", "Acuerdo")},
-              sellos=el.detalle.get("sellos", {}), antecedente="ley-2024", transicion=True) }}
+              sellos=el.detalle.get("sellos", {}), antecedente="ley-2024", transicion=True,
+              importante=el.detalle.importante.id if el.detalle.importante else "") }}

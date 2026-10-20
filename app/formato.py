@@ -3,7 +3,7 @@
 import re
 from decimal import ROUND_HALF_UP, Decimal
 
-from core.ejes import Cifra
+from core.ejes import Cifra, etiqueta_tipo
 
 MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
 
@@ -95,3 +95,8 @@ def sitio(url: str) -> tuple[str, str] | None:
         if url.startswith(prefijo):
             return nombre, pagina
     return None
+
+
+def tipo_evento(tipo: str) -> str:
+    """Etiqueta legible del tipo de un Evento («judicial» → «Resolución judicial»; ADR 0037)."""
+    return etiqueta_tipo(tipo)

@@ -10,7 +10,9 @@ from datetime import date
 from decimal import Decimal
 
 from core import lentes
-from core.carga import Repositorio
+import yaml
+
+from core.carga import DIRECTORIO_DATOS, Repositorio
 from core.lentes import Vigencia
 from core.modelos import Dato, Evento
 
@@ -533,11 +535,38 @@ ORGANOS_CONTROL = [
 UNIVERSIDADES_CONTROL = [("UNR", "Universidad Nacional de Rosario", "control")]
 
 
+# Tipos de Evento (ADR 0037): la etiqueta que ve el lector y el peso del hecho. En una misma fecha, la cronología pone el
+# de más peso al final, y «Dónde está hoy» destaca el de más peso desde el resumen: así los dos muestran el mismo hecho.
+TIPOS_EVENTO = {
+    "judicial": ("Resolución judicial", 3),
+    "norma": ("Norma (ley, decreto o resolución)", 3),
+    "legislativo": ("Votación o trámite en el Congreso", 3),
+    "convenio": ("Acuerdo o convenio", 2),
+    "paritaria": ("Acuerdo salarial", 2),
+    "dictamen": ("Dictamen", 2),
+    "auditoria": ("Informe de auditoría", 2),
+    "estado": ("Resumen de la situación a esa fecha", 1),
+}
+
+
+def etiqueta_tipo(tipo: str) -> str:
+    return TIPOS_EVENTO.get(tipo, (tipo, 0))[0]
+
+
+def peso_evento(evento: Evento) -> int:
+    return TIPOS_EVENTO.get(evento.tipo, ("", 0))[1]
+
+
+def ordenar_cronologia(eventos: list[Evento]) -> list[Evento]:
+    """Por fecha; en la misma fecha, de menor a mayor peso (el hecho principal del día queda último)."""
+    return sorted(eventos, key=lambda e: (e.fecha, peso_evento(e)))
+
+
 def eje_control(repo: Repositorio) -> Eje:
     eje = Eje("control", "Control", "¿Quién audita a las universidades?")
     universidades = []
     for sigla, nombre, clave in UNIVERSIDADES_CONTROL:
-        eventos = repo.eventos_de(clave)
+        eventos = ordenar_cronologia(repo.eventos_de(clave))
         hitos = [e for e in eventos if e.tipo != "estado"]
         universidades.append({"sigla": sigla, "nombre": nombre, "eventos": eventos, "hechos": len(hitos),
                               "desde": hitos[0].fecha[:4] if hitos else "",
@@ -571,17 +600,42 @@ SELLOS_LEY = {
     "ley-27795-fallo-fondo": ("Inconstitucional", "Suspensión del Dto. 759/2025 · 1.ª instancia"),
     "ley-27795-apelacion": ("Apelada", "Sentencia de fondo"),
     "ley-27795-multa": ("Multa diaria", "Jefatura de Gabinete"),
+    "ley-27795-camara-vigencia-cautelar": ("Apelación concedida", "Vigencia de la cautelar"),
 }
+
+
+ESTADO_VIGIA_LEY = DIRECTORIO_DATOS / "vigia" / "estado_ley.yaml"
+
+
+def _fecha_larga(fecha: str) -> str:
+    """«2026-10-19» → «19 de octubre de 2026»; «2026-10» → «octubre de 2026»."""
+    return f"{int(fecha[8:10])} de {mes_largo(fecha[:7])}" if len(fecha) == 10 else mes_largo(fecha[:7]) if len(fecha) == 7 else fecha
 
 
 def eje_ley(repo: Repositorio) -> Eje:
     eje = Eje("ley", "Ley 27.795", "¿En qué estado está la ley de financiamiento universitario?")
-    eje.eventos = repo.eventos_de("ley")
+    eje.eventos = ordenar_cronologia(repo.eventos_de("ley"))
     ids = {e.id for e in eje.eventos}
     faltan = set(SELLOS_LEY) - ids
     if faltan:
         raise ValueError(f"Sellos de eventos que no existen en ley.yaml: {sorted(faltan)}")
-    eje.detalle = {"sellos": SELLOS_LEY}
+    # «Dónde está hoy» (ADR 0035 y 0036): el resumen lo escribe una persona (evento de estado); la fecha de consulta de
+    # las fuentes la actualiza el vigía. Si hay hechos cargados después del resumen, la página lo dice.
+    estado = max((e for e in eje.eventos if e.tipo == "estado"), key=lambda e: e.fecha, default=None)
+    posteriores = [e for e in eje.eventos if estado and e.tipo != "estado" and e.fecha > estado.fecha]
+    # Hecho destacado: el último de la cronología desde la fecha del resumen, si pesa más que el resumen.
+    desde_resumen = [e for e in eje.eventos if estado and e.tipo != "estado" and e.fecha >= estado.fecha]
+    destacado = desde_resumen[-1] if desde_resumen and peso_evento(desde_resumen[-1]) > peso_evento(estado) else None
+    # El que se marca en la línea de tiempo: el destacado o, si no hay, el último de más peso (ADR 0037).
+    hitos = [e for e in eje.eventos if e.tipo != "estado"]
+    maximo = max((peso_evento(e) for e in hitos), default=0)
+    importante = destacado or next((e for e in reversed(hitos) if peso_evento(e) == maximo), None)
+    vigia = ESTADO_VIGIA_LEY.exists() and yaml.safe_load(ESTADO_VIGIA_LEY.read_text(encoding="utf-8")) or {}
+    consultado = str(vigia.get("consultado", ""))
+    eje.detalle = {"sellos": SELLOS_LEY, "resumen": _fecha_larga(estado.fecha) if estado else "",
+                   "consultado": _fecha_larga(consultado) if consultado else "", "posteriores": posteriores,
+                   "destacado": destacado, "destacado_tipo": etiqueta_tipo(destacado.tipo) if destacado else "",
+                   "importante": importante}
     eje.supuestos = []
     eje.pendientes = ["Lente por artículo (arts. 3, 4 y 5) para la UNR: requiere Presupuesto Abierto 2024-2025, "
                       "IPC y grillas salariales.",

@@ -160,6 +160,21 @@
       recuadro.scrollTop = 0;
       aplicar();
     });
+    // Ir a un hecho desde otra parte de la página (p. ej. «Ver en la línea de tiempo», ADR 0037): se centra el recuadro,
+    // se desplaza hasta el hecho y se lo resalta un momento. En el recorrido, se salta a ese hecho.
+    crono.addEventListener("ir-a-hito", (e) => {
+      const hito = e.detail;
+      recuadro.scrollIntoView({ behavior: menosMovimiento ? "auto" : "smooth", block: "center" });
+      if (carrusel) {
+        const i = coinciden.indexOf(hito);
+        if (i >= 0) { actual = i; aplicar(); }
+      } else {
+        recuadro.scrollTo({ top: hito.offsetTop - 48, behavior: menosMovimiento ? "auto" : "smooth" });
+      }
+      hito.classList.remove("resaltado");
+      void hito.offsetWidth;
+      hito.classList.add("resaltado");
+    });
     anterior.addEventListener("click", () => mover(-1));
     siguiente.addEventListener("click", () => mover(1));
     crono.addEventListener("keydown", (e) => {
@@ -168,6 +183,16 @@
       if (e.key === "ArrowLeft") { e.preventDefault(); mover(-1); }
     });
     aplicar();
+  });
+
+  // Enlaces a un hecho de una cronología (#hito-<id>): los resuelve la propia cronología, que sabe dónde está.
+  document.addEventListener("click", (e) => {
+    const enlace = e.target.closest('a[href^="#hito-"]');
+    const hito = enlace && document.getElementById(enlace.getAttribute("href").slice(1));
+    const crono = hito && hito.closest("[data-cronologia]");
+    if (!crono) return;
+    e.preventDefault();
+    crono.dispatchEvent(new CustomEvent("ir-a-hito", { detail: hito }));
   });
 
   // Mapa de quién audita (ADR 0034): un panel por órgano; «Ver sus hechos» filtra la línea de tiempo de la sección.

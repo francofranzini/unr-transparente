@@ -1,0 +1,18 @@
+# Palabras clave de cada hito de la cronología de la ley (ADR 0036). Las usa scripts/actualizar_ley.py para sumar sola
+# una nota de prensa a «Cómo lo contaron»: la nota tiene que ser de hasta 3 días después del hito y su título tiene que
+# coincidir con las claves de ese hito y de ningún otro de esos días. Si no, no se publica y se avisa en el issue.
+#
+# Cada valor es una expresión regular (sin distinguir mayúsculas). Conviene que sean específicas: «multa diaria» y no
+# «multa», para no confundir hitos cercanos. Los hitos que carga el script solo (normas y votaciones) suman sus claves
+# en data/vigia/estado_ley.yaml.
+
+ley-27795-fallo-fondo: "inconstitucional|sentencia de fondo|ordenó (al Gobierno )?aplicar"
+ley-27795-apelacion: "apel[óa]\\w* (el|la) (fallo|sentencia)|apelación del Gobierno"
+ley-27795-multa: "multa diaria|impuso una multa|multó|astreintes|100\\.?000 (pesos )?diarios"
+ley-27795-queja-camara: "suspend\\w* (provisoriamente )?(las )?multas|fren\\w* (provisoriamente )?(las )?multas|queja"
+ley-27795-intimacion: "intim[óa]\\w*|cinco días"
+ley-27795-intimacion-ampliacion: "volvió a intimar|extendió .*intimación"
+ley-27795-levantamiento-rechazado: "levantar la cautelar|levantamiento de la (medida )?cautelar"
+ley-27795-corte: "Corte Suprema"
+ley-27795-acuerdo-junio-2026: "acuerdo"
+ley-27795-camara-vigencia-cautelar: "(puso en|en) revisión|revisar\\w* (la vigencia de )?(la )?cautelar|vigencia de la (medida )?cautelar"

@@ -116,6 +116,8 @@ nav a:hover { color: var(--acento); }
 .hoy { margin: 0 0 28px; padding-left: 18px; border-left: 3px solid var(--tinta); max-width: 46rem; }
 .hoy small { font-size: .78rem; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; color: var(--tenue); }
 .hoy p { margin: 4px 0 6px; font-weight: 700; font-size: clamp(1.15rem, 2.2vw, 1.4rem); line-height: 1.35; }
+/* Debajo del hecho destacado, el resumen de la situación en letra normal (ADR 0037) */
+.hoy .hoy-resumen { margin: 14px 0 0; font-weight: 400; font-size: 1rem; line-height: 1.5; }
 .enlace { font-weight: 700; font-size: .9rem; color: var(--acento); }
 
 .tabla { width: 100%; border-collapse: collapse; font-size: .95rem; margin-top: 12px; }
@@ -251,6 +253,13 @@ text.rotulo { fill: var(--tinta); font-size: 12px; font-weight: 700; text-transf
 .hito-medios a { text-decoration: none; color: var(--tenue); } .hito-medios a:hover { color: var(--tinta); text-decoration: underline; }
 .hito-medios strong { color: var(--tinta); }
 .hito-ficha { font-size: .88rem; font-weight: 700; color: var(--acento); }
+/* Último hecho importante de la cronología: el mismo que destaca «Dónde está hoy» (ADR 0037) */
+.hito-etiqueta { display: inline-block; margin-left: 8px; padding: 1px 9px; border: 1px solid var(--c); border-radius: 999px;
+                 font-size: .68rem; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; color: var(--tinta); }
+.hito-importante .hito-marca { transform: scale(1.25); box-shadow: 0 0 0 1.5px var(--c), 0 0 0 6px color-mix(in srgb, var(--c) 22%, transparent); }
+.hito { scroll-margin-top: 48px; }
+@media (prefers-reduced-motion: no-preference) { .hito.resaltado { animation: resaltar 1.6s ease-out; } }
+@keyframes resaltar { 0%, 30% { background: color-mix(in srgb, var(--c) 18%, transparent); } 100% { background: transparent; } }
 
 /* Recorrido hecho por hecho, con sellos (ADR 0031). Los controles solo aparecen con JavaScript. */
 .cronologia-titulo { margin: 0 0 2px; font-size: 1.35rem; font-weight: 900; }

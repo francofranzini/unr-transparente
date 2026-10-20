@@ -248,9 +248,7 @@
   nota: "Deniega la apelación «por inexistencia de agravio concreto y actual». Según el escrito del Gobierno que transcribe la Cámara, el juez señaló que para el período dic-2023 a jun-2026 debía alcanzarse un aumento del 312,19 %. La prensa informa un nuevo plazo de cinco días; el texto de la Cámara no lo menciona."
   noticias:
     - {medio: "Infobae", titulo: "La Justicia extendió por cinco días la intimación al Gobierno para cumplir con la Ley de Financiamiento Universitario", url: "https://www.infobae.com/judiciales/2026/09/30/la-justicia-extendio-por-cinco-dias-la-intimacion-al-gobierno-para-cumplir-con-la-ley-de-financiamiento-universitario/", fecha: "2026-09-30"}
-    - {medio: "Infobae", titulo: "Conflicto universitario: la Justicia intimó al Gobierno para que cumpla con la Ley de Financiamiento", url: "https://www.infobae.com/politica/2026/09/22/conflicto-universitario-la-justicia-intimo-al-gobierno-para-que-cumpla-con-la-ley-de-financiamiento/", fecha: "2026-09-22"}
-    - {medio: "Tiempo Argentino", titulo: "La Justicia intimó al gobierno a cumplir con la Ley de Financiamiento Universitario", url: "https://www.tiempoar.com.ar/ta_article/la-justicia-intimo-al-gobierno-a-cumplir-con-la-ley-de-financiamiento-universitario", fecha: "2026-09-22"}
-    - {medio: "La Capital", titulo: "Financiamiento universitario: la Justicia le dio cinco días al gobierno nacional para cumplir la ley", url: "https://www.lacapital.com.ar/politica/financiamiento-universitario-la-justicia-le-dio-cinco-dias-al-gobierno-nacional-cumplir-la-ley-n10282537.html", fecha: "2026-09-22"}
+    - {medio: "Minutouno", titulo: "La Justicia volvió a intimar al Gobierno para que cumpla con la Ley de Financiamiento universitario", url: "https://www.minutouno.com/la-justicia-volvio-intimar-al-gobierno-que-cumpla-la-ley-financiamiento-universitario-n6328549", fecha: "2026-09-30"}
     - {medio: "Ámbito", titulo: "La Justicia volvió a intimar al Gobierno y le dio cinco días para que cumpla la ley de Financiamiento Universitario", url: "https://www.ambito.com/politica/la-justicia-volvio-intimar-al-gobierno-que-cumpla-la-ley-financiamiento-universitario-n6328398", fecha: "2026-09-30"}
     - {medio: "Rosario3", titulo: "La Justicia volvió a intimar al Gobierno por el financiamiento universitario: le dio cinco días para cumplir", url: "https://www.rosario3.com/informaciongeneral/la-justicia-volvio-a-intimar-al-gobierno-por-el-financiamiento-universitario-le-dio-cinco-dias-para-cumplir-20260930-0064.html", fecha: "2026-09-30"}
 
@@ -322,13 +320,28 @@
     - {medio: "El Destape", titulo: "Financiamiento Universitario: a menos de 24 horas de la sanción, la Justicia suspendió las multas al Gobierno", url: "https://www.eldestapeweb.com/politica/financiamiento-universitario-menos-24-horas-sancion-justicia-suspendio-multas-gobierno-20261015171127", fecha: "2026-10-15"}
     - {medio: "MDZ", titulo: "La Justicia frenó provisoriamente las multas al Gobierno por el financiamiento universitario", url: "https://www.mdzol.com/politica/2026/10/15/la-justicia-freno-provisoriamente-las-multas-al-gobierno-por-el-financiamiento-universitario-1988524.html", fecha: "2026-10-15"}
 
+- id: ley-27795-camara-vigencia-cautelar
+  fecha: "2026-10-20"
+  tipo: judicial
+  ejes: [ley]
+  titulo: "La Sala III admite otra queja del Gobierno y concede su apelación sobre la vigencia de la cautelar"
+  tipo_fuente: secundaria
+  documento: "Infobae, 20-oct-2026"
+  url: https://www.infobae.com/politica/2026/10/20/fallo-clave-para-el-gobierno-la-justicia-puso-en-revision-la-cautelar-sobre-financiamiento-universitario/
+  consultado: 2026-10-20
+  nota: "Argumento del Gobierno (Ministerio de Capital Humano): la cautelar tenía un límite temporal expreso que ya venció, y cumplirla mientras se discute su vigencia le causa un perjuicio irreparable. Según la cobertura, la Cámara no resolvió si el Estado cumplió la cautelar: resolvió que la apelación que el juez había denegado debe tramitarse. Firmaron los jueces Fernández, López Castiñeira y Morán. El mismo día, el jefe de Gabinete pidió suspender las multas diarias, con revocatoria y apelación en subsidio (Ámbito). Texto de la resolución: pendiente."
+  noticias:
+    - {medio: "Infobae", titulo: "Fallo clave: la Justicia puso en revisión la cautelar sobre Financiamiento Universitario", url: "https://www.infobae.com/politica/2026/10/20/fallo-clave-para-el-gobierno-la-justicia-puso-en-revision-la-cautelar-sobre-financiamiento-universitario/", fecha: "2026-10-20"}
+    - {medio: "El Destape", titulo: "La Justicia a favor de Milei: revisarán la cautelar sobre Financiamiento Universitario", url: "https://www.eldestapeweb.com/politica/justicia-favor-milei-revisaran-cautelar-financiamiento-universitario-2026102013334", fecha: "2026-10-20"}
+    - {medio: "Ámbito", titulo: "Diego Santilli busca frenar las multas por el financiamiento universitario y cuestiona la sanción judicial", url: "https://www.ambito.com/politica/diego-santilli-busca-frenar-las-multas-el-financiamiento-universitario-y-cuestiona-la-sancion-judicial-n6335870", fecha: "2026-10-20"}
+
 - id: estado-ley-27795-octubre-2026
-  fecha: "2026-10-19"
+  fecha: "2026-10-20"
   tipo: estado
   ejes: [ley]
-  titulo: "Hoy: la cautelar sobre salarios y becas está firme; la Cámara tiene pendientes la apelación de la sentencia de fondo y la de la intimación, y no aclaró si las multas quedan suspendidas"
+  titulo: "Hoy: la Cámara revisará si sigue vigente la cautelar sobre salarios y becas; también tiene pendientes las apelaciones de la sentencia de fondo y de la intimación"
   tipo_fuente: secundaria
   documento: "Elaboración propia a partir de los eventos anteriores"
-  url: https://classactionsargentina.com/wp-content/uploads/2026/10/2026-10-15-cnacfed-sala-iii_cin-c.-pen-admite-queja-en-ejecucion.pdf
-  consultado: 2026-10-19
-  nota: "No se encontraron resoluciones posteriores al 15-oct-2026 al día de la consulta."
+  url: https://www.infobae.com/politica/2026/10/20/fallo-clave-para-el-gobierno-la-justicia-puso-en-revision-la-cautelar-sobre-financiamiento-universitario/
+  consultado: 2026-10-20
+  nota: "Última resolución conocida al día de la consulta: la de la Sala III del 20-oct-2026 (cobertura de prensa; el texto todavía no se publicó)."

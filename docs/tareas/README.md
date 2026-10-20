@@ -28,7 +28,7 @@ Para no pisarnos al reunir el trabajo, cada archivo tiene un solo dueño:
 
 Si alguien necesita tocar un archivo de otro (por ejemplo, Tero quiere que un evento de control aparezca también en la cronología de la ley), lo pide a su dueño o lo anota como propuesta.
 
-**Numeración de ADR** (para que no choquen): Fran `0020`–`0024`, Tero `0025`–`0029`, Nono `0030`–`0034`.
+**Numeración de ADR** (para que no choquen): Fran `0020`–`0024`, Tero `0025`–`0029`, Nono `0030`–`0034`. Ya usados fuera de rango: `0032`–`0034` (ficha breve, espaciado, mapa de quién audita) y `0035`–`0037` (vigía, carga automática y tipos de la ley, renumerados al integrar `feat/automate-news`). El próximo libre es `0038`.
 
 ## Cómo trabajar
 

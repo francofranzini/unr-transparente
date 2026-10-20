@@ -33,3 +33,5 @@ Términos acordados para el portal. Si el código o la interfaz usan una palabra
 - **Fecha de corte (art. 5)**: fin del período de IPC que el art. 5 manda compensar: `2025-08-21` (por defecto), `2025-10-02` o `2025-10-21`.
 - **Salario exigido (art. 5)**: básico de nov-2023 × IPC(m) / IPC(nov-2023). Es lo que correspondería según la Ley 27.795 en el mes m.
 - **Brecha art. 5**: cuánto habría que aumentar el básico pagado para alcanzar el salario exigido, en %.
+- **Fuente vigilada**: página o feed registrado en `data/fuentes.yaml` que el vigía revisa para detectar hechos nuevos. Nunca es por sí misma la fuente de un hecho: la ficha sigue siendo el documento original.
+- **Novedad (vigía)**: enlace o entrada de una fuente vigilada que todavía no está citada en ningún evento ni marcada como `ignorar`. Es un aviso para revisar a mano, no un dato.

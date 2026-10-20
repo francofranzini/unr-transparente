@@ -12,6 +12,7 @@
 - [ ] `pytest` pasa completo.
 - [ ] No se modificó ningún archivo congelado (estilos, scripts, plantillas base, código de la app).
 - [ ] Cada número nuevo abre su ficha.
+- [ ] Hecho nuevo: cita el documento original o, si es `secundaria`, al menos dos medios de líneas distintas (ADR 0035).
 - [ ] Textos sin adjetivos valorativos y con el tono del estándar.
 - [ ] Revisado en modo claro, oscuro y en celular.
 - [ ] Propuestas de presentación, si las hay, anotadas en el archivo de tareas (no implementadas).
