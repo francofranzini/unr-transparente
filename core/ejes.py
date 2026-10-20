@@ -345,13 +345,37 @@ def eje_graduacion(repo: Repositorio) -> Eje:
     return eje
 
 
+# Sellos del recorrido «hecho por hecho» (ADR 0031): nombran el acto, no lo califican, y se reparten entre
+# Congreso, Poder Ejecutivo y Justicia. El detalle evita leer el sello fuera de contexto; sin cifras, que van con ficha.
+SELLOS_LEY = {
+    "ley-2024-veto-firme": ("Veto firme", "Ley 27.757 · 2024"),
+    "ley-27795-sancion": ("Sancionada", "Senado"),
+    "ley-27795-veto": ("Vetada", "Decreto 647/2025"),
+    "ley-27795-insistencia-diputados": ("Veto rechazado", "Diputados, por dos tercios"),
+    "ley-27795-insistencia-senado": ("Es ley", "Senado, por dos tercios"),
+    "ley-27795-promulgacion": ("Promulgada y suspendida", "Decreto 759/2025"),
+    "ley-27795-cautelar": ("Cautelar admitida", "Arts. 5 y 6"),
+    "ley-27795-suspension-cautelar": ("Cautelar suspendida", "Mientras se tramita el recurso"),
+    "ley-27795-acuerdo-junio-2026": ("Acuerdo firmado", "Gobierno, CIN y gremios"),
+    "ley-27795-corte": ("Cautelar firme", "Corte Suprema"),
+    "ley-27795-fallo-fondo": ("Inconstitucional", "Suspensión del Dto. 759/2025 · 1.ª instancia"),
+    "ley-27795-apelacion": ("Apelada", "Sentencia de fondo"),
+    "ley-27795-multa": ("Multa diaria", "Jefatura de Gabinete"),
+}
+
+
 def eje_ley(repo: Repositorio) -> Eje:
     eje = Eje("ley", "Ley 27.795", "¿En qué estado está la ley de financiamiento universitario?")
     eje.eventos = repo.eventos_de("ley")
+    ids = {e.id for e in eje.eventos}
+    faltan = set(SELLOS_LEY) - ids
+    if faltan:
+        raise ValueError(f"Sellos de eventos que no existen en ley.yaml: {sorted(faltan)}")
+    eje.detalle = {"sellos": SELLOS_LEY}
     eje.supuestos = []
     eje.pendientes = ["Lente por artículo (arts. 3, 4 y 5) para la UNR: requiere Presupuesto Abierto 2024-2025, "
                       "IPC y grillas salariales.",
-                      "Texto de la ley y del Decreto 759/2025 desde el Boletín Oficial."]
+                      "Textos de las resoluciones judiciales del expediente 39475/2025."]
     return eje
 
 

@@ -1,13 +1,22 @@
 {% set actores = {"legislativo": ("congreso", "Congreso"), "norma": ("ejecutivo", "Poder Ejecutivo"), "judicial": ("justicia", "Justicia"), "convenio": ("acuerdo", "Acuerdo"), "paritaria": ("acuerdo", "Acuerdo")} %}
-{% set hitos = el.eventos|rejectattr("tipo", "equalto", "estado")|list|reverse|list %}
-<div class="cronologia" data-cronologia data-visibles="4">
+{# De lo más antiguo a lo más reciente, dentro de un recuadro con scroll propio (ADR 0030), o de a un hecho con sellos (ADR 0031). #}
+{% set hitos = el.eventos|rejectattr("tipo", "equalto", "estado")|list %}
+{% set sellos = el.detalle.get("sellos", {}) %}
+<div class="cronologia" data-cronologia>
+  <h3 class="cronologia-titulo">Línea de tiempo</h3>
+  <p class="cronologia-guia">De lo más antiguo a lo más reciente: del veto de 2024 a hoy.</p>
   <div class="filtros revelar" role="group" aria-label="Filtrar por actor">
     <span class="filtros-rotulo">Filtrar:</span>
     {% for clase, nombre in [("congreso", "Congreso"), ("ejecutivo", "Poder Ejecutivo"), ("justicia", "Justicia"), ("acuerdo", "Acuerdo")] %}
     <button type="button" class="actor actor-{{ clase }}" data-filtro="{{ clase }}" aria-pressed="false"><i></i>{{ nombre }}</button>
     {% endfor %}
   </div>
-  <ol class="linea-v" aria-label="Cronología de la Ley 27.795, de lo más reciente a lo más antiguo">
+  <div class="recorrido-modos" hidden data-modos>
+    <button type="button" class="recorrido-boton" data-modo="carrusel" aria-pressed="false">Recorrer hecho por hecho ▸</button>
+    <span class="recorrido-pista" data-pista-lista>o desplazate dentro del recuadro.</span>
+  </div>
+  <div class="cronologia-scroll" data-cronologia-scroll tabindex="0" role="region" aria-label="Cronología de la Ley 27.795">
+  <ol class="linea-v" aria-label="Cronología de la Ley 27.795, de lo más antiguo a lo más reciente">
     {% for e in hitos %}
     {% set clase, actor = actores.get(e.tipo, ("otro", "Otro")) %}
     {% if loop.first or e.fecha[:4] != loop.previtem.fecha[:4] %}<li class="anio" aria-hidden="true">{{ e.fecha[:4] }}</li>{% endif %}
@@ -28,8 +37,16 @@
           <a class="hito-ficha" href="/ficha/evento/{{ e.id }}" hx-get="/ficha/evento/{{ e.id }}" hx-target="#ficha-contenido">De dónde sale este dato →</a>
         </div>
       </details>
+      {% if e.id in sellos %}{% set texto, detalle = sellos[e.id] %}
+      <span class="sello" aria-hidden="true"><b>{{ texto }}</b><small>{{ detalle }}</small></span>
+      {% endif %}
     </li>
     {% endfor %}
   </ol>
-  <button type="button" class="ver-mas" data-ver-mas hidden></button>
+  </div>
+  <div class="recorrido-nav" hidden data-nav>
+    <button type="button" class="recorrido-boton" data-paso="-1">◂ Anterior</button>
+    <span class="recorrido-contador" data-contador aria-live="polite"></span>
+    <button type="button" class="recorrido-boton" data-paso="1">Siguiente ▸</button>
+  </div>
 </div>

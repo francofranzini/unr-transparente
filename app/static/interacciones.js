@@ -41,25 +41,56 @@
   const observar = (el) => observador.observe(el);
   document.querySelectorAll(".revelar, .hito, .tiempo li").forEach(observar);
 
-  // Cronología de la ley: filtros por actor y «ver anteriores».
+  // Cronología de la ley: filtros por actor; lista con scroll propio (ADR 0030) o recorrido hecho por hecho con
+  // sellos (ADR 0031). Sin JavaScript se ve la lista completa.
   document.querySelectorAll("[data-cronologia]").forEach((crono) => {
     const hitos = [...crono.querySelectorAll(".hito")];
     const anios = [...crono.querySelectorAll(".anio")];
     const botones = [...crono.querySelectorAll("[data-filtro]")];
-    const verMas = crono.querySelector("[data-ver-mas]");
-    const limite = Number(crono.dataset.visibles || 4);
-    let completa = false;
+    const recuadro = crono.querySelector("[data-cronologia-scroll]");
+    const modos = crono.querySelector("[data-modos]");
+    const botonModo = crono.querySelector("[data-modo]");
+    const pista = crono.querySelector("[data-pista-lista]");
+    const nav = crono.querySelector("[data-nav]");
+    const contador = crono.querySelector("[data-contador]");
+    const [anterior, siguiente] = nav.querySelectorAll("[data-paso]");
+    const escalon = 4; // en la lista, los hechos aparecen de a grupos de 4 al entrar en el recuadro
+    let carrusel = false, actual = 0, coinciden = [];
+    modos.hidden = false;
+
+    // El sello se vuelve a estampar cada vez que su hecho aparece en el recorrido.
+    function sellar(hito) {
+      const sello = hito.querySelector(".sello");
+      if (!sello || menosMovimiento) return;
+      sello.classList.remove("estampar");
+      recuadro.classList.remove("golpe");
+      void sello.offsetWidth;
+      sello.classList.add("estampar");
+      recuadro.classList.add("golpe");
+    }
 
     function aplicar() {
       const activos = botones.filter((b) => b.getAttribute("aria-pressed") === "true").map((b) => b.dataset.filtro);
-      const coinciden = hitos.filter((h) => !activos.length || activos.includes(h.dataset.actor));
-      hitos.forEach((h) => { h.hidden = true; h.classList.remove("visible"); });
-      coinciden.forEach((h, i) => {
-        if (completa || i < limite) {
-          h.hidden = false;
-          h.style.setProperty("--i", i % limite);
-          observar(h);
+      coinciden = hitos.filter((h) => !activos.length || activos.includes(h.dataset.actor));
+      hitos.forEach((h) => { h.hidden = true; h.classList.remove("visible", "actual"); });
+      if (carrusel) {
+        actual = Math.min(Math.max(actual, 0), coinciden.length - 1);
+        const hito = coinciden[actual];
+        if (hito) {
+          hito.hidden = false;
+          hito.classList.add("visible", "actual");
+          sellar(hito);
         }
+        anios.forEach((a) => { a.hidden = true; });
+        contador.textContent = coinciden.length ? `Hecho ${actual + 1} de ${coinciden.length}` : "Ningún hecho con este filtro";
+        anterior.disabled = actual <= 0;
+        siguiente.disabled = actual >= coinciden.length - 1;
+        return;
+      }
+      coinciden.forEach((h, i) => {
+        h.hidden = false;
+        h.style.setProperty("--i", i % escalon);
+        observar(h);
       });
       // Un año se muestra solo si tiene algún hecho visible.
       anios.forEach((a) => {
@@ -67,19 +98,39 @@
         while (sig && !sig.classList.contains("anio")) { if (!sig.hidden) alguno = true; sig = sig.nextElementSibling; }
         a.hidden = !alguno;
       });
-      const resto = coinciden.length - limite;
-      verMas.hidden = resto <= 0;
-      verMas.textContent = completa ? "Ver menos" : `Ver ${resto} ${resto === 1 ? "hecho anterior" : "hechos anteriores"}`;
+    }
+
+    function mover(paso) {
+      if (!carrusel) return;
+      const nuevo = Math.min(Math.max(actual + paso, 0), coinciden.length - 1);
+      if (nuevo === actual) return;
+      actual = nuevo;
+      aplicar();
     }
 
     botones.forEach((b) => b.addEventListener("click", () => {
       b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") === "true" ? "false" : "true");
+      actual = 0;
       aplicar();
+      recuadro.scrollTop = 0;
     }));
-    verMas.addEventListener("click", () => {
-      completa = !completa;
+    botonModo.addEventListener("click", () => {
+      carrusel = !carrusel;
+      actual = 0;
+      botonModo.setAttribute("aria-pressed", String(carrusel));
+      botonModo.textContent = carrusel ? "Ver toda la lista" : "Recorrer hecho por hecho ▸";
+      recuadro.classList.toggle("modo-carrusel", carrusel);
+      nav.hidden = !carrusel;
+      pista.hidden = carrusel;
+      recuadro.scrollTop = 0;
       aplicar();
-      if (!completa) crono.scrollIntoView({ behavior: menosMovimiento ? "auto" : "smooth", block: "start" });
+    });
+    anterior.addEventListener("click", () => mover(-1));
+    siguiente.addEventListener("click", () => mover(1));
+    crono.addEventListener("keydown", (e) => {
+      if (!carrusel || e.target.closest("summary, a")) return;
+      if (e.key === "ArrowRight") { e.preventDefault(); mover(1); }
+      if (e.key === "ArrowLeft") { e.preventDefault(); mover(-1); }
     });
     aplicar();
   });
