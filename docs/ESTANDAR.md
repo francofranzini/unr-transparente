@@ -37,7 +37,7 @@ Este documento fija cómo se ve y cómo funciona el sitio. **Es la base de cualq
 
 ## 3. Funcionalidades (congeladas)
 
-- **Orden y anclas de las secciones:** `#salario` (01), `#ley` (02), `#transferencias` (03), `#control` (04), `#graduacion` (05), «Cómo leer los números» (06). Las direcciones `/salario`, `/ley`, etc. redirigen a su ancla.
+- **Orden y anclas de las secciones:** `#salario` (01), `#transferencias` (02), `#ley` (03), `#control` (04), «Cómo leer los números» (05). Graduación quedó fuera (ADR 0024). Las direcciones `/salario`, `/ley`, etc. redirigen a su ancla.
 - **Cada número abre su ficha** (documento, página, fecha de consulta, tipo de fuente, cálculo). Se escribe siempre con `num(eje, clave)`; nunca un número a mano en una plantilla.
 - **Cifras que cuentan desde 0:** `num(eje, clave, true)` en las filas de datos.
 - **Cronología de la ley:** «Línea de tiempo», vertical, de lo más antiguo a lo más reciente, dentro de un recuadro con scroll propio y el año fijo arriba; filtros por actor; detalle desplegable con «Cómo lo contaron»; recorrido «hecho por hecho» con sellos que nombran el acto (ADR 0030 y 0031, propuestas).
@@ -60,7 +60,7 @@ Se usan tal como están; no se crean clases ni estilos nuevos.
 | Línea de tiempo simple | `{{ linea_tiempo(eje, 4) }}` |
 | Pasos de un artículo | `<section class="articulo"><div class="paso"><h3><span>1</span>Título</h3><p>…</p></div></section>` |
 | Enlace a la ficha de un evento | `<a href="/ficha/evento/ID" hx-get="/ficha/evento/ID" hx-target="#ficha-contenido">…</a>` |
-| Gráfico acumulado con selector (solo sección 03, ADR 0022) | Ver `_seccion_transferencias.html`: SVG con las series `exigido`/`pagado`, botones `.actor` y tabla con fichas |
+| Gráfico acumulado con selector (solo sección 02, ADR 0022) | Ver `_seccion_transferencias.html`: SVG con las series `exigido`/`pagado`, botones `.actor` y tabla con fichas |
 
 ## 4 bis. Imagen de magnitud (ADR 0023)
 

@@ -45,10 +45,6 @@ def test_toda_cifra_tiene_fuentes(ejes):
             assert c.fuentes, f"{eje.clave}/{c.clave} sin fuentes"
 
 
-def test_graduacion_no_calcula_tasas(ejes):
-    assert all(c.unidad == "personas" for c in ejes["graduacion"].cifras)
-
-
 def test_arts_3_4_del_sistema(ejes):
     eje = ejes["ejecucion"]
     # Devengado 2025 de las actividades 14, 15 y 16, sumado para todas las universidades: 410.017 millones.

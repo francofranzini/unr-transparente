@@ -4,11 +4,11 @@ Tres frentes en paralelo, sobre la base fijada en [`docs/ESTANDAR.md`](../ESTAND
 
 | Persona | Frente | Sección del sitio | Archivo de tareas |
 |---|---|---|---|
-| **Nono** | Cronología de la Ley 27.795 | 02 — `#ley` | [`nono-cronologia-ley.md`](nono-cronologia-ley.md) |
-| **Fran** | Presupuesto y transferencias | 03 — `#transferencias` | [`fran-presupuesto.md`](fran-presupuesto.md) |
+| **Nono** | Cronología de la Ley 27.795 | 03 — `#ley` | [`nono-cronologia-ley.md`](nono-cronologia-ley.md) |
+| **Fran** | Presupuesto y transferencias | 02 — `#transferencias` | [`fran-presupuesto.md`](fran-presupuesto.md) |
 | **Tero** | Auditorías y control | 04 — `#control` | [`tero-auditorias.md`](tero-auditorias.md) |
 
-Salario (01) lo toma Fran (rama `fran/salario`, billete de poder de compra, ADR 0023). Graduación (05) no tiene responsable por ahora; sus pendientes están al final de este archivo.
+Salario (01) lo toma Fran (rama `fran/salario`, billete de poder de compra, ADR 0023). Graduación quedó fuera del sitio (ADR 0024); sus pendientes, al final de este archivo.
 
 ## Qué archivos son de cada uno
 
@@ -50,6 +50,6 @@ Si alguien necesita tocar un archivo de otro (por ejemplo, Tero quiere que un ev
 - Conseguir los instructivos de julio y agosto de 2026: la UNR no los publicó. Se pueden pedir por el [formulario de acceso a la información](https://transparencia.unr.edu.ar/formulario-informacion/).
 - Actualizar el IPC cuando el INDEC publique septiembre de 2026: `.venv/bin/python scripts/descargar_ipc.py`.
 
-**Graduación (05)**
+**Graduación (fuera del sitio; si vuelve, con fuente primaria)**
 - Ingresantes de la UNR desde 2016, para la tasa de egreso con desfase (ADR 0009). Fuentes: anuario de la SPU o pedido al rectorado.
 - Reemplazar los egresados de prensa (secundaria) por una fuente primaria de la UNR.

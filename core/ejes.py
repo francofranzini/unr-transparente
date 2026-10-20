@@ -139,7 +139,7 @@ def eje_ejecucion(repo: Repositorio, anio: str = "2026") -> Eje:
                             calculo=f"Día {dia} de {dias_anio} (fecha de corte del dato)"))
 
     _arts_3_4(repo, eje, anio, "SISTEMA_UNIVERSITARIO", "arts34-", "Todas las universidades", detalle=True)
-    _arts_3_4(repo, eje, anio, "UNR", "unr-arts34-", "UNR")
+    _arts_3_4(repo, eje, anio, "UNR", "unr-arts34-", "UNR", detalle=True)
 
     eje.supuestos = [
         "Transferencias del Tesoro (Programa 26); no incluye recursos propios.",
@@ -160,7 +160,9 @@ def _norma_transferencias(clave: str, anio: str) -> tuple[Norma, ...]:
     if "arts34-" not in clave:
         return ()
     resto = clave.split("arts34-", 1)[1]
-    if resto.startswith(("ref-", "acum-ref-", "piso-", "relacion-piso-")) or resto == f"relacion-{anio}":
+    if resto == "piso-mes":
+        return (NORMA_ART3, NORMA_ART4)
+    if resto.startswith(("ref-", "acum-piso-", "acum-ref-", "piso-", "relacion-piso-")) or resto == f"relacion-{anio}":
         return (NORMA_REFERENCIA,)
     if resto == "ipc-art3":
         return (NORMA_ART3,)
@@ -266,6 +268,9 @@ def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str
                                     "ARS corrientes", mes, f_ref, calculo=CALC_REFERENCIA))
             eje.cifras.append(Cifra(f"{prefijo}acum-tr-{mes}", f"{quien}: transferido, {etiqueta}", acum_tr,
                                     "ARS corrientes", mes, f_tr, calculo="Devengado acumulado, actividades 14, 15, 16 y 25"))
+            eje.cifras.append(Cifra(f"{prefijo}acum-piso-{mes}", f"{quien}: piso de diciembre de 2025, {etiqueta}",
+                                    acum_piso, "ARS corrientes", mes, ultimo_bim.fuentes,
+                                    calculo="Monto mensual de noviembre-diciembre de 2025 según el art. 4, sin actualizar, sumado mes a mes."))
             serie_anio.append({"mes": mes_legible(mes), "exigido": float(acum_piso) / 1e6,
                                "transferido": float(acum_tr) / 1e6})
         eje.cifras.append(Cifra(f"{prefijo}ref-{anio}", f"{quien}: referencia, enero a {hasta}", acum_ref,
@@ -278,6 +283,10 @@ def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str
                                 calculo="(Transferido ÷ referencia − 1) × 100. La referencia no es un monto que fije la ley."))
         eje.detalle.setdefault("acumulado_actual", {})[prefijo] = serie_anio
         eje.detalle["ventana_actual"] = f"enero a {hasta}"
+        eje.detalle["meses_actual"] = [m[5:] for m in ventana]
+        eje.cifras.append(Cifra(f"{prefijo}piso-mes", f"{quien}: monto mensual de noviembre-diciembre de 2025 según la ley",
+                                piso_mes, "ARS corrientes", "2025-12", ultimo_bim.fuentes,
+                                calculo="Último bimestre del art. 4 ÷ 2"))
         # Lectura principal para el año en curso (ADR 0024): el piso de diciembre de 2025, sin actualizar.
         piso = acum_piso
         eje.cifras.append(Cifra(f"{prefijo}piso-{anio}", f"{quien}: piso de diciembre de 2025, enero a {hasta}", piso,
@@ -339,7 +348,7 @@ def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str
 
     sin_asignar = [d for d in repo.buscar(entidad="CREDITO_NO_ASIGNADO", indicador="devengado")
                    if d.dimensiones.get("actividad_id") in lentes.ACTIVIDADES_ARTS_3_4 and d.periodo.startswith("2025-")]
-    if sin_asignar:
+    if sin_asignar and entidad == "SISTEMA_UNIVERSITARIO":
         eje.cifras.append(Cifra(f"{prefijo}sin-asignar", "Transferido en 2025 sin universidad asignada", sum(d.valor for d in sin_asignar), "ARS corrientes", "2025",
                                 tuple(sin_asignar), calculo="Devengado de «Universidades sin Discriminar», actividades 14, 15, 16 y 25"))
 
@@ -374,7 +383,7 @@ def _aviso_vigencia(punto: lentes.Punto) -> str:
     mes, desde = mes_largo(punto.periodo), mes_largo(punto.fuentes[0].periodo)
     if punto.vigencia == Vigencia.CONFIRMADA:
         return f"Para {mes} rige la escala de {desde}: un documento confirma que no hubo cambios."
-    return (f"La UNR todavía no publicó la escala de {mes}. Usamos la de {desde}, la última disponible; "
+    return (f"No hay escala publicada para {mes}. Usamos la de {desde}, la última disponible; "
             f"si hubo un aumento en el medio, este número cambia.")
 
 
@@ -508,22 +517,6 @@ def eje_control(repo: Repositorio) -> Eje:
     return eje
 
 
-def eje_graduacion(repo: Repositorio) -> Eje:
-    eje = Eje("graduacion", "Graduación", "¿Cuántos estudian y se reciben?")
-    for dato in sorted(repo.buscar(entidad="UNR", indicador="egresados"),
-                       key=lambda d: (d.dimensiones.get("nivel", ""), d.periodo)):
-        nivel = dato.dimensiones["nivel"]
-        eje.cifras.append(_directa(f"egresados-{nivel}-{dato.periodo}".lower().replace(" ", "-"),
-                                   f"Egresados {dato.periodo} — {nivel}", dato))
-    for dato in repo.buscar(entidad="UNR", indicador="alumnos"):
-        nivel = dato.dimensiones["nivel"]
-        eje.cifras.append(_directa(f"alumnos-{nivel}-{dato.periodo}".lower().replace("/", "-"),
-                                   f"Alumnos {dato.periodo} — {nivel}", dato))
-    eje.supuestos = ["Valores absolutos: no hay tasa de egreso hasta tener ingresantes por cohorte (ADR 0009)."]
-    eje.pendientes = ["Ingresantes de la UNR desde 2016, para la tasa de egreso con desfase n."]
-    return eje
-
-
 # Sellos del recorrido «hecho por hecho» (ADR 0031): nombran el acto, no lo califican, y se reparten entre
 # Congreso, Poder Ejecutivo y Justicia. El detalle evita leer el sello fuera de contexto; sin cifras, que van con ficha.
 SELLOS_LEY = {
@@ -563,7 +556,6 @@ CONSTRUCTORES = {
     "ley": eje_ley,
     "ejecucion": eje_ejecucion,
     "control": eje_control,
-    "graduacion": eje_graduacion,
 }
 
 

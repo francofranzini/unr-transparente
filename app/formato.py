@@ -47,3 +47,21 @@ def fecha_evento(fecha: str) -> str:
     if len(partes) == 2:
         return f"{MESES[int(partes[1]) - 1]} {partes[0]}"
     return partes[0]
+
+
+# Algunas fichas apuntan a un archivo de datos (un ZIP, un JSON): sirven para reproducir el número, no para que una
+# persona verifique la fuente. Para esas, la ficha lleva primero al sitio oficial y deja la descarga como secundaria.
+SITIOS = (
+    ("https://dgsiaf-repo.mecon.gob.ar/repository/pa/", "Presupuesto Abierto (Ministerio de Economía)",
+     "https://www.presupuestoabierto.gob.ar/sici/datos-abiertos"),
+    ("https://apis.datos.gob.ar/series/api/series/?ids=148.3_INIVELNAL_DICI_M_26", "Índice de precios al consumidor (INDEC)",
+     "https://www.indec.gob.ar/indec/web/Nivel4-Tema-3-5-31"),
+)
+
+
+def sitio(url: str) -> tuple[str, str] | None:
+    """(nombre, url) del sitio oficial donde se publica un archivo de datos, o None si la URL ya es la página."""
+    for prefijo, nombre, pagina in SITIOS:
+        if url.startswith(prefijo):
+            return nombre, pagina
+    return None

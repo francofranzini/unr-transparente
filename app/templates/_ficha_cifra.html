@@ -10,8 +10,9 @@
   <dd>{% for n in cifra.normas %}<p><a href="{{ n.url }}" rel="noopener" target="_blank">{{ n.texto }}</a><br><small>{{ n.cita }}</small></p>{% endfor %}</dd>{% endif %}
   <dt>Documento</dt>
   <dd>{% for (documento, url, pagina, tipo, consultado), n in documentos.items() %}
-    <p><a href="{{ url }}" rel="noopener" target="_blank">{{ documento }}</a>{% if pagina %}, pág. {{ pagina }}{% endif %}
-    <br><small>consultado {{ consultado.strftime("%d/%m/%Y") }}{% if n > 1 %} · {{ n }} registros{% endif %}</small></p>
+    {% set s = fmt.sitio(url) %}
+    <p><a href="{{ s[1] if s else url }}" rel="noopener" target="_blank">{{ documento }}</a>{% if pagina %}, pág. {{ pagina }}{% endif %}
+    <br><small>{% if s %}En {{ s[0] }} · <a href="{{ url }}" rel="noopener">descargar los datos</a> · {% endif %}consultado {{ consultado.strftime("%d/%m/%Y") }}{% if n > 1 %} · {{ n }} registros{% endif %}</small></p>
   {% endfor %}</dd>
   {% if notas %}<dt>Notas</dt><dd>{% for nota in notas %}<p>{{ nota }}</p>{% endfor %}</dd>{% endif %}
 </dl>

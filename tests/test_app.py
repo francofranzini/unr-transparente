@@ -135,6 +135,17 @@ def test_transferencias_muestra_el_caso_unr_con_grafico(cliente):
     assert "−42,3 %" in texto and "−32,4 %" in texto
 
 
+@pytest.mark.parametrize("panel, cifra", [
+    ("arts34-2025", "ejecucion/arts34-exigido"), ("unr-arts34-2025", "ejecucion/unr-arts34-exigido"),
+    ("arts34-2026", "ejecucion/arts34-piso-2026"), ("unr-arts34-2026", "ejecucion/unr-arts34-piso-2026"),
+])
+def test_de_donde_sale_sigue_la_seleccion(cliente, panel, cifra):
+    # «¿De dónde sale este número?» explica el número de las universidades y el año elegidos.
+    texto = cliente.get("/").text
+    articulo = re.search(rf'<section class="articulo" data-panel="{panel}".*?</section>', texto, flags=re.S)
+    assert articulo and f'/ficha/cifra/{cifra}"' in articulo[0]
+
+
 def test_salario_muestra_el_billete(cliente):
     texto = cliente.get("/").text
     assert "data-billete" in texto and 'href="/ficha/cifra/salario/compra-2026-08"' in texto
@@ -155,3 +166,14 @@ def test_las_cifras_de_la_ley_citan_la_norma(cliente, ficha, norma):
 def test_antes_de_que_rija_la_ley_no_hay_norma(cliente):
     # Mayo de 2025: pérdida de poder de compra, pero el art. 5 todavía no regía.
     assert "<dt>Norma</dt>" not in cliente.get("/ficha/cifra/salario/poder-2025-05", headers={"HX-Request": "true"}).text
+
+
+@pytest.mark.parametrize("ficha, sitio", [
+    ("ejecucion/arts34-transferido", "https://www.presupuestoabierto.gob.ar/sici/datos-abiertos"),
+    ("ejecucion/arts34-ipc-art3", "https://www.indec.gob.ar/indec/web/Nivel4-Tema-3-5-31"),
+])
+def test_la_ficha_lleva_al_sitio_oficial_y_no_a_una_descarga(cliente, ficha, sitio):
+    # El documento abre la página oficial; el archivo de datos queda como «descargar los datos».
+    texto = cliente.get(f"/ficha/cifra/{ficha}", headers={"HX-Request": "true"}).text
+    documento = re.search(r'<a href="([^"]+)" rel="noopener" target="_blank">', texto.split("<dt>Documento</dt>")[1])
+    assert documento[1] == sitio and "descargar los datos" in texto

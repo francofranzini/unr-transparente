@@ -2,7 +2,7 @@
 {% from "_macros.html" import num, encabezado %}
 {% block contenido %}
 {% set es = ejes["salario"] %}{% set el = ejes["ley"] %}{% set ej = ejes["ejecucion"] %}
-{% set ec = ejes["control"] %}{% set eg = ejes["graduacion"] %}
+{% set ec = ejes["control"] %}
 {% set brecha = es.cifra("brecha-art5") %}
 {% set hoy = el.eventos|selectattr("tipo", "equalto", "estado")|list|last %}
 {% set hoy_texto = hoy.titulo|replace("Hoy: ", "") if hoy else "" %}
@@ -23,24 +23,22 @@
 
 {# Motivación, antes de los datos #}
 <section class="porque revelar">
-  <blockquote>Para que cualquier persona, estudie o no en una universidad, pueda entender la discusión sobre el financiamiento sin tener que creerle a nadie.</blockquote>
-  <p>No te decimos qué pensar: cada número se puede tocar para ver el documento de donde sale. Hecho en una hackatón sobre la universidad pública.</p>
+  <blockquote>Lo que manda la ley, lo que llegó y la diferencia.</blockquote>
+  <p>Medimos contra la Ley 27.795. Tocá cualquier número para ver el documento y la cuenta de donde sale. Hecho en una hackatón sobre la universidad pública.</p>
 </section>
 
 
 {% include "_seccion_salario.html" %}
 
-{% include "_seccion_ley.html" %}
-
 {% include "_seccion_transferencias.html" %}
+
+{% include "_seccion_ley.html" %}
 
 {% include "_seccion_control.html" %}
 
-{% include "_seccion_graduacion.html" %}
-
 {# Cómo leer #}
 <section class="seccion como-leer">
-  {{ encabezado("06", "Cómo leer los números", "Tocá cualquier número y mirá de dónde sale.") }}
+  {{ encabezado("05", "Cómo leer los números", "Tocá cualquier número y mirá de dónde sale.") }}
   <div class="demo revelar">
     <p class="demo-frase">En {{ es.detalle.ultimo_ipc }}, a un profesor adjunto se le pagó {{ num(es, "pagado") }}.</p>
     <span class="demo-flecha" aria-hidden="true">→</span>
