@@ -20,7 +20,7 @@
     <details class="universidad" open>
       <summary><span class="universidad-nombre">{{ u.nombre }} ({{ u.sigla }})</span><span class="universidad-cuenta">{{ u.hechos }} hechos desde {{ u.desde }}</span></summary>
       <p class="aviso">Incluye hechos que alcanzan a todas las universidades nacionales, como los dictámenes de la Procuración del Tesoro y los convenios del CIN.</p>
-      {{ cronologia(u.eventos, "los controles sobre la " ~ u.sigla, "", filtros=ec.detalle.filtros, actores_id=u.actores, titulo="") }}
+      {{ cronologia(u.eventos, "los controles sobre la " ~ u.sigla, "", filtros=ec.detalle.filtros, actores_id=u.actores, titulo="", transicion=True) }}
     </details>
     {% endfor %}
   </div>

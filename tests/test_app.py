@@ -104,6 +104,13 @@ def test_control_tiene_una_cronologia_por_universidad(cliente):
     assert inicio < control.index("data-cronologia-scroll")
 
 
+def test_los_recorridos_de_ley_y_control_tienen_transicion(cliente):
+    # ADR 0025: en las dos cronologías el paso entre hechos se desliza; en la ley, el sello cae después.
+    html = cliente.get("/").text
+    for ancla in ("ley", "control"):
+        assert "data-cronologia data-transicion" in _seccion(html, ancla)
+
+
 def test_control_explica_quien_controla_debajo_de_la_pregunta(cliente):
     # ADR 0025: debajo de la pregunta, plegado («Ver más» / «Ver menos»), el texto sobre la autarquía de las universidades
     # y quién las audita (AGN y SIGEN); el último control externo ya está en la línea de tiempo, no en un recuadro aparte.

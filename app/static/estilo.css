@@ -286,6 +286,18 @@ text.rotulo { fill: var(--tinta); font-size: 12px; font-weight: 700; text-transf
   100% { opacity: .92; transform: scale(1) rotate(-4deg); }
 }
 @keyframes golpe { 0%, 100% { translate: 0; } 25% { translate: 0 3px; } 50% { translate: -2px -1px; } 75% { translate: 1px 1px; } }
+/* Paso suave entre hechos del recorrido, en las cronologías con data-transicion (ADR 0025) */
+@media (prefers-reduced-motion: no-preference) {
+  [data-transicion] .hito.sale-izq { animation: salir-izq .18s ease-in forwards; }
+  [data-transicion] .hito.sale-der { animation: salir-der .18s ease-in forwards; }
+  [data-transicion] .hito.entra-der { animation: entrar-der .28s cubic-bezier(.2, .7, .2, 1) both; }
+  [data-transicion] .hito.entra-izq { animation: entrar-izq .28s cubic-bezier(.2, .7, .2, 1) both; }
+  [data-transicion] .hito:is(.entra-der, .entra-izq) .sello { opacity: 0; } /* el sello cae después de que entra el hecho */
+}
+@keyframes salir-izq { to { opacity: 0; translate: -32px 0; } }
+@keyframes salir-der { to { opacity: 0; translate: 32px 0; } }
+@keyframes entrar-der { from { opacity: 0; translate: 32px 0; } }
+@keyframes entrar-izq { from { opacity: 0; translate: -32px 0; } }
 
 /* Entrada escalonada de cada hecho */
 @media (prefers-reduced-motion: no-preference) {

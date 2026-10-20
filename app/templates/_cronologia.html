@@ -6,10 +6,11 @@
    - actores_tipo / actores_id: {tipo o id de evento: (clase, rótulo)}; el id manda sobre el tipo.
    - sellos: {id de evento: (texto, detalle)}.
    - antecedente: prefijo de id de los hechos que se muestran como antecedente.
-   - titulo y guia: vacíos cuando la sección ya los pone afuera (p. ej. Control, una cronología por universidad). #}
-{% macro cronologia(eventos, nombre, guia, filtros, actores_tipo={}, actores_id={}, sellos={}, antecedente="", titulo="Línea de tiempo") %}
+   - titulo y guia: vacíos cuando la sección ya los pone afuera (p. ej. Control, una cronología por universidad).
+   - transicion: en el recorrido, el paso de un hecho al siguiente se desliza en lugar de cambiar de golpe. #}
+{% macro cronologia(eventos, nombre, guia, filtros, actores_tipo={}, actores_id={}, sellos={}, antecedente="", titulo="Línea de tiempo", transicion=False) %}
 {% set hitos = eventos|rejectattr("tipo", "equalto", "estado")|list %}
-<div class="cronologia" data-cronologia>
+<div class="cronologia" data-cronologia{% if transicion %} data-transicion{% endif %}>
   {% if titulo %}<h3 class="cronologia-titulo">{{ titulo }}</h3>{% endif %}
   {% if guia %}<p class="cronologia-guia">{{ guia }}</p>{% endif %}
   <div class="filtros revelar" role="group" aria-label="Filtrar por actor">

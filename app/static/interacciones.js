@@ -69,7 +69,7 @@
       recuadro.classList.add("golpe");
     }
 
-    function aplicar() {
+    function aplicar(conSello = true) {
       const activos = botones.filter((b) => b.getAttribute("aria-pressed") === "true").map((b) => b.dataset.filtro);
       coinciden = hitos.filter((h) => !activos.length || activos.includes(h.dataset.actor));
       hitos.forEach((h) => { h.hidden = true; h.classList.remove("visible", "actual"); });
@@ -79,7 +79,7 @@
         if (hito) {
           hito.hidden = false;
           hito.classList.add("visible", "actual");
-          sellar(hito);
+          if (conSello) sellar(hito);
         }
         anios.forEach((a) => { a.hidden = true; });
         contador.textContent = coinciden.length ? `Hecho ${actual + 1} de ${coinciden.length}` : "Ningún hecho con este filtro";
@@ -100,12 +100,47 @@
       });
     }
 
+    // Con data-transicion (ADR 0025), el hecho actual sale hacia un lado, el nuevo entra desde el otro y el recuadro
+    // acompaña el cambio de alto; si tiene sello, se estampa cuando el hecho terminó de entrar. Sin data-transicion, o
+    // con «reducir movimiento», el cambio es inmediato.
+    const conTransicion = "transicion" in crono.dataset && !menosMovimiento;
+    const SALIDA = 180, ENTRADA = 280;
+    let animando = false;
+
     function mover(paso) {
-      if (!carrusel) return;
+      if (!carrusel || animando) return;
       const nuevo = Math.min(Math.max(actual + paso, 0), coinciden.length - 1);
       if (nuevo === actual) return;
-      actual = nuevo;
-      aplicar();
+      if (!conTransicion) {
+        actual = nuevo;
+        aplicar();
+        return;
+      }
+      animando = true;
+      const viejo = coinciden[actual];
+      const altoAntes = recuadro.offsetHeight;
+      viejo.classList.add(paso > 0 ? "sale-izq" : "sale-der");
+      setTimeout(() => {
+        viejo.classList.remove("sale-izq", "sale-der");
+        actual = nuevo;
+        aplicar(false);
+        const entrante = coinciden[actual];
+        entrante.classList.add(paso > 0 ? "entra-der" : "entra-izq");
+        const altoDespues = recuadro.offsetHeight;
+        recuadro.style.overflow = "hidden";
+        recuadro.style.height = `${altoAntes}px`;
+        void recuadro.offsetHeight;
+        recuadro.style.transition = `height ${ENTRADA}ms ease`;
+        recuadro.style.height = `${altoDespues}px`;
+        setTimeout(() => {
+          entrante.classList.remove("entra-der", "entra-izq");
+          recuadro.style.removeProperty("height");
+          recuadro.style.removeProperty("transition");
+          recuadro.style.removeProperty("overflow");
+          animando = false;
+          sellar(entrante);
+        }, ENTRADA);
+      }, SALIDA);
     }
 
     botones.forEach((b) => b.addEventListener("click", () => {
