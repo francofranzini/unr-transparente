@@ -75,3 +75,62 @@ def test_julio_y_agosto_2026_sin_grilla_propia(reales):
     assert puntos["2026-07"].vigencia == Vigencia.NO_CONFIRMADA
     assert puntos["2026-08"].valor == puntos["2026-06"].valor
     assert puntos["2024-01"].vigencia == Vigencia.CONFIRMADA
+
+
+# --- Ley 27.795, arts. 3 y 4 ---------------------------------------------------
+
+def _devengado(periodo: str, valor: str, actividad: str = "14") -> Dato:
+    return Dato(id=f"x-dev-act{actividad}-{periodo}", valor=Decimal(valor), unidad="ARS corrientes", entidad="UNR",
+                indicador="devengado", periodo=periodo, tipo_fuente="primaria", documento="Doc",
+                url="https://ejemplo.org", consultado=date(2026, 10, 19), dimensiones={"actividad_id": actividad})
+
+
+def _ipc_arts_3_4() -> dict[str, Dato]:
+    valores = {"2024-04": "100", "2024-12": "150", "2025-02": "165", "2025-04": "180", "2025-06": "195",
+               "2025-08": "210", "2025-10": "225"}
+    return {p: _dato(p, v, "ipc") for p, v in valores.items()}
+
+
+def test_partida_nivel_septiembre_suma_actividades_y_excluye_salarios():
+    devengado = [_devengado("2024-09", "90", "14"), _devengado("2024-09", "6", "15"), _devengado("2024-09", "4", "16"),
+                 _devengado("2024-09", "5000", "12"), _devengado("2024-08", "999", "14")]
+    assert lentes.partida_arts_3_4(devengado, "nivel_sep_2024").valor == Decimal("100")
+
+
+def test_partida_promedio_2024_exige_los_doce_meses():
+    # 6 meses de 50 y 6 de 150: 1.200 / 12 = 100.
+    devengado = [_devengado(m, "50" if i < 6 else "150") for i, m in enumerate(lentes._meses("2024-01", "2024-12"))]
+    assert lentes.partida_arts_3_4(devengado, "promedio_2024").valor == Decimal("100")
+    with pytest.raises(ValueError):
+        lentes.partida_arts_3_4(devengado[:11], "promedio_2024")
+
+
+def test_factor_art3_a_mano():
+    # IPC 150 en dic-2024 sobre 100 en abr-2024: +50 %.
+    assert lentes.factor_art3(_ipc_arts_3_4()).valor == Decimal("1.5")
+
+
+def test_exigido_arts_3_4_a_mano():
+    # Partida 100 por mes. Factores por bimestre: 1,5 · 1,5×165/150 = 1,65 · 1,8 · 1,95 · 2,1 · 2,25.
+    # Suma de factores = 11,25; por 2 meses y por 100: 2.250.
+    partida = lentes.partida_arts_3_4([_devengado("2024-09", "100")], "nivel_sep_2024")
+    bimestres = lentes.bimestres_art4(partida, _ipc_arts_3_4())
+    assert [r.valor for r in bimestres] == [Decimal(v) for v in ("300", "330", "360", "390", "420", "450")]
+    exigido = lentes.exigido_arts_3_4(partida, _ipc_arts_3_4())
+    assert exigido.valor == Decimal("2250")
+    assert len({d.id for d in exigido.fuentes}) == len(exigido.fuentes)
+    assert any("Art. 4" in s for s in exigido.supuestos)
+
+
+def test_transferido_arts_3_4_solo_el_anio_y_las_actividades():
+    devengado = [_devengado("2025-01", "700", "14"), _devengado("2025-12", "800", "25"),
+                 _devengado("2025-03", "9000", "13"), _devengado("2024-12", "999", "14")]
+    assert lentes.transferido_arts_3_4(devengado, "2025").valor == Decimal("1500")
+
+
+def test_meses_art4_reparten_cada_bimestre_en_dos():
+    # Mismos factores que el caso anterior: 150, 150, 165, 165, ..., 225, 225; suman 2.250.
+    partida = lentes.partida_arts_3_4([_devengado("2024-09", "100")], "nivel_sep_2024")
+    meses = lentes.meses_art4(partida, _ipc_arts_3_4())
+    assert [r.valor for r in meses[:4]] == [Decimal("150"), Decimal("150"), Decimal("165"), Decimal("165")]
+    assert len(meses) == 12 and sum(r.valor for r in meses) == Decimal("2250")

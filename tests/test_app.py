@@ -60,3 +60,10 @@ def test_textos_sin_adjetivos_valorativos(cliente, ruta):
     html = re.sub(r'<ul class="hito-medios">.*?</ul>', " ", cliente.get(ruta).text, flags=re.S)
     texto = re.sub(r"<[^>]+>", " ", html).lower()
     assert [p for p in VALORATIVOS if p in texto] == []
+
+
+def test_transferencias_muestra_el_caso_unr_con_grafico(cliente):
+    texto = cliente.get("/").text
+    assert "data-bloque-arts34" in texto
+    assert 'data-panel="unr-arts34-"' in texto and 'data-panel="arts34-"' in texto
+    assert "−42,3 %" in texto and "−32,4 %" in texto

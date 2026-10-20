@@ -1,22 +1,244 @@
-{% from "_macros.html" import num, encabezado, linea_tiempo %}
+{% from "_macros.html" import num, encabezado %}
+{% set evento = "/ficha/evento/" %}
+{% macro pila(fajos, serie, maximo, clase="solo-ancho") -%}
+{#- Pila de fajos (ADR 0022). La pila de lo que correspondía tiene siempre `maximo` fajos y la de lo recibido,
+    la cantidad proporcional: la diferencia de altura es la real. Sin JS o con «reducir movimiento», quietas. -#}
+{%- set alto = maximo * 5 + 6 -%}
+<svg class="pila {{ clase }}" display="block" viewBox="0 0 96 {{ alto }}" width="96" height="{{ alto }}" aria-hidden="true">
+  {%- for i in range(fajos) %}
+  {%- set y = alto - (i + 1) * 5 %}{% set dx = [0, 3, -2, 2, -3, 1, -1][i % 7] %}
+  <g data-fajo><rect x="{{ 8 + dx }}" y="{{ y }}" width="80" height="4.2" rx="1" fill="var(--fondo)" stroke="var({{ serie }})" stroke-width="1"/>
+  <rect x="{{ 42 + dx }}" y="{{ y }}" width="12" height="4.2" fill="var({{ serie }})"/></g>
+  {%- endfor %}
+</svg>
+{%- endmacro %}
 <section class="seccion" id="transferencias">
-  {{ encabezado("03", "Transferencias", "¿Cuánto del presupuesto " ~ ej.cifra("unr-ejecucion").periodo ~ " llegó a la UNR?") }}
-  <div class="datos revelar">
-    <div class="dato dato-grande"><small>Del crédito vigente</small>{{ num(ej, "unr-ejecucion", true) }}</div>
-    <div class="dato"><small>Crédito vigente UNR</small>{{ num(ej, "unr-credito_vigente", true) }}</div>
-    <div class="dato"><small>Ya transferido</small>{{ num(ej, "unr-devengado", true) }}</div>
-    <div class="dato"><small>Año transcurrido</small>{{ num(ej, "anio-transcurrido", true) }}</div>
+  {{ encabezado("03", "Transferencias", "¿Recibieron las universidades lo que les correspondía por ley en 2025?") }}
+
+  {# UNR / todas las universidades: un selector para las cifras con fajos y el gráfico (ADR 0022) #}
+  {% set entidades = [("arts34-", "Todas las universidades", "Recibieron, frente a lo que les correspondía", "Les correspondían", "Recibieron"),
+                      ("unr-arts34-", "UNR", "Recibió, frente a lo que le correspondía", "Le correspondían", "Recibió")] %}
+  {% set FAJOS = 27 %}
+  <div data-bloque-arts34>
+    <div class="filtros revelar" role="group" aria-label="Elegir qué universidades mostrar">
+      <span class="filtros-rotulo">Ver:</span>
+      {% for prefijo, nombre, _, _, _ in entidades %}
+      <button type="button" class="actor actor-otro" data-entidad="{{ prefijo }}" aria-pressed="{{ 'true' if loop.first else 'false' }}"><i></i>{{ nombre }}</button>
+      {% endfor %}
+    </div>
+
+    {% for prefijo, nombre, r_relacion, r_exigido, r_recibido in entidades %}
+    {% set recibidos = (FAJOS * ej.cifra(prefijo ~ "transferido").valor / ej.cifra(prefijo ~ "exigido").valor)|round|int %}
+    <div data-panel="{{ prefijo }}" data-cifras{% if not loop.first %} hidden{% endif %}>
+      <div class="datos" style="align-items: flex-end">
+        <div class="dato dato-grande"><small>{{ r_relacion }}</small><span class="rojo">{{ num(ej, prefijo ~ "relacion") }}</span></div>
+        <div class="dato"><small>{{ r_exigido }}</small>{{ pila(FAJOS, "--serie-2", FAJOS) }}{{ num(ej, prefijo ~ "exigido") }}</div>
+        <div class="dato"><small>{{ r_recibido }}</small>{{ pila(recibidos, "--serie-1", FAJOS) }}{{ num(ej, prefijo ~ "transferido") }}</div>
+        {# En celular, las dos pilas lado a lado para que se comparen #}
+        <div class="solo-angosto" style="flex-basis: 100%">
+          <div style="display: flex; gap: 24px; align-items: flex-end">
+            <div><small>{{ r_exigido }}</small>{{ pila(FAJOS, "--serie-2", FAJOS, "") }}</div>
+            <div><small>{{ r_recibido }}</small>{{ pila(recibidos, "--serie-1", FAJOS, "") }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+    {% set formatos = {"ancho": {"w": 720, "h": 300, "izq": 72, "der": 128, "sup": 24, "inf": 28},
+                       "angosto": {"w": 360, "h": 280, "izq": 58, "der": 82, "sup": 22, "inf": 26}} %}
+    {# Fechas de la ley sobre el eje: cada punto es el acumulado a fin de mes (ene = 0 … dic = 11). #}
+    {% set hitos = [(6 + 21 / 31, "Sanción", "end"), (8 + 21 / 31, "Publicación", "start")] %}
+    <figure class="grafico revelar">
+      <figcaption>Acumulado de 2025, en millones de pesos de cada mes.</figcaption>
+      {% for prefijo, nombre, _, _, _ in entidades %}
+      {% set serie = ej.detalle.acumulado[prefijo] %}
+      {% set maximo = serie|map(attribute="exigido")|max %}
+      {% set pasos = [500, 1000, 2500, 5000, 10000, 25000, 50000, 100000, 150000, 250000]|select("ge", maximo / 5)|list %}
+      {% set paso = pasos[0] %}
+      {% set tope = paso * ((maximo // paso) + 1) %}
+      <div data-panel="{{ prefijo }}"{% if not loop.first %} hidden{% endif %}>
+        {% for formato, f in formatos.items() %}
+        {% set uw = f.w - f.izq - f.der %}{% set uh = f.h - f.sup - f.inf %}
+        {% set ns = namespace(exigido="", transferido="", ida="", vuelta="", puntos=[]) %}
+        {% for p in serie %}
+          {% set x = (f.izq + uw * loop.index0 / 11)|round(1) %}
+          {% set ye = (f.sup + uh * (1 - p.exigido / tope))|round(1) %}
+          {% set yt = (f.sup + uh * (1 - p.transferido / tope))|round(1) %}
+          {% set ns.exigido = ns.exigido ~ ("M" if loop.first else " L") ~ x ~ "," ~ ye %}
+          {% set ns.transferido = ns.transferido ~ ("M" if loop.first else " L") ~ x ~ "," ~ yt %}
+          {% set ns.ida = ns.ida ~ " " ~ x ~ "," ~ ye %}
+          {% set ns.vuelta = x ~ "," ~ yt ~ " " ~ ns.vuelta %}
+          {% set ns.puntos = ns.puntos + [{"x": x, "mes": p.mes, "exigido": p.exigido, "transferido": p.transferido}] %}
+        {% endfor %}
+        {% set fin = serie[-1] %}
+        {% set xf = f.w - f.der %}
+        <div class="grafico-lienzo solo-{{ formato }}" data-puntos='{{ ns.puntos|tojson }}'>
+          <svg viewBox="0 0 {{ f.w }} {{ f.h }}" role="img"
+               aria-label="{{ nombre }}: lo que correspondía según los arts. 3 y 4 y lo transferido, acumulado por mes en 2025. Detalle en la tabla de abajo.">
+            {% for i in range(0, (tope // paso)|int + 1) %}
+              {% set yv = (f.sup + uh * (1 - i * paso / tope))|round(1) %}
+              <line class="grilla" x1="{{ f.izq }}" x2="{{ xf }}" y1="{{ yv }}" y2="{{ yv }}"/>
+              <text class="eje-texto" x="{{ f.izq - 8 }}" y="{{ yv + 4 }}" text-anchor="end">{{ "0" if i == 0 else "$ " ~ "{:,.0f}".format(i * paso).replace(",", ".") ~ " M" }}</text>
+            {% endfor %}
+            {% for p in ns.puntos %}{% if formato == "ancho" or loop.index0 is even %}
+              <text class="eje-texto" x="{{ p.x }}" y="{{ f.h - 8 }}" text-anchor="middle">{{ p.mes[:3] }}</text>
+            {% endif %}{% endfor %}
+            {% for posicion, rotulo, ancla in hitos %}
+              {% set xh = (f.izq + uw * posicion / 11)|round(1) %}
+              <line class="cruz" x1="{{ xh }}" x2="{{ xh }}" y1="{{ f.sup }}" y2="{{ f.h - f.inf }}" stroke-dasharray="3 4"/>
+              <text class="eje-texto" x="{{ xh + (-4 if ancla == "end" else 4) }}" y="{{ f.sup - 8 }}" text-anchor="{{ ancla }}">{{ rotulo }}</text>
+            {% endfor %}
+            <polygon points="{{ ns.ida }} {{ ns.vuelta }}" fill="var(--serie-2)" fill-opacity=".14"/>
+            <path class="linea exigido" d="{{ ns.exigido }}"/>
+            <path class="linea pagado" d="{{ ns.transferido }}"/>
+            <circle class="punto exigido" cx="{{ xf }}" cy="{{ (f.sup + uh * (1 - fin.exigido / tope))|round(1) }}" r="4"/>
+            <circle class="punto pagado" cx="{{ xf }}" cy="{{ (f.sup + uh * (1 - fin.transferido / tope))|round(1) }}" r="4"/>
+            <text class="rotulo" x="{{ xf + 10 }}" y="{{ (f.sup + uh * (1 - fin.exigido / tope) + 4)|round(1) }}">Correspondía</text>
+            <text class="rotulo" x="{{ xf + 10 }}" y="{{ (f.sup + uh * (1 - fin.transferido / tope) + 4)|round(1) }}">Se transfirió</text>
+            <line class="cruz" data-cruz x1="0" x2="0" y1="{{ f.sup }}" y2="{{ f.h - f.inf }}" visibility="hidden"/>
+            <rect class="zona" x="{{ f.izq }}" y="0" width="{{ uw }}" height="{{ f.h }}"/>
+          </svg>
+          <div class="tooltip" hidden></div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+      <p class="leyenda"><span class="clave exigido"></span>Correspondía según la ley
+        <span class="clave pagado"></span>Se transfirió (devengado)</p>
+    </figure>
   </div>
+  <script>
+  (() => {
+    const bloque = document.currentScript.previousElementSibling;
+    const botones = [...bloque.querySelectorAll("[data-entidad]")];
+    const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window);
+
+    // Cifras que cuentan desde 0 y fajos que caen, cada vez que se muestra un panel.
+    const formato = (v, d) => v.toLocaleString("es-AR", { minimumFractionDigits: d, maximumFractionDigits: d });
+    function contar(el) {
+      const final = el.dataset.final || (el.dataset.final = el.textContent.trim());
+      const m = final.match(/^(.*?)(−?)(\d[\d.]*(?:,\d+)?)(.*)$/);
+      if (!m) return;
+      const [, antes, signo, numero, despues] = m;
+      const decimales = (numero.split(",")[1] || "").length;
+      const objetivo = parseFloat(numero.replace(/\./g, "").replace(",", "."));
+      const turno = (el.dataset.turno = String(Number(el.dataset.turno || 0) + 1));
+      const inicio = performance.now(), duracion = 1300;
+      const paso = (t) => {
+        if (el.dataset.turno !== turno) return;
+        const p = Math.min((t - inicio) / duracion, 1), suave = 1 - Math.pow(1 - p, 3);
+        el.textContent = p < 1 ? antes + signo + formato(objetivo * suave, decimales) + despues : final;
+        if (p < 1) requestAnimationFrame(paso);
+      };
+      requestAnimationFrame(paso);
+    }
+    function animar(panel) {
+      if (quieto) return;
+      panel.querySelectorAll(".num").forEach(contar);
+      panel.querySelectorAll(".pila").forEach((pila) => pila.querySelectorAll("[data-fajo]").forEach((f, i) => {
+        f.getAnimations().forEach((a) => a.cancel());
+        f.animate([{ transform: "translateY(-48px)", opacity: 0 }, { transform: "none", opacity: 1 }],
+                  { duration: 320, delay: 200 + i * 70, easing: "cubic-bezier(.2,.8,.3,1)", fill: "both" });
+      }));
+    }
+    const visible = () => bloque.querySelector("[data-cifras]:not([hidden])");
+
+    botones.forEach((b) => b.addEventListener("click", () => {
+      if (b.getAttribute("aria-pressed") === "true") return;
+      botones.forEach((o) => o.setAttribute("aria-pressed", o === b ? "true" : "false"));
+      bloque.querySelectorAll("[data-panel]").forEach((p) => { p.hidden = p.dataset.panel !== b.dataset.entidad; });
+      animar(visible());
+    }));
+
+    if (!quieto) {
+      bloque.querySelectorAll("[data-fajo]").forEach((f) => { f.style.opacity = 0; });
+      const obs = new IntersectionObserver((entradas) => {
+        if (!entradas.some((e) => e.isIntersecting)) return;
+        obs.disconnect();
+        animar(visible());
+      }, { threshold: 0.3 });
+      obs.observe(bloque.querySelector(".filtros"));
+    }
+
+    // Tooltip del gráfico
+    const m = (v) => "$ " + Math.round(v).toLocaleString("es-AR") + " M";
+    bloque.querySelectorAll(".grafico-lienzo").forEach((lienzo) => {
+      const svg = lienzo.querySelector("svg"), zona = lienzo.querySelector(".zona"), cruz = lienzo.querySelector("[data-cruz]");
+      const tip = lienzo.querySelector(".tooltip"), puntos = JSON.parse(lienzo.dataset.puntos), vb = svg.viewBox.baseVal;
+      zona.addEventListener("pointermove", (ev) => {
+        const r = svg.getBoundingClientRect(), xv = (ev.clientX - r.left) * vb.width / r.width;
+        const p = puntos.reduce((a, b) => Math.abs(b.x - xv) < Math.abs(a.x - xv) ? b : a);
+        cruz.setAttribute("x1", p.x); cruz.setAttribute("x2", p.x); cruz.setAttribute("visibility", "visible");
+        tip.innerHTML = `<strong>Hasta ${p.mes}</strong><br>Correspondía: ${m(p.exigido)}<br>Se transfirió: ${m(p.transferido)}`;
+        tip.hidden = false;
+        tip.style.left = Math.max(0, Math.min(p.x * r.width / vb.width + 12, r.width - tip.offsetWidth)) + "px";
+      });
+      zona.addEventListener("pointerleave", () => { tip.hidden = true; cruz.setAttribute("visibility", "hidden"); });
+    });
+  })();
+  </script>
+
+  <p class="aviso">Funcionamiento, hospitales, ciencia y técnica y extensión (arts. 3 y 4 de la Ley 27.795).
+     La ley es de octubre de 2025, pero manda actualizar estos montos desde enero de ese año.
+     El Poder Ejecutivo suspendió su ejecución
+     (<a href="{{ evento }}ley-27795-promulgacion" hx-get="{{ evento }}ley-27795-promulgacion" hx-target="#ficha-contenido">Decreto 759/2025</a>);
+     un juez declaró inconstitucional esa suspensión y el Gobierno apeló
+     (<a href="{{ evento }}ley-27795-fallo-fondo" hx-get="{{ evento }}ley-27795-fallo-fondo" hx-target="#ficha-contenido">octubre de 2026</a>).</p>
+
   <details class="mas-info">
-    <summary>Ver el detalle del sistema</summary>
-    <table class="tabla">
-      <thead><tr><th></th><th>Vigente</th><th>Devengado</th><th>%</th></tr></thead>
-      <tbody>
-        <tr><th>UNR</th><td data-r="Vigente">{{ num(ej, "unr-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "unr-devengado") }}</td><td data-r="%">{{ num(ej, "unr-ejecucion") }}</td></tr>
-        <tr><th>61 universidades</th><td data-r="Vigente">{{ num(ej, "sistema-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "sistema-devengado") }}</td><td data-r="%">{{ num(ej, "sistema-ejecucion") }}</td></tr>
-        <tr><th>Sin universidad asignada</th><td data-r="Vigente">{{ num(ej, "no-asignado-credito_vigente") }}</td><td data-r="Devengado">{{ num(ej, "no-asignado-devengado") }}</td><td data-r="%" class="sin-dato">—</td></tr>
-      </tbody>
-    </table>
-    <p class="aviso">Transferencias del Tesoro (Programa 26). Falta comparar con lo que exigen los arts. 3 y 4 de la Ley 27.795.</p>
+    <summary>¿De dónde sale este número?</summary>
+    <section class="articulo">
+      <div class="cuenta">
+        <table class="tabla">
+          <tbody>
+            <tr><th>Partida: lo transferido en septiembre de 2024</th><td data-r="">{{ num(ej, "arts34-partida") }} por mes</td></tr>
+            <tr><th>× inflación de mayo a diciembre de 2024 (art. 3)</th><td data-r="">+{{ num(ej, "arts34-ipc-art3") }}</td></tr>
+            <tr><th>× inflación de cada bimestre de 2025 (art. 4)</th><td data-r="">cada dos meses</td></tr>
+            <tr><th>= Correspondían en 2025</th><td data-r=""><strong>{{ num(ej, "arts34-exigido") }}</strong></td></tr>
+            <tr><th>Se transfirió en 2025</th><td data-r=""><strong>{{ num(ej, "arts34-transferido") }}</strong></td></tr>
+          </tbody>
+        </table>
+        <p class="resultado">Se transfirió <strong class="rojo">{{ num(ej, "arts34-relacion") }}</strong> frente a lo que correspondía.</p>
+      </div>
+
+      <details class="mas"><summary>¿De dónde salen los datos?</summary>
+        <p>Lo transferido, de <a href="https://www.presupuestoabierto.gob.ar/">Presupuesto Abierto</a> (Ministerio de Economía).
+           La inflación, del IPC del INDEC. Qué hay que calcular, de los arts. 3 y 4 de la
+           <a href="https://www.boletinoficial.gob.ar/detalleAviso/primera/333139/20251021">Ley 27.795, tal como se publicó en el Boletín Oficial</a>.</p></details>
+      <details class="mas"><summary>¿Por qué no usamos el presupuesto?</summary>
+        <p>Partimos de la ley, no del presupuesto: el presupuesto es justamente lo que no la incluye. Medimos lo que
+           efectivamente se transfirió (el «devengado»). Lo transferido sin universidad asignada sumó {{ num(ej, "arts34-sin-asignar") }}.</p></details>
+      <details class="mas"><summary>¿Por qué septiembre de 2024?</summary>
+        <p>La ley no dice de qué mes es «el monto». Septiembre es el monto que regía después del aumento de mitad de 2024.
+           Partiendo del promedio de todo 2024 ({{ num(ej, "arts34-partida-b") }} por mes), correspondían
+           {{ num(ej, "arts34-exigido-b") }}, y lo transferido queda en <span class="rojo">{{ num(ej, "arts34-relacion-b") }}</span>.</p></details>
+      <details class="mas"><summary>Ver la cuenta por bimestre</summary>
+        <table class="tabla">
+          <thead><tr><th>2025</th><th>Correspondía</th><th>Se transfirió</th></tr></thead>
+          <tbody>
+            {% for nombre in ["Ene–feb", "Mar–abr", "May–jun", "Jul–ago", "Sep–oct", "Nov–dic"] %}
+            <tr><th>{{ nombre }}</th><td data-r="Correspondía">{{ num(ej, "arts34-exigido-bim" ~ loop.index) }}</td><td data-r="Se transfirió">{{ num(ej, "arts34-transferido-bim" ~ loop.index) }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table></details>
+      <details class="mas"><summary>Lo que este número no dice</summary>
+        <p>No incluye sueldos (art. 5, en <a href="#salario">Salario docente</a>) ni recursos propios. Para 2026 la ley
+           no fija fórmula: hasta {{ ej.detalle.corte_actual }} se transfirieron {{ num(ej, "arts34-transferido-actual") }}.</p></details>
+      <details class="mas"><summary>Ver los números de la UNR y del sistema, mes a mes</summary>
+        <table class="tabla">
+          <thead><tr><th>Acumulado</th><th>UNR: correspondía</th><th>UNR: recibió</th><th>Todas: correspondía</th><th>Todas: recibieron</th></tr></thead>
+          <tbody>
+            {% for mm in ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"] %}
+            <tr><th>{{ ej.detalle.acumulado["arts34-"][loop.index0].mes }}</th>
+              <td data-r="UNR: correspondía">{{ num(ej, "unr-arts34-acum-exigido-" ~ mm) }}</td>
+              <td data-r="UNR: recibió">{{ num(ej, "unr-arts34-acum-transferido-" ~ mm) }}</td>
+              <td data-r="Todas: correspondía">{{ num(ej, "arts34-acum-exigido-" ~ mm) }}</td>
+              <td data-r="Todas: recibieron">{{ num(ej, "arts34-acum-transferido-" ~ mm) }}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table></details>
+    </section>
   </details>
+
 </section>

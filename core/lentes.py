@@ -128,3 +128,81 @@ def brecha_art5(puntos: dict[str, Punto], ipc: dict[str, Dato], mes: str) -> Res
 
 def mes_de(fecha: str) -> str:
     return fecha[:7]
+
+
+# --- Ley 27.795, arts. 3 y 4 (ADR 0020) ---------------------------------------
+
+ACTIVIDADES_ARTS_3_4 = ("14", "15", "16", "25")  # funcionamiento, hospitales, ciencia y técnica, extensión
+MES_PREVIO_ART3 = "2024-04"  # el art. 3 cuenta el IPC del 1-may-2024 al 31-dic-2024
+MES_FINAL_ART3 = "2024-12"
+MES_PARTIDA_ARTS_3_4 = "2024-09"  # primer mes en que el devengado del sistema queda estable (igual que agosto)
+PARTIDAS_ARTS_3_4 = {
+    "nivel_sep_2024": "monto mensual de septiembre de 2024",
+    "promedio_2024": "promedio mensual de 2024",
+}
+
+
+def _de_actividades(devengado: list[Dato]) -> list[Dato]:
+    return [d for d in devengado if d.dimensiones.get("actividad_id") in ACTIVIDADES_ARTS_3_4]
+
+
+def partida_arts_3_4(devengado_2024: list[Dato], opcion: str) -> Resultado:
+    """Monto mensual de partida: lo devengado en las actividades 14, 15, 16 y 25 (a una universidad o al sistema)."""
+    datos = _de_actividades(devengado_2024)
+    if opcion == "nivel_sep_2024":
+        fuentes = tuple(d for d in datos if d.periodo == MES_PARTIDA_ARTS_3_4)
+        valor = sum(d.valor for d in fuentes)
+    elif opcion == "promedio_2024":
+        fuentes = tuple(d for d in datos if d.periodo.startswith("2024-"))
+        if {d.periodo for d in fuentes} != set(_meses("2024-01", "2024-12")):
+            raise ValueError("El promedio de 2024 necesita los 12 meses")
+        valor = sum(d.valor for d in fuentes) / 12
+    else:
+        raise ValueError(f"Partida desconocida: {opcion}")
+    if not fuentes:
+        raise ValueError(f"Sin devengado para la partida {opcion}")
+    return Resultado(valor, fuentes, [f"Monto de partida: {PARTIDAS_ARTS_3_4[opcion]}, actividades 14, 15, 16 y 25."])
+
+
+def factor_art3(ipc: dict[str, Dato]) -> Resultado:
+    """IPC acumulado de mayo a diciembre de 2024, como factor (1,32 = +32 %)."""
+    fin, previo = ipc[MES_FINAL_ART3], ipc[MES_PREVIO_ART3]
+    return Resultado(fin.valor / previo.valor, (fin, previo), [
+        "Art. 3: actualización al 1-ene-2025 por el IPC acumulado entre el 1-may-2024 y el 31-dic-2024 "
+        "(IPC de diciembre de 2024 ÷ IPC de abril de 2024).",
+    ])
+
+
+def bimestres_art4(partida: Resultado, ipc: dict[str, Dato]) -> list[Resultado]:
+    """Lo que correspondía en cada bimestre de 2025: la partida actualizada por el art. 3 y, al empezar cada
+    bimestre, por el IPC acumulado desde diciembre de 2024 hasta el último mes del bimestre anterior."""
+    f3 = factor_art3(ipc)
+    bimestres = []
+    for b in range(6):
+        referencia = MES_FINAL_ART3 if b == 0 else f"2025-{2 * b:02d}"
+        factor = f3.valor * ipc[referencia].valor / ipc[MES_FINAL_ART3].valor
+        bimestres.append(Resultado(2 * partida.valor * factor,
+                                   partida.fuentes + f3.fuentes + (ipc[referencia],)))
+    return bimestres
+
+
+def meses_art4(partida: Resultado, ipc: dict[str, Dato]) -> list[Resultado]:
+    """Lo que correspondía en cada mes de 2025: la mitad de su bimestre (el monto es el mismo en los dos meses)."""
+    return [Resultado(b.valor / 2, b.fuentes) for b in bimestres_art4(partida, ipc) for _ in range(2)]
+
+
+def exigido_arts_3_4(partida: Resultado, ipc: dict[str, Dato]) -> Resultado:
+    """Total que correspondía transferir en 2025 según los arts. 3 y 4."""
+    bimestres = bimestres_art4(partida, ipc)
+    fuentes = tuple({d.id: d for r in bimestres for d in r.fuentes}.values())
+    return Resultado(sum(r.valor for r in bimestres), fuentes, partida.supuestos + factor_art3(ipc).supuestos + [
+        "Art. 4: actualización bimestral por IPC durante 2025. Cada bimestre usa el IPC del último mes del "
+        "bimestre anterior (enero-febrero, el de diciembre de 2024).",
+        "Los aumentos otorgados durante 2025 se toman a cuenta: se compara contra todo lo devengado en el año.",
+    ])
+
+
+def transferido_arts_3_4(devengado: list[Dato], anio: str) -> Resultado:
+    fuentes = tuple(d for d in _de_actividades(devengado) if d.periodo.startswith(f"{anio}-"))
+    return Resultado(sum(d.valor for d in fuentes), fuentes, [
+        f"Devengado {anio} de las actividades 14, 15, 16 y 25 (Presupuesto Abierto, todas las fuentes)."])

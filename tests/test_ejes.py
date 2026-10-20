@@ -47,3 +47,40 @@ def test_toda_cifra_tiene_fuentes(ejes):
 
 def test_graduacion_no_calcula_tasas(ejes):
     assert all(c.unidad == "personas" for c in ejes["graduacion"].cifras)
+
+
+def test_arts_3_4_del_sistema(ejes):
+    eje = ejes["ejecucion"]
+    # Devengado 2025 de las actividades 14, 15 y 16, sumado para todas las universidades: 410.017 millones.
+    assert eje.cifra("arts34-transferido").valor.quantize(Decimal("1E6")) == Decimal("410017E6")
+    # Septiembre de 2024, mismo monto que agosto: 33.991 millones por mes.
+    assert eje.cifra("arts34-partida").valor.quantize(Decimal("1E6")) == Decimal("33991E6")
+    # IPC dic-2024 / abr-2024 = 7.694,0075 / 5.830,2271 = 1,319675...
+    assert eje.cifra("arts34-ipc-art3").valor.quantize(Decimal("0.01")) == Decimal("31.97")
+    assert eje.cifra("arts34-brecha").valor.quantize(Decimal("0.1")) == Decimal("47.8")
+    assert eje.cifra("arts34-brecha-b").valor.quantize(Decimal("0.1")) == Decimal("27.1")
+    total_bimestres = sum(eje.cifra(f"arts34-exigido-bim{i}").valor for i in range(1, 7))
+    assert total_bimestres == eje.cifra("arts34-exigido").valor
+    # «Universidades sin Discriminar» no tuvo devengado en estas actividades: no hay nada que sumar aparte.
+    assert eje.cifra("arts34-sin-asignar").valor == 0
+
+
+def test_arts_3_4_de_la_unr_como_detalle(ejes):
+    eje = ejes["ejecucion"]
+    # Devengado 2025, actividades 14 + 15 + 16 (sin 25): 15.134,8 + 302,5 + 295,2 millones.
+    assert eje.cifra("unr-arts34-transferido").valor == Decimal("15732525648")
+    # Septiembre de 2024 (igual de julio a noviembre): 1.482,58 + 24,62 + 21,81 millones.
+    assert eje.cifra("unr-arts34-partida").valor == Decimal("1529018216")
+    # Partida × 2 × 1,319675 × (1 + IPC feb/dic + abr/dic + jun/dic + ago/dic + oct/dic) = 27.267 millones.
+    assert eje.cifra("unr-arts34-exigido").valor.quantize(Decimal("1E6")) == Decimal("27267E6")
+    assert eje.cifra("unr-arts34-brecha").valor.quantize(Decimal("0.1")) == Decimal("73.3")
+
+
+def test_acumulado_mensual_cierra_en_el_total_anual(ejes):
+    eje = ejes["ejecucion"]
+    for prefijo in ("arts34-", "unr-arts34-"):
+        centavo = Decimal("0.01")  # el reparto por mes divide por 2: se compara al centavo
+        assert (eje.cifra(f"{prefijo}acum-exigido-12").valor.quantize(centavo)
+                == eje.cifra(f"{prefijo}exigido").valor.quantize(centavo))
+        assert eje.cifra(f"{prefijo}acum-transferido-12").valor == eje.cifra(f"{prefijo}transferido").valor
+        assert len(eje.detalle["acumulado"][prefijo]) == 12

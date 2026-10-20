@@ -28,7 +28,7 @@ Este documento fija cómo se ve y cómo funciona el sitio. **Es la base de cualq
 - **Nombre:** «Universidad Transparente» (ADR 0021), siempre con «sitio independiente» visible. No se usa el logo ni el escudo de ninguna universidad.
 - **Alcance:** el sistema universitario nacional. La UNR aparece solo como caso de detalle donde un dato lo requiere, rotulada como tal.
 - **Paleta de papel y tinta** (variables en `estilo.css`): fondo crema `#f2efe4` con cuadrícula tenue, papel `#ebe7d8`, tinta azul marino `#141b34`. En modo oscuro se invierte (fondo `#141b34`, tinta `#f2efe4`). No se agregan colores.
-- **Rojo** (`--rojo`): reservado para la brecha del art. 5 (lo que le falta al sueldo). No se usa para nada más.
+- **Rojo** (`--rojo`): reservado para lo que falta según la Ley 27.795: la brecha del art. 5 (sueldo) y la de los arts. 3 y 4 (funcionamiento, ADR 0022). No se usa para nada más.
 - **Colores de actores** (Congreso azul, Poder Ejecutivo naranja, Justicia verde, Acuerdo amarillo) y **series del gráfico** (pagado azul, exigido naranja): validados para daltonismo; no se cambian.
 - **Tipografía:** Lato (400, 700, 900).
 - **Composición:** una sola página, sin tarjetas. Secciones numeradas («01 — Salario docente») separadas por una línea fina; la pregunta como título; los datos sobre el papel. Lo secundario va detrás de un «ver más».
@@ -58,6 +58,7 @@ Se usan tal como están; no se crean clases ni estilos nuevos.
 | Línea de tiempo simple | `{{ linea_tiempo(eje, 4) }}` |
 | Pasos de un artículo | `<section class="articulo"><div class="paso"><h3><span>1</span>Título</h3><p>…</p></div></section>` |
 | Enlace a la ficha de un evento | `<a href="/ficha/evento/ID" hx-get="/ficha/evento/ID" hx-target="#ficha-contenido">…</a>` |
+| Gráfico acumulado con selector (solo sección 03, ADR 0022) | Ver `_seccion_transferencias.html`: SVG con las series `exigido`/`pagado`, botones `.actor` y tabla con fichas |
 
 ## 5. Reglas de contenido
 
