@@ -57,3 +57,7 @@ Lo que la oración no dice va en el sitio: qué transfiere la Nación, qué hace
 ## Actualización (2026-10-20): fuera Graduación
 
 Se quita la sección Graduación (alumnos y egresados de la UNR): no se mide contra la ley y sus egresados eran fuente secundaria. Salen `_seccion_graduacion.html`, `eje_graduacion`, `data/alumnos.csv`, `data/egresados.csv` y su test (`test_graduacion_no_calcula_tasas`, que probaba solo ese eje). «Cómo leer los números» pasa a ser la 05. `/graduacion` deja de existir.
+
+## Actualización (2026-10-20): orden de las secciones
+
+Nuevo orden: 01 Salario, 02 Transferencias, 03 Ley 27.795, 04 Control. Primero las dos mediciones contra la ley (arts. 5 y 3–4), que es lo que promete la portada; después el estado de la ley, que responde por qué no se cumple; los hechos marcados en el gráfico de Transferencias llevan a la cronología que sigue. Coincide con el orden del pitch. Cambian `inicio.html` (congelado), la numeración, el menú y `ESTANDAR.md`.

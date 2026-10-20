@@ -1,6 +1,6 @@
 # Fran — Presupuesto y transferencias
 
-**Sección:** 03 — `#transferencias`. **Archivos propios:** `data/ejecucion_programa26_*.csv`, `data/credito_asignado_ley.csv`, CSV nuevos `data/presupuesto_*.csv`, `app/templates/_seccion_transferencias.html`, `eje_ejecucion` en `core/ejes.py`, lentes nuevas en `core/lentes.py`. **Rama:** `fran/presupuesto`. **ADR:** `0020`–`0024`.
+**Sección:** 02 — `#transferencias`. **Archivos propios:** `data/ejecucion_programa26_*.csv`, `data/credito_asignado_ley.csv`, CSV nuevos `data/presupuesto_*.csv`, `app/templates/_seccion_transferencias.html`, `eje_ejecucion` en `core/ejes.py`, lentes nuevas en `core/lentes.py`. **Rama:** `fran/presupuesto`. **ADR:** `0020`–`0024`.
 
 Leer antes: [`docs/ESTANDAR.md`](../ESTANDAR.md), ADR 0012, 0013, 0014 y 0015.
 

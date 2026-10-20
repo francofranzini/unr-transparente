@@ -1,6 +1,6 @@
 # Nono — Cronología de la Ley 27.795
 
-**Sección:** 02 — `#ley`. **Archivos propios:** `data/eventos/ley.yaml`, `app/templates/_seccion_ley.html`, `eje_ley` en `core/ejes.py`, CSV nuevos `data/ley_*.csv`. **Rama:** `nono/cronologia-ley`. **ADR:** `0030`–`0034`.
+**Sección:** 03 — `#ley`. **Archivos propios:** `data/eventos/ley.yaml`, `app/templates/_seccion_ley.html`, `eje_ley` en `core/ejes.py`, CSV nuevos `data/ley_*.csv`. **Rama:** `nono/cronologia-ley`. **ADR:** `0030`–`0034`.
 
 Leer antes: [`docs/ESTANDAR.md`](../ESTANDAR.md), ADR 0014 y 0018.
 
