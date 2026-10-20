@@ -1,4 +1,4 @@
-# 0034. Tipos de hecho legibles y con peso: el hecho principal va primero
+# 0037. Tipos de hecho legibles y con peso: el hecho principal va primero
 
 - Estado: propuesta (Nono). Se adopta si el equipo la aprueba al integrar la rama `feat/automate-news`.
 - Fecha: 2026-10-20
@@ -25,7 +25,7 @@ La ficha de un evento mostraba su tipo con el valor interno («estado», «judic
 - **Cronologías** (ley y Control): por fecha, de lo más antiguo a lo más reciente; en una misma fecha, de menor a mayor peso (`ordenar_cronologia`), así el hecho principal del día queda último.
 - **«Dónde está hoy»:** si desde la fecha del resumen hay un hecho de más peso que el resumen, va primero (título, tipo y fecha, con su ficha) y el resumen queda debajo, en letra normal: «Resumen de la situación» si es del mismo día, o «Resumen del …, anterior a este hecho» si es anterior. Es el mismo hecho que cierra la línea de tiempo.
 - **«Último hecho importante» en la línea de tiempo:** el hecho que destaca «Dónde está hoy» (o, si no hay, el último de más peso) lleva esa etiqueta y un punto más marcado. Desde el recuadro, «Ver en la línea de tiempo ↓» lleva a ese hecho: centra el recuadro, lo desplaza hasta el hecho y lo resalta un momento (en el recorrido, salta a ese hecho). Cada hecho tiene un ancla `#hito-<id>`; sin JavaScript, el enlace funciona como ancla común.
-- **Una sola fecha** en el rótulo cuando el resumen está al día con la consulta de fuentes; las dos («resumen del … · fuentes consultadas el …») solo si el resumen quedó atrás (ADR 0033).
+- **Una sola fecha** en el rótulo cuando el resumen está al día con la consulta de fuentes; las dos («resumen del … · fuentes consultadas el …») solo si el resumen quedó atrás (ADR 0036).
 
 ## Consecuencias
 

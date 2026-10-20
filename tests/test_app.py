@@ -95,13 +95,15 @@ def test_control_usa_la_misma_cronologia_que_la_ley(cliente):
 
 
 def test_control_tiene_una_cronologia_por_universidad(cliente):
-    # ADR 0025: cada universidad, en su recuadro desplegable (hoy, solo la UNR, abierto); la cronología va adentro.
+    # ADR 0025 y 0034: una cronología por universidad, elegida con un selector «Ver:» como el de Transferencias
+    # (hoy, solo la UNR, elegida); la cronología va adentro de su recuadro.
     from core.ejes import UNIVERSIDADES_CONTROL
     control = _seccion(cliente.get("/").text, "control")
-    assert control.count('<details class="universidad" open>') == len(UNIVERSIDADES_CONTROL)
-    inicio = control.index('<details class="universidad" open>')
+    assert control.count("data-panel-universidad=") == len(UNIVERSIDADES_CONTROL)
+    assert '<button type="button" class="actor actor-otro" data-universidad="UNR" aria-pressed="true">' in control
+    inicio = control.index('data-panel-universidad="UNR"')
     assert '<span class="universidad-nombre">Universidad Nacional de Rosario (UNR)</span>' in control[inicio:]
-    assert inicio < control.index("data-cronologia-scroll")
+    assert control.index('data-universidad="UNR"') < inicio < control.index("data-cronologia-scroll")
 
 
 def test_los_recorridos_de_ley_y_control_tienen_transicion(cliente):
@@ -115,18 +117,20 @@ def test_control_explica_quien_controla_debajo_de_la_pregunta(cliente):
     # ADR 0025: debajo de la pregunta, plegado («Ver más» / «Ver menos»), el texto sobre la autarquía de las universidades
     # y quién las audita (AGN y SIGEN); el último control externo ya está en la línea de tiempo, no en un recuadro aparte.
     control = _seccion(cliente.get("/").text, "control")
-    pregunta = control.index("¿Quién audita a la UNR?</h2>")
+    pregunta = control.index("¿Quién audita a las universidades?</h2>")
     assert pregunta < control.index('presentacion') < control.index("Sindicatura General de la Nación") < control.index("data-cronologia")
     assert "¿Quién controla a la UNR?" not in control
     assert '<span class="si-cerrado">Ver más</span><span class="si-abierto">Ver menos</span>' in control
     assert "artículo 75, inciso 19, de la Constitución Nacional" in control and "Auditoría General de la Nación" in control
     visible = re.sub(r"<details.*?</details>", "", control, flags=re.S)
-    assert "Sindicatura General de la Nación" not in visible
+    # El texto de presentación sigue plegado. Desde el ADR 0034, el mapa nombra a cada órgano a la vista.
+    assert "Que las universidades sean autárquicas" not in visible
+    assert "es el órgano de control interno del Poder Ejecutivo Nacional que audita" not in visible
     assert 'class="hoy' not in control and "Último control externo" not in control
 
 
 def test_donde_esta_hoy_muestra_la_fecha_del_resumen(cliente):
-    # ADR 0032 y 0033: el atraso se muestra. La fecha del resumen sale del evento de estado; la de consulta, del vigía.
+    # ADR 0035 y 0036: el atraso se muestra. La fecha del resumen sale del evento de estado; la de consulta, del vigía.
     estado = max((e for e in repo.eventos_de("ley") if e.tipo == "estado"), key=lambda e: e.fecha)
     # Una sola fecha si coincide con la consulta de fuentes; si no, «resumen del … · fuentes consultadas el …».
     assert re.search(rf"Dónde está hoy · (resumen del )?{int(estado.fecha[8:])} de \w+ de {estado.fecha[:4]}",
@@ -134,7 +138,7 @@ def test_donde_esta_hoy_muestra_la_fecha_del_resumen(cliente):
 
 
 def test_la_ficha_muestra_el_tipo_con_una_etiqueta_legible(cliente):
-    # ADR 0034: «estado», «judicial», etc. son valores internos; el lector ve una etiqueta.
+    # ADR 0037: «estado», «judicial», etc. son valores internos; el lector ve una etiqueta.
     from core.ejes import TIPOS_EVENTO
     for evento in repo.eventos_de("ley"):
         ficha = cliente.get(f"/ficha/evento/{evento.id}", headers={"HX-Request": "true"}).text
@@ -142,7 +146,7 @@ def test_la_ficha_muestra_el_tipo_con_una_etiqueta_legible(cliente):
 
 
 def test_la_linea_de_tiempo_marca_el_ultimo_hecho_importante(cliente):
-    # ADR 0034: un solo hecho marcado, el mismo que destaca «Dónde está hoy», con un ancla para llegar desde el recuadro.
+    # ADR 0037: un solo hecho marcado, el mismo que destaca «Dónde está hoy», con un ancla para llegar desde el recuadro.
     from core.ejes import eje_ley
     eje = eje_ley(repo)
     ley = _seccion(cliente.get("/").text, "ley")
@@ -164,7 +168,7 @@ def test_en_una_misma_fecha_el_hecho_de_mas_peso_queda_ultimo():
 
 
 def test_donde_esta_hoy_destaca_el_mismo_hecho_que_cierra_la_cronologia(cliente):
-    # ADR 0034: el hecho de más peso desde el resumen va primero en el recuadro, y es el último de la línea de tiempo.
+    # ADR 0037: el hecho de más peso desde el resumen va primero en el recuadro, y es el último de la línea de tiempo.
     from core.ejes import eje_ley
     eje = eje_ley(repo)
     destacado = eje.detalle["destacado"]
@@ -274,3 +278,25 @@ def test_la_ficha_de_la_partida_explica_que_el_mes_es_una_eleccion(cliente):
     cada_mes = texto.split("<dt>Cada mes</dt>")[1]
     assert '<tr class="total"><th>sep 2024</th><td>$ 1.529.018.216</td></tr>' in cada_mes
     assert "<th>dic 2024</th><td>$ 2.408.852.952</td>" in cada_mes
+
+
+def test_control_muestra_el_mapa_de_quien_audita(cliente):
+    # ADR 0034: AGN y SIGEN, un botón y un panel cada uno, con los hechos que alcanzan a todas las universidades.
+    # Sin JavaScript se ven los dos paneles y «Ver sus hechos» no aparece.
+    html = cliente.get("/").text
+    mapa = html[html.index("data-mapa-control"):html.index('<div class="cronologia-universidades"')]
+    assert re.findall(r'data-organo="([a-z]+)"', mapa) == ["agn", "sigen"]
+    for organo in ("agn", "sigen"):
+        panel = re.search(rf'<div class="organo-panel[^"]*" id="organo-{organo}"[^>]*>', mapa)
+        assert panel and "hidden" not in panel[0]
+    for evento in ("convenio-cin-agn-2024", "ptn-dictamen-2022-11-28", "ptn-dictamen-2024-10-15"):
+        assert f'href="/ficha/evento/{evento}"' in mapa
+    assert "Universidades nacionales" in mapa
+    assert all("hidden" in b for b in re.findall(r"<button[^>]*data-ver-hechos[^>]*>", mapa))
+
+
+def test_el_mapa_de_control_solo_cita_hechos_existentes():
+    from core.carga import cargar
+    from core.ejes import construir_ejes
+    for organo in construir_ejes(cargar())["control"].detalle["organos"]:
+        assert organo["marco"], organo["sigla"]

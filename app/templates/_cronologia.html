@@ -8,7 +8,7 @@
    - antecedente: prefijo de id de los hechos que se muestran como antecedente.
    - titulo y guia: vacíos cuando la sección ya los pone afuera (p. ej. Control, una cronología por universidad).
    - transicion: en el recorrido, el paso de un hecho al siguiente se desliza en lugar de cambiar de golpe.
-   - importante: id del hecho que se marca como «Último hecho importante» (ADR 0034). Cada hecho tiene un ancla
+   - importante: id del hecho que se marca como «Último hecho importante» (ADR 0037). Cada hecho tiene un ancla
      #hito-<id> para enlazarlo desde otra parte de la página. #}
 {% macro cronologia(eventos, nombre, guia, filtros, actores_tipo={}, actores_id={}, sellos={}, antecedente="", titulo="Línea de tiempo", transicion=False, importante="") %}
 {% set hitos = eventos|rejectattr("tipo", "equalto", "estado")|list %}

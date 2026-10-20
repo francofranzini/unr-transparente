@@ -1,4 +1,4 @@
-# Palabras clave de cada hito de la cronología de la ley (ADR 0033). Las usa scripts/actualizar_ley.py para sumar sola
+# Palabras clave de cada hito de la cronología de la ley (ADR 0036). Las usa scripts/actualizar_ley.py para sumar sola
 # una nota de prensa a «Cómo lo contaron»: la nota tiene que ser de hasta 3 días después del hito y su título tiene que
 # coincidir con las claves de ese hito y de ningún otro de esos días. Si no, no se publica y se avisa en el issue.
 #

@@ -1,4 +1,4 @@
-"""Reglas de verificación de la cronología de la Ley 27.795 (ADR 0032).
+"""Reglas de verificación de la cronología de la Ley 27.795 (ADR 0035).
 
 Se aplican solo al eje ley: un hecho nuevo entra por el documento, y si no hay documento, por dos medios.
 """
@@ -35,7 +35,7 @@ def test_ninguna_noticia_es_anterior_al_hecho(evento):
 
 
 def test_un_solo_estado_y_el_atraso_se_muestra():
-    # El resumen lo escribe una persona; los hechos pueden cargarse solos después (ADR 0033). Si el resumen quedó atrás,
+    # El resumen lo escribe una persona; los hechos pueden cargarse solos después (ADR 0036). Si el resumen quedó atrás,
     # la página tiene que decirlo (se verifica en test_app.py).
     estados = [e for e in EVENTOS if e.tipo == "estado"]
     assert len(estados) == 1, "«Dónde está hoy» sale de un único evento de estado: reemplazarlo, no sumar otro"

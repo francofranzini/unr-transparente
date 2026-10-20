@@ -1,4 +1,4 @@
-"""Vigía de fuentes (ADR 0032), sin red: páginas y feeds de ejemplo escritos acá."""
+"""Vigía de fuentes (ADR 0035), sin red: páginas y feeds de ejemplo escritos acá."""
 
 import importlib.util
 import re

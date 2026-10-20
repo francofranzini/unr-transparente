@@ -116,7 +116,7 @@ nav a:hover { color: var(--acento); }
 .hoy { margin: 0 0 28px; padding-left: 18px; border-left: 3px solid var(--tinta); max-width: 46rem; }
 .hoy small { font-size: .78rem; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; color: var(--tenue); }
 .hoy p { margin: 4px 0 6px; font-weight: 700; font-size: clamp(1.15rem, 2.2vw, 1.4rem); line-height: 1.35; }
-/* Debajo del hecho destacado, el resumen de la situación en letra normal (ADR 0034) */
+/* Debajo del hecho destacado, el resumen de la situación en letra normal (ADR 0037) */
 .hoy .hoy-resumen { margin: 14px 0 0; font-weight: 400; font-size: 1rem; line-height: 1.5; }
 .enlace { font-weight: 700; font-size: .9rem; color: var(--acento); }
 
@@ -147,14 +147,10 @@ nav a:hover { color: var(--acento); }
 details:not([open]) > summary .si-abierto, details[open] > summary .si-cerrado { display: none; }
 /* Texto de presentación de una sección, antes de su cronología (ADR 0025) */
 .presentacion { max-width: 52rem; margin: 0 0 36px; }
-/* Una cronología por universidad, cada una en su recuadro desplegable (ADR 0025) */
-.universidad { max-width: 54rem; margin: 12px 0 0; padding: 0 20px; border: 1px solid var(--linea); border-radius: 14px; }
-.universidad[open] { padding-bottom: 18px; }
+/* Una cronología por universidad, en su recuadro; un selector «Ver:» elige cuál (ADR 0025 y 0034) */
+.universidad { max-width: 54rem; margin: 12px 0 0; padding: 0 20px 18px; border: 1px solid var(--linea); border-radius: 14px; }
 @media (max-width: 600px) { .universidad { padding-inline: 12px; } }
-.universidad > summary { list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; padding: 14px 0; }
-.universidad > summary::-webkit-details-marker { display: none; }
-.universidad > summary::before { content: "▸"; display: inline-block; font-size: .9rem; transition: transform .2s; }
-.universidad[open] > summary::before { transform: rotate(90deg); }
+.universidad-titulo { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; margin: 0; padding: 14px 0; }
 .universidad-nombre { font-weight: 900; font-size: 1.1rem; }
 .universidad-cuenta { font-size: .85rem; color: var(--tenue); }
 .universidad .aviso { margin-top: 0; }
@@ -257,7 +253,7 @@ text.rotulo { fill: var(--tinta); font-size: 12px; font-weight: 700; text-transf
 .hito-medios a { text-decoration: none; color: var(--tenue); } .hito-medios a:hover { color: var(--tinta); text-decoration: underline; }
 .hito-medios strong { color: var(--tinta); }
 .hito-ficha { font-size: .88rem; font-weight: 700; color: var(--acento); }
-/* Último hecho importante de la cronología: el mismo que destaca «Dónde está hoy» (ADR 0034) */
+/* Último hecho importante de la cronología: el mismo que destaca «Dónde está hoy» (ADR 0037) */
 .hito-etiqueta { display: inline-block; margin-left: 8px; padding: 1px 9px; border: 1px solid var(--c); border-radius: 999px;
                  font-size: .68rem; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; color: var(--tinta); }
 .hito-importante .hito-marca { transform: scale(1.25); box-shadow: 0 0 0 1.5px var(--c), 0 0 0 6px color-mix(in srgb, var(--c) 22%, transparent); }
@@ -366,3 +362,63 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wra
 
 .pie { max-width: 1040px; margin: 0 auto; padding: 20px 20px 40px; border-top: 1px solid var(--linea); font-size: .8rem; color: var(--tenue); }
 .pie p { margin: 0 0 4px; }
+
+/* Mapa de quién audita (ADR 0034): la UNR al centro, el control externo a la izquierda y el del Poder Ejecutivo a la
+   derecha. Las líneas se dibujan al aparecer y un punto viaja hacia la UNR. Sin JavaScript se ven todos los paneles. */
+.mapa-control { max-width: 54rem; }
+.mapa-escena { position: relative; display: grid; grid-template-columns: 1fr 1.15fr 1fr; align-items: start; gap: 8px;
+               margin: 18px 0 28px; }
+.mapa-lado, .mapa-unr { display: grid; justify-items: center; gap: 14px; text-align: center; position: relative; z-index: 1; }
+.mapa-linea { position: absolute; top: 44px; height: 2px; background: var(--c); z-index: 0; }
+.mapa-linea-izq { left: 16.5%; right: 50%; transform-origin: left; }
+.mapa-linea-der { left: 50%; right: 16.5%; transform-origin: right;
+                  background: repeating-linear-gradient(90deg, var(--c) 0 7px, transparent 7px 13px); }
+.mapa-linea i { position: absolute; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--c); opacity: 0; }
+.organo { display: grid; justify-items: center; gap: 2px; font: inherit; color: var(--tinta); background: none; border: 0;
+          padding: 0; cursor: pointer; max-width: 11rem; }
+.organo strong { font-size: 1.05rem; font-weight: 900; margin-top: 6px; }
+.organo small { font-size: .78rem; color: var(--tenue); line-height: 1.3; }
+.organo-icono { display: grid; place-items: center; width: 64px; height: 64px; margin-top: 12px; border-radius: 50%;
+                background: var(--fondo); border: 2px solid var(--c); color: var(--c);
+                transition: background .25s ease, color .25s ease, transform .25s ease, box-shadow .25s ease; }
+.organo-icono svg { width: 30px; height: 30px; }
+.organo:hover .organo-icono { transform: translateY(-3px); box-shadow: var(--sombra); }
+.organo:active .organo-icono { transform: scale(.94); }
+.organo:focus-visible { outline: none; } .organo:focus-visible .organo-icono { outline: 3px solid var(--tinta); outline-offset: 3px; }
+.organo[aria-pressed="true"] .organo-icono { background: var(--c); color: var(--fondo); }
+.organo[aria-pressed="true"] strong { text-decoration: underline; text-decoration-color: var(--c); text-decoration-thickness: 3px; text-underline-offset: 5px; }
+.unr-icono { position: relative; display: grid; place-items: center; width: 88px; height: 88px; border-radius: 50%;
+             background: var(--tinta); color: var(--fondo); }
+.unr-icono svg { width: 40px; height: 40px; }
+.mapa-unr > strong { font-size: 1.1rem; font-weight: 900; margin-top: -6px; line-height: 1.2; }
+.organo-panel { max-width: 46rem; padding: 18px 20px; border-radius: 14px; background: var(--papel-2); border-left: 4px solid var(--c); }
+.organo-panel + .organo-panel { margin-top: 12px; }
+.organo-panel h4 { margin: 2px 0 6px; font-size: 1.1rem; }
+.organo-panel > p { margin: 0 0 10px; }
+.organo-rol { display: flex; align-items: center; gap: 8px; font-size: .74rem; font-weight: 900; text-transform: uppercase;
+              letter-spacing: .08em; color: var(--tenue); }
+.organo-rol i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+.organo-panel .organo-rol + .organo-hechos, .organo-panel > p + .organo-rol { margin-top: 14px; }
+.organo-hechos { list-style: none; margin: 6px 0 8px; padding: 0; }
+.organo-hechos li { display: grid; grid-template-columns: 6.5rem 1fr; gap: 10px; padding: 8px 0; border-top: 1px solid var(--linea); font-size: .92rem; }
+.organo-hechos time { color: var(--tenue); font-size: .85rem; }
+@media (max-width: 600px) {
+  .mapa-escena { gap: 4px; } .mapa-linea { top: 38px; }
+  .organo-icono { width: 52px; height: 52px; } .organo-icono svg { width: 24px; height: 24px; }
+  .unr-icono { width: 76px; height: 76px; } .organo small { font-size: .72rem; }
+  .organo-hechos li { grid-template-columns: 1fr; gap: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .js .mapa-control .mapa-linea { transform: scaleX(0); transition: transform .9s cubic-bezier(.2, .7, .2, 1) .5s; }
+  .js .mapa-control.visible .mapa-linea { transform: none; }
+  .js .mapa-control.visible .mapa-linea i { animation: viaje 3.2s ease-in-out 1.6s infinite; }
+  .js .mapa-control.visible .mapa-linea-der i { animation-name: viaje-izq; animation-delay: 2.4s; }
+  .js .mapa-control .organo, .js .mapa-control .unr-icono { opacity: 0; transform: scale(.8); transition: opacity .5s ease, transform .5s cubic-bezier(.3, 1.4, .5, 1); }
+  .js .mapa-control.visible .organo, .js .mapa-control.visible .unr-icono { opacity: 1; transform: none; }
+  .js .mapa-control.visible .unr-icono { transition-delay: .1s; }
+  .js .mapa-control.visible .mapa-lado .organo { transition-delay: .35s; }
+  .js .organo-panel:not([hidden]) { animation: panel-entra .45s cubic-bezier(.2, .7, .2, 1); }
+}
+@keyframes viaje { 0% { left: 0; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { left: calc(100% - 8px); opacity: 0; } }
+@keyframes viaje-izq { 0% { left: calc(100% - 8px); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { left: 0; opacity: 0; } }
+@keyframes panel-entra { from { opacity: 0; transform: translateY(10px); } }

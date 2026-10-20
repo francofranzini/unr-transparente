@@ -1,4 +1,4 @@
-# 0032. Vigía de fuentes de la ley y controles automáticos
+# 0035. Vigía de fuentes de la ley y controles automáticos
 
 - Estado: propuesta (Nono). Se adopta si el equipo la aprueba al integrar la rama `feat/automate-news`.
 - Fecha: 2026-10-20

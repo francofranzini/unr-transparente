@@ -1,4 +1,4 @@
-"""Vigía de fuentes (ADR 0010 y 0032): revisa las fuentes de `data/fuentes.yaml` y avisa qué hay de nuevo.
+"""Vigía de fuentes (ADR 0010 y 0035): revisa las fuentes de `data/fuentes.yaml` y avisa qué hay de nuevo.
 
 Uso: .venv/bin/python scripts/vigia_fuentes.py [--eje ley] [--desde AAAA-MM-DD] [--salida informe.md]
 
@@ -169,7 +169,7 @@ def informe(eje: str, desde: date | None, resultados: list[tuple[dict, list[Nove
         lineas.append("### Fuentes que no respondieron (revisar a mano)")
         lineas += [f"- {f}" for f in fallas] + [""]
     lineas += [
-        "### Antes de cargar un hecho (ADR 0032)",
+        "### Antes de cargar un hecho (ADR 0035)",
         "1. Buscar el original: Boletín Oficial, acta de votación de la cámara o texto de la resolución.",
         "2. Sin original: `tipo_fuente: secundaria`, con 2 o más medios de líneas editoriales distintas y la nota "
         "«Texto de la resolución: pendiente».",

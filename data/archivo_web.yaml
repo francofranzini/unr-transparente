@@ -1,4 +1,4 @@
-# Copias de las fuentes en la Wayback Machine (ADR 0032). Las escribe scripts/archivar_fuentes.py;
+# Copias de las fuentes en la Wayback Machine (ADR 0035). Las escribe scripts/archivar_fuentes.py;
 # la aplicación no lee este archivo. Si un enlace de un evento se cae, la copia está acá.
 - url: https://aldiaargentina.microjuris.com/2026/10/08/fallos-se-declara-la-inconstitucionalidad-del-decreto-n-759-2025-que-suspendio-la-ley-n-27-795-de-financiamiento-de-la-educacion-universitaria-y-se-ordena-su-cumplimiento-inmediato/
   copia: https://web.archive.org/web/20261008114254/https://aldiaargentina.microjuris.com/2026/10/08/fallos-se-declara-la-inconstitucionalidad-del-decreto-n-759-2025-que-suspendio-la-ley-n-27-795-de-financiamiento-de-la-educacion-universitaria-y-se-ordena-su-cumplimiento-inmediato/

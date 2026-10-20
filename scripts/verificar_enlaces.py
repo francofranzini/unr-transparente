@@ -1,4 +1,4 @@
-"""Revisa que respondan los enlaces de los eventos: la ficha de cada uno y sus noticias (ADR 0032).
+"""Revisa que respondan los enlaces de los eventos: la ficha de cada uno y sus noticias (ADR 0035).
 
 Uso: .venv/bin/python scripts/verificar_enlaces.py [data/eventos/ley.yaml ...]
 

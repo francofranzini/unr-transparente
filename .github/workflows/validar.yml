@@ -1,4 +1,4 @@
-# Controles de cada cambio (ADR 0032): toda fila de data/ con ficha completa y los tests completos.
+# Controles de cada cambio (ADR 0035): toda fila de data/ con ficha completa y los tests completos.
 # No usa la red: los controles que dependen de páginas externas corren en vigia.yml.
 name: Validar datos y tests
 

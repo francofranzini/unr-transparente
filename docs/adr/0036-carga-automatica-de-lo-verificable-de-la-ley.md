@@ -1,6 +1,6 @@
-# 0033. Carga automática de lo verificable de la Ley 27.795, publicada en Vercel
+# 0036. Carga automática de lo verificable de la Ley 27.795, publicada en Vercel
 
-- Estado: propuesta (Nono). Requiere acuerdo del equipo: reemplaza en parte el ADR 0010 («hay detección de cambios, pero no ingesta automática») y el ADR 0032 («el vigía detecta y avisa; nunca publica»).
+- Estado: propuesta (Nono). Requiere acuerdo del equipo: reemplaza en parte el ADR 0010 («hay detección de cambios, pero no ingesta automática») y el ADR 0035 («el vigía detecta y avisa; nunca publica»).
 - Fecha: 2026-10-20
 
 ## Contexto
@@ -20,7 +20,7 @@ Se quiere que la sección de la ley se actualice sola, con la mayor veracidad po
 
 **No se publica solo** (va al issue `vigia-ley`, una sola vez cada cosa): hechos nuevos que solo cuenta la prensa, notas que no coinciden con un único hito, títulos que no se pudieron leer, fuentes que no responden. Google Noticias y el CIN quedan como aviso (`carga: aviso`): no dan el enlace original o son una de las partes.
 
-**El atraso se muestra.** «Dónde está hoy» dice «resumen del …» (evento de estado, escrito por una persona) y «fuentes consultadas el …» (automática). Si hay hechos cargados después del resumen, la página lo dice: «Después de este resumen hubo un hecho nuevo: …». La regla «el estado alcanza al último hecho» (ADR 0032) se reemplaza por esta.
+**El atraso se muestra.** «Dónde está hoy» dice «resumen del …» (evento de estado, escrito por una persona) y «fuentes consultadas el …» (automática). Si hay hechos cargados después del resumen, la página lo dice: «Después de este resumen hubo un hecho nuevo: …». La regla «el estado alcanza al último hecho» (ADR 0035) se reemplaza por esta.
 
 **Publicación.** `.github/workflows/vigia.yml` corre cada 3 horas: carga, `validar_datos.py` y `pytest`; si pasan y hubo cambios en `data/`, hace commit en `main`. Vercel (`vercel.json`, `api/index.py`) vuelve a publicar con cada commit. Si la validación o los tests fallan, se descartan los cambios y se avisa en el issue: nada se publica sin pasar los mismos controles que un cambio manual (ficha completa, sin palabras valorativas, dos medios para un hecho secundario, notas no anteriores al hecho).
 

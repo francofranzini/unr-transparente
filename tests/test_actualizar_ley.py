@@ -1,4 +1,4 @@
-"""Carga automática de la ley (ADR 0033), sin red: páginas y feeds de ejemplo con la estructura de las fuentes reales."""
+"""Carga automática de la ley (ADR 0036), sin red: páginas y feeds de ejemplo con la estructura de las fuentes reales."""
 
 import importlib.util
 import sys

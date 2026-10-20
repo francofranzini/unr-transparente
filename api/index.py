@@ -1,4 +1,4 @@
-"""Punto de entrada para Vercel (ADR 0033): la misma aplicación de app/main.py, como función de Python.
+"""Punto de entrada para Vercel (ADR 0036): la misma aplicación de app/main.py, como función de Python.
 
 Vercel la vuelve a publicar con cada commit en main, así que lo que carga el vigía aparece en la página sin pasos manuales.
 """

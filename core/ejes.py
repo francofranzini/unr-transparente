@@ -515,12 +515,27 @@ def _actor_control(evento: Evento) -> tuple[str, str]:
     raise ValueError(f"Evento de control sin actor: {evento.id} (agregarlo en ACTORES_CONTROL)")
 
 
+# Mapa de quién audita a las universidades (ADR 0034): AGN y SIGEN. Los textos describen la función según la norma
+# citada; `marco` son los hechos de control.yaml que alcanzan a todas las universidades (convenios, dictámenes,
+# resoluciones), por id. Lo propio de cada universidad va en su línea de tiempo.
+ORGANOS_CONTROL = [
+    {"clave": "agn", "sigla": "AGN", "nombre": "Auditoría General de la Nación", "icono": "lupa",
+     "rol": "Control externo", "depende": "Asiste técnicamente al Congreso de la Nación (Ley 24.156).",
+     "relacion": "Audita a las universidades desde afuera e informa al Congreso.",
+     "marco": ["convenio-cin-agn-2024"]},
+    {"clave": "sigen", "sigla": "SIGEN", "nombre": "Sindicatura General de la Nación", "icono": "escudo",
+     "rol": "Control interno del Poder Ejecutivo", "depende": "Órgano del Poder Ejecutivo Nacional (Ley 24.156).",
+     "relacion": "Su alcance sobre las universidades lo definen los dictámenes de la Procuración del Tesoro.",
+     "marco": ["ptn-dictamen-2022-11-28", "res-sigen-299-2023", "convenio-cin-sigen-2023", "ptn-dictamen-2024-10-15"]},
+]
+
+
 # Una cronología de control por universidad (ADR 0025): (sigla, nombre, eje de sus eventos en data/eventos/).
 # Para sumar otra: cargar sus hechos en data/eventos/control_<sigla>.yaml con `ejes: [control-<sigla>]` y agregarla acá.
 UNIVERSIDADES_CONTROL = [("UNR", "Universidad Nacional de Rosario", "control")]
 
 
-# Tipos de Evento (ADR 0034): la etiqueta que ve el lector y el peso del hecho. En una misma fecha, la cronología pone el
+# Tipos de Evento (ADR 0037): la etiqueta que ve el lector y el peso del hecho. En una misma fecha, la cronología pone el
 # de más peso al final, y «Dónde está hoy» destaca el de más peso desde el resumen: así los dos muestran el mismo hecho.
 TIPOS_EVENTO = {
     "judicial": ("Resolución judicial", 3),
@@ -548,7 +563,7 @@ def ordenar_cronologia(eventos: list[Evento]) -> list[Evento]:
 
 
 def eje_control(repo: Repositorio) -> Eje:
-    eje = Eje("control", "Control", "¿Quién audita a la UNR?")
+    eje = Eje("control", "Control", "¿Quién audita a las universidades?")
     universidades = []
     for sigla, nombre, clave in UNIVERSIDADES_CONTROL:
         eventos = ordenar_cronologia(repo.eventos_de(clave))
@@ -557,7 +572,14 @@ def eje_control(repo: Repositorio) -> Eje:
                               "desde": hitos[0].fecha[:4] if hitos else "",
                               "actores": {e.id: _actor_control(e) for e in hitos}})
         eje.eventos += eventos
-    eje.detalle = {"universidades": universidades, "filtros": FILTROS_CONTROL}
+    por_id = {e.id: e for e in repo.eventos}
+    faltan = [i for o in ORGANOS_CONTROL for i in o["marco"] if i not in por_id]
+    if faltan:
+        raise ValueError(f"Hechos del mapa de control que no existen en data/eventos: {faltan}")
+    organos = [{**o, "actor": ACTORES_CONTROL[o["clave"]][0],
+                "marco": sorted((por_id[i] for i in o["marco"]), key=lambda e: e.fecha, reverse=True)}
+               for o in ORGANOS_CONTROL]
+    eje.detalle = {"universidades": universidades, "filtros": FILTROS_CONTROL, "organos": organos}
     eje.pendientes = ["Informe AGN 161/2022 (original).", "Informes individuales de la Unidad de Auditoría Interna."]
     return eje
 
@@ -597,14 +619,14 @@ def eje_ley(repo: Repositorio) -> Eje:
     faltan = set(SELLOS_LEY) - ids
     if faltan:
         raise ValueError(f"Sellos de eventos que no existen en ley.yaml: {sorted(faltan)}")
-    # «Dónde está hoy» (ADR 0032 y 0033): el resumen lo escribe una persona (evento de estado); la fecha de consulta de
+    # «Dónde está hoy» (ADR 0035 y 0036): el resumen lo escribe una persona (evento de estado); la fecha de consulta de
     # las fuentes la actualiza el vigía. Si hay hechos cargados después del resumen, la página lo dice.
     estado = max((e for e in eje.eventos if e.tipo == "estado"), key=lambda e: e.fecha, default=None)
     posteriores = [e for e in eje.eventos if estado and e.tipo != "estado" and e.fecha > estado.fecha]
     # Hecho destacado: el último de la cronología desde la fecha del resumen, si pesa más que el resumen.
     desde_resumen = [e for e in eje.eventos if estado and e.tipo != "estado" and e.fecha >= estado.fecha]
     destacado = desde_resumen[-1] if desde_resumen and peso_evento(desde_resumen[-1]) > peso_evento(estado) else None
-    # El que se marca en la línea de tiempo: el destacado o, si no hay, el último de más peso (ADR 0034).
+    # El que se marca en la línea de tiempo: el destacado o, si no hay, el último de más peso (ADR 0037).
     hitos = [e for e in eje.eventos if e.tipo != "estado"]
     maximo = max((peso_evento(e) for e in hitos), default=0)
     importante = destacado or next((e for e in reversed(hitos) if peso_evento(e) == maximo), None)

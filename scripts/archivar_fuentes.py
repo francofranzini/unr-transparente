@@ -1,4 +1,4 @@
-"""Copias de las fuentes en la Wayback Machine (ADR 0032), para cuando un enlace se cae.
+"""Copias de las fuentes en la Wayback Machine (ADR 0035), para cuando un enlace se cae.
 
 Uso: .venv/bin/python scripts/archivar_fuentes.py [--guardar] [--limite 10] [--revisar] [data/eventos/ley.yaml ...]
 
@@ -22,7 +22,7 @@ RAIZ = Path(__file__).resolve().parent.parent
 REGISTRO = RAIZ / "data" / "archivo_web.yaml"
 DISPONIBLE = "https://archive.org/wayback/available"
 GUARDAR = "https://web.archive.org/save/"
-ENCABEZADO = ("# Copias de las fuentes en la Wayback Machine (ADR 0032). Las escribe scripts/archivar_fuentes.py;\n"
+ENCABEZADO = ("# Copias de las fuentes en la Wayback Machine (ADR 0035). Las escribe scripts/archivar_fuentes.py;\n"
               "# la aplicación no lee este archivo. Si un enlace de un evento se cae, la copia está acá.\n")
 
 

@@ -98,5 +98,5 @@ def sitio(url: str) -> tuple[str, str] | None:
 
 
 def tipo_evento(tipo: str) -> str:
-    """Etiqueta legible del tipo de un Evento («judicial» → «Resolución judicial»; ADR 0034)."""
+    """Etiqueta legible del tipo de un Evento («judicial» → «Resolución judicial»; ADR 0037)."""
     return etiqueta_tipo(tipo)

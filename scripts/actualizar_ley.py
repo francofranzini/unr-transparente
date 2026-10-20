@@ -1,4 +1,4 @@
-"""Carga automática de novedades verificables de la Ley 27.795 (ADR 0033). Lo corre .github/workflows/vigia.yml.
+"""Carga automática de novedades verificables de la Ley 27.795 (ADR 0036). Lo corre .github/workflows/vigia.yml.
 
 Uso: .venv/bin/python scripts/actualizar_ley.py [--solo-revisar] [--salida informe.md]
 
@@ -196,7 +196,7 @@ def leer_estado() -> dict:
 
 
 def escribir_estado(estado: dict) -> None:
-    ESTADO.write_text("# Lo escribe scripts/actualizar_ley.py (ADR 0033): última consulta de las fuentes y claves de los "
+    ESTADO.write_text("# Lo escribe scripts/actualizar_ley.py (ADR 0036): última consulta de las fuentes y claves de los "
                       "hitos cargados solos.\n" + yaml.safe_dump(estado, allow_unicode=True, sort_keys=False, width=200),
                       encoding="utf-8")
 
@@ -326,7 +326,7 @@ def informe(r: Resultado) -> str:
     if r.fallas:
         lineas.append("### Fuentes que no respondieron")
         lineas += [f"- {f}" for f in r.fallas] + [""]
-    lineas.append("Procedimiento para cargar un hecho a mano: ADR 0032. Lo publicado solo: ADR 0033.")
+    lineas.append("Procedimiento para cargar un hecho a mano: ADR 0035. Lo publicado solo: ADR 0036.")
     return "\n".join(lineas)
 
 

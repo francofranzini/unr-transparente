@@ -1,11 +1,11 @@
-# Fuentes vigiladas (ADR 0010 y 0032). Las revisa scripts/vigia_fuentes.py; no las carga la aplicación.
+# Fuentes vigiladas (ADR 0010 y 0035). Las revisa scripts/vigia_fuentes.py; no las carga la aplicación.
 #
 # Campos: id, eje, nombre, url, metodo (enlaces | feed) y, según el método:
 #   patron  — expresión regular que debe cumplir el enlace (enlaces)
 #   filtro  — expresión regular sobre el título o la fila (opcional)
 #   bloque  — etiqueta HTML que separa filas, p. ej. "tr", para tomar el texto de la fila como título (enlaces)
 #   ignorar — enlaces ya revisados que no corresponden a un hecho nuevo. Anotar por qué, en un comentario.
-#   carga   — qué hace scripts/actualizar_ley.py (ADR 0033): norma o votacion (hito oficial que se publica solo),
+#   carga   — qué hace scripts/actualizar_ley.py (ADR 0036): norma o votacion (hito oficial que se publica solo),
 #             prensa (nota que se suma sola a un hito, con `medio`), o aviso (solo se informa en el issue; por defecto).
 #
 # Un enlace citado en cualquier evento de data/eventos/ ya no es novedad. En los feeds, solo cuenta lo publicado desde
@@ -59,7 +59,7 @@
   metodo: feed
   ignorar: []
 
-# --- Medios: sus notas se suman solas a «Cómo lo contaron» de un hito (carga: prensa, ADR 0033) ----------------------
+# --- Medios: sus notas se suman solas a «Cómo lo contaron» de un hito (carga: prensa, ADR 0036) ----------------------
 # Feeds de sección o mapas de noticias (news sitemaps, últimas 48 h): los de portada rotan en pocas horas y pierden notas.
 # Líneas editoriales distintas. Pendiente: Página/12, Clarín y Perfil con una sección o un mapa que traiga estas notas.
 

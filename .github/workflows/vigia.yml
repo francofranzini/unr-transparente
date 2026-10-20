@@ -1,4 +1,4 @@
-# Vigía de fuentes de la Ley 27.795 (ADR 0010, 0032 y 0033).
+# Vigía de fuentes de la Ley 27.795 (ADR 0010, 0035 y 0036).
 # - Cada 3 horas: carga sola lo verificable (normas de InfoLEG, actas del Senado, notas de prensa que coinciden con un
 #   hito) y la fecha de consulta; si la validación y los tests pasan, hace commit en main y Vercel publica. Lo que no se
 #   puede verificar así queda en el issue «vigia-ley» para revisar a mano.
@@ -44,7 +44,7 @@ jobs:
             git config user.name "vigia-ley[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add data/
-            git commit -m "Ley 27.795: novedades automáticas del $(TZ=America/Argentina/Buenos_Aires date +'%d/%m/%Y %H:%M') (ADR 0033)"
+            git commit -m "Ley 27.795: novedades automáticas del $(TZ=America/Argentina/Buenos_Aires date +'%d/%m/%Y %H:%M') (ADR 0036)"
             git push
           else
             git checkout -- data/ && git clean -fd data/
