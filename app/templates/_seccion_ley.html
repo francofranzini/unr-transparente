@@ -1,6 +1,27 @@
 {% from "_macros.html" import num, encabezado, linea_tiempo %}
 <section class="seccion" id="ley">
   {{ encabezado("03", "Ley 27.795", "¿En qué estado está la ley de financiamiento universitario?") }}
+  {# Recorrido de la ley (ADR 0038): un paso por sello, del Congreso a la Justicia, con el color de su actor. Cada paso
+     lleva a su hecho en la línea de tiempo. En pantallas angostas se desplaza de costado y arranca en el último. #}
+  {% set camino = el.detalle.recorrido %}
+  {% if camino %}
+  <div class="camino-ley revelar" data-camino-ley>
+    <p class="cronologia-guia">El recorrido de la ley, acto por acto. Tocá uno para verlo en la línea de tiempo.</p>
+    <div class="camino-pista" data-camino-pista tabindex="0" role="region" aria-label="Recorrido de la Ley 27.795">
+      <ol class="camino" style="--pasos: {{ camino|length }}">
+        {% for r in camino %}
+        <li class="camino-paso actor-{{ r.clase }}{% if loop.index is even %} abajo{% endif %}{% if loop.last %} camino-hoy{% endif %}" style="--i: {{ loop.index0 }}">
+          <a href="#hito-{{ r.id }}">
+            <span class="camino-texto"><strong>{{ r.texto }}</strong><small>{{ fmt.fecha_evento(r.fecha) }}{% if loop.last %} · hoy{% endif %}</small></span>
+            <span class="camino-punto" aria-hidden="true"></span>
+          </a>
+        </li>
+        {% endfor %}
+      </ol>
+    </div>
+    <p class="camino-leyenda">{% for clase, nombre in [("congreso", "Congreso"), ("ejecutivo", "Poder Ejecutivo"), ("justicia", "Justicia"), ("acuerdo", "Acuerdo")] %}<span class="actor-{{ clase }}"><i></i>{{ nombre }}</span>{% endfor %}</p>
+  </div>
+  {% endif %}
   {% if hoy %}
   <div class="hoy revelar">
     {# Una sola fecha si el resumen está al día con la consulta de fuentes; las dos, si el resumen quedó atrás (ADR 0036). #}
@@ -14,12 +35,12 @@
     {% if d %}
     {# El hecho de más peso desde el resumen va primero; el resumen, debajo (ADR 0037). #}
     <p>{{ d.titulo }}.</p>
-    <a class="enlace" href="/ficha/evento/{{ d.id }}" hx-get="/ficha/evento/{{ d.id }}" hx-target="#ficha-contenido">{{ el.detalle.destacado_tipo }} · {{ fmt.fecha_evento(d.fecha) }} · De dónde sale este dato →</a>
+    <a class="enlace" href="/ficha/evento/{{ d.id }}" hx-get="/ficha/evento/{{ d.id }}" hx-target="#ficha-contenido">{{ el.detalle.destacado_tipo }} · {{ fmt.fecha_evento(d.fecha) }} · Ver ficha →</a>
     <a class="enlace" href="#hito-{{ d.id }}">Ver en la línea de tiempo ↓</a>
     <p class="hoy-resumen"><strong>{{ "Resumen de la situación" if d.fecha == hoy.fecha else "Resumen del " ~ el.detalle.resumen ~ ", anterior a este hecho" }}:</strong> {{ resumen_texto }}. <a href="/ficha/evento/{{ hoy.id }}" hx-get="/ficha/evento/{{ hoy.id }}" hx-target="#ficha-contenido">Ver ficha →</a></p>
     {% else %}
     <p>{{ resumen_texto }}.</p>
-    <a class="enlace" href="/ficha/evento/{{ hoy.id }}" hx-get="/ficha/evento/{{ hoy.id }}" hx-target="#ficha-contenido">De dónde sale este dato →</a>
+    <a class="enlace" href="/ficha/evento/{{ hoy.id }}" hx-get="/ficha/evento/{{ hoy.id }}" hx-target="#ficha-contenido">Ver ficha →</a>
     {% endif %}
   </div>
   {% set nuevos = el.detalle.posteriores %}

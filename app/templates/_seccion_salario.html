@@ -5,7 +5,7 @@
     <div class="dato dato-grande"><small>Aumento que falta</small><span class="rojo">{{ num(es, "brecha-art5", true) }}</span></div>
     <div class="dato"><small>Se pagó</small>{{ num(es, "pagado", true) }}</div>
     <div class="dato"><small>La ley exige</small>{{ num(es, "exigido", true) }}</div>
-    <div class="dato"><small>Poder de compra vs. nov-2023</small><span class="rojo">{{ num(es, "real-nov_2023", true) }}</span></div>
+    <div class="dato"><small>Poder de compra frente a nov-2023</small><span class="rojo">{{ num(es, "real-nov_2023", true) }}</span></div>
   </div>
 
   {# Billete: cuánto compra el sueldo de cada mes frente al de nov-2023 (ADR 0023). El contorno es el sueldo de
@@ -42,17 +42,18 @@
         {% for c in bil %}
         <div data-mes="{{ loop.index0 }}"{% if not loop.last %} hidden{% endif %}>
           <div class="datos" style="margin-bottom: 12px">
-            <div class="dato dato-grande"><small>El sueldo de {{ c.mes }} compra, de lo que compraba en noviembre de 2023,</small><span>{{ num(es, "compra-" ~ c.periodo) }}</span></div>
+            <div class="dato dato-grande"><small>El sueldo de {{ c.corto }} compra, de lo que compraba en nov-2023,</small><span>{{ num(es, "compra-" ~ c.periodo) }}</span></div>
           </div>
           {% if c.rige %}
-          <p>Le falta <strong class="rojo">{{ num(es, "poder-" ~ c.periodo) }}</strong>. Según la ley (art. 5), tendría que comprar lo mismo que en noviembre de 2023.</p>
+          <p>Perdió <strong class="rojo">{{ num(es, "perdida-" ~ c.periodo) }}</strong> de poder de compra. Para comprar lo mismo que en nov-2023, como manda la ley (art. 5), el sueldo tiene que subir <strong class="rojo">{{ num(es, "subir-" ~ c.periodo) }}</strong>.</p>
           {% else %}
-          <p>Perdió <strong>{{ num(es, "poder-" ~ c.periodo) }}</strong> de poder de compra. La ley todavía no regía: su aumento corresponde desde {{ es.detalle.vigencia_art5 }}.</p>
+          {% if loop.first %}<p>Es el mes de comparación: el sueldo de nov-2023 compra todo lo que compraba.</p>
+          {% else %}<p>Perdió <strong>{{ num(es, "perdida-" ~ c.periodo) }}</strong> de poder de compra. Para recuperarlo, el sueldo tendría que subir {{ num(es, "subir-" ~ c.periodo) }}. La ley todavía no regía: su aumento corresponde desde {{ es.detalle.vigencia_art5 }}.</p>{% endif %}
           {% endif %}
         </div>
         {% endfor %}
         <div data-deslizador hidden>
-          <label style="display: block; font-size: .85rem; color: var(--tenue)">Elegí un mes: <strong data-rotulo>{{ act.mes }}</strong></label>
+          <label style="display: block; font-size: .85rem; color: var(--tenue)">Elegí un mes: <strong data-rotulo>{{ act.corto }}</strong></label>
           <input type="range" min="0" max="{{ bil|length - 1 }}" value="{{ bil|length - 1 }}" step="1"
                  aria-label="Mes" style="width: 100%; accent-color: var(--tinta)">
           <p class="leyenda" style="display: flex; justify-content: space-between; margin: 0"><span>{{ bil[0].corto }}</span><span>{{ act.corto }}</span></p>
@@ -100,7 +101,7 @@
     rango.addEventListener("input", () => {
       const i = Number(rango.value), m = meses[i];
       paneles.forEach((p) => { p.hidden = Number(p.dataset.mes) !== i; });
-      rotulo.textContent = m.mes;
+      rotulo.textContent = m.corto;
       if (quieto) dibujar(m.proporcion, m.rige, true); else achicar(actual, m, 300);
     });
     if (!quieto) {
@@ -197,7 +198,7 @@
         cruz.setAttribute("x1", p.x); cruz.setAttribute("x2", p.x); cruz.setAttribute("visibility", "visible");
         const [anio, mes] = p.mes.split("-");
         let html = `<strong>${MESES[Number(mes) - 1]}-${anio}</strong><br>Pagado: ${pesos(p.pagado)}` + (p.nc ? " <em>(escala no publicada)</em>" : "");
-        if (p.rige) html += `<br>Exige la ley: ${pesos(p.ref)}<br>Falta: ${((p.ref / p.pagado - 1) * 100).toLocaleString("es-AR", { maximumFractionDigits: 1 })} %`;
+        if (p.rige) html += `<br>Exige la ley: ${pesos(p.ref)}<br>Aumento que falta: ${((p.ref / p.pagado - 1) * 100).toLocaleString("es-AR", { maximumFractionDigits: 1 })} %`;
         else if (p.ref) html += `<br>Nov-2023 + inflación: ${pesos(p.ref)}<br><em>La ley todavía no regía</em>`;
         tip.innerHTML = html;
         tip.hidden = false;

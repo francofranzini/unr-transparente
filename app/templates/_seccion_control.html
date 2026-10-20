@@ -17,13 +17,7 @@
   <details class="mas-info presentacion revelar">
     <summary><span class="si-cerrado">Ver más</span><span class="si-abierto">Ver menos</span></summary>
     <p>El <a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/0-4999/804/norma.htm" rel="noopener" target="_blank">artículo 75, inciso 19, de la Constitución Nacional</a> garantiza los principios de gratuidad y equidad de la educación pública estatal y la autonomía y autarquía de las universidades nacionales.</p>
-    <p>Que las universidades sean autárquicas significa que gestionan sus propios fondos, que reciben del Poder Ejecutivo. Para una universidad transparente es necesario realizar auditorías.</p>
-    <p><strong>¿Quiénes realizan las auditorías?</strong> Dos órganos:</p>
-    <ul>
-      <li><strong>La AGN (Auditoría General de la Nación)</strong>, creada por la <a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/0-4999/554/texact.htm" rel="noopener" target="_blank">Ley 24.156</a>. Su principal misión, en el ejercicio del control externo, es realizar auditorías y estudios especiales asistiendo técnicamente al Congreso de la Nación.</li>
-      <li><strong>La SIGEN (Sindicatura General de la Nación)</strong> es el órgano de control interno del Poder Ejecutivo Nacional que audita a las universidades nacionales.</li>
-    </ul>
-    <p>Auditar a las universidades es facultad del Poder Ejecutivo y del Poder Legislativo.</p>
+    <p>Que las universidades sean autárquicas significa que administran sus propios fondos, que reciben del Estado nacional a través del presupuesto.</p>
   </details>
   {# Mapa de quién audita a las universidades (ADR 0034): al centro las universidades nacionales; a un lado el control
      externo (AGN), al otro el del Poder Ejecutivo (SIGEN). Sin JavaScript se ven los dos paneles, uno debajo del otro. #}
@@ -43,7 +37,7 @@
     <div class="organo-paneles">
       {% for o in ec.detalle.organos %}
       <div class="organo-panel actor-{{ o.actor }}" id="organo-{{ o.clave }}" data-panel-organo="{{ o.clave }}">
-        <p class="organo-rol"><i></i>{{ o.rol }}</p>
+        <p class="organo-rol"><i class="actor-{{ o.actor }}"></i>{{ o.rol }}</p>
         <h4>{{ o.nombre }} ({{ o.sigla }})</h4>
         <p>{{ o.depende }} {{ o.relacion }}</p>
         {% if o.marco %}<p class="organo-rol">Para todas las universidades</p>

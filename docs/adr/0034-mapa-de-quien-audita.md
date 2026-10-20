@@ -12,9 +12,9 @@ Salario y Transferencias tienen una imagen que se entiende sin leer (billete, fa
 ## Decisión
 
 - La pregunta de la sección pasa a **«¿Quién audita a las universidades?»**.
-- Entre el «Ver más» y la línea de tiempo, un **mapa**: al centro, las universidades nacionales; a la izquierda la **AGN** (control externo, color del Congreso, línea continua) y a la derecha la **SIGEN** (control interno del Poder Ejecutivo, color del Ejecutivo, línea punteada). Íconos de línea propios (lupa, escudo, edificio), sin logos de ningún organismo.
+- Entre el «Ver más» y la línea de tiempo, un **mapa**: al centro, las universidades nacionales; a la izquierda la **AGN** (control externo) y a la derecha la **SIGEN** (control interno del Poder Ejecutivo). Íconos de línea propios (lupa, escudo, edificio), sin logos de ningún organismo.
 - Cada órgano es un botón que abre su panel: función según la norma citada, a quién responde y los hechos de `control.yaml` que **alcanzan a todas las universidades** (convenios del CIN, dictámenes de la Procuración del Tesoro, resoluciones), cada uno con su ficha. Se eligen por id en `ORGANOS_CONTROL` (`core/ejes.py`); si un id no existe, `eje_control` da error. «Ver sus hechos en la línea de tiempo» aplica el filtro del órgano en la cronología de la universidad elegida.
-- La línea punteada de la SIGEN es una convención de estilo para distinguir los dos lados; no indica que el control sea más débil. Lo que define su alcance está en el panel.
+- **Mismo trato para los dos órganos:** el mismo azul y línea continua para la AGN y para la SIGEN, para que ninguno se lea como «bueno» o «malo». El color de su actor (Congreso, Poder Ejecutivo) queda solo en el punto del rótulo de su panel, igual que en los filtros de la línea de tiempo.
 - **Línea de tiempo por universidad:** en lugar de un recuadro desplegable por universidad, un selector «Ver:» como el de Transferencias, con la universidad elegida marcada. Hoy solo está la UNR; para sumar otra alcanza con cargar sus hechos y agregarla a `UNIVERSIDADES_CONTROL`, y aparece como un botón más.
 - Animación: al aparecer, las universidades y los órganos entran escalonados, las líneas se dibujan hacia el centro y un punto viaja por cada una. Con «reducir movimiento», todo quieto. Sin JavaScript se ven los dos paneles y todas las líneas de tiempo, y el botón de filtro no aparece.
 

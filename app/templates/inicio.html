@@ -23,6 +23,7 @@
 
 {# Motivación, antes de los datos #}
 <section class="porque revelar">
+  <p class="sobretitulo">Por qué hicimos este sitio</p>
   <blockquote>Lo que manda la ley, lo que llegó y la diferencia.</blockquote>
   <p>Medimos contra la Ley 27.795. Tocá cualquier número para ver el documento y la cuenta de donde sale. Hecho en una hackatón sobre la universidad pública.</p>
 </section>
@@ -38,16 +39,23 @@
 
 {# Cómo leer #}
 <section class="seccion como-leer">
-  {{ encabezado("05", "Cómo leer los números", "Tocá cualquier número y mirá de dónde sale.") }}
+  {{ encabezado("05", "Cómo leer los números", "¿Qué muestra cada ficha?") }}
+  {# La ficha de ejemplo repite la vista breve de la ficha real (ADR 0032): el número, cómo se calcula y de dónde sale. #}
+  {% set c = es.cifra("pagado") %}
   <div class="demo revelar">
     <p class="demo-frase">En {{ es.detalle.ultimo_ipc }}, a un profesor adjunto se le pagó {{ num(es, "pagado") }}.</p>
     <span class="demo-flecha" aria-hidden="true">→</span>
-    {% set d = es.cifra("pagado").fuentes[0] %}
     <div class="demo-ficha">
-      <small>Ficha</small>
-      <strong>{{ es.cifra("pagado").etiqueta }}</strong>
-      <span>Instructivo de liquidación de la Secretaría de Políticas Universitarias{% if d.pagina %}, pág. {{ d.pagina }}{% endif %}</span>
-      <span>Consultado el {{ d.consultado.strftime("%d/%m/%Y") }} · fuente {{ d.tipo_fuente.value }}</span>
+      <p class="ficha-rotulo">De dónde sale este número</p>
+      <strong>{{ c.etiqueta }}</strong>
+      <p class="ficha-valor">{{ fmt.cifra_corta(c) }}<span class="ficha-periodo">{{ fmt.fecha_evento(c.periodo) }}</span></p>
+      <div class="ficha-calculo">
+        <p class="ficha-subtitulo">Cómo se calcula</p>
+        <p>{{ c.calculo or "Se toma tal cual del documento." }}</p>
+      </div>
+      <p class="ficha-subtitulo">Sale de</p>
+      <ul class="ficha-origen">{% for nombre, enlace, pagina in fmt.origenes(c) %}<li>{{ nombre }}{% if pagina %}, pág. {{ pagina }}{% endif %}</li>{% endfor %}</ul>
+      <p class="ficha-pie">Fuente {{ c.tipo_fuente }} · consultado {{ c.fuentes[0].consultado.strftime("%d/%m/%Y") }}</p>
     </div>
   </div>
 </section>

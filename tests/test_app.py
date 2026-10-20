@@ -268,7 +268,7 @@ def test_la_ficha_de_la_partida_muestra_de_que_se_compone(cliente):
     breve, detalle = texto.split('<details class="ficha-detalle">')
     assert "<span>Asistencia Financiera para el Funcionamiento Universitarios</span><span>$ 1.483 millones</span>" in breve
     assert "$ 1.482.584.082,00" in detalle and "$ 1.529.018.216,00" in detalle
-    assert '<span class="ficha-periodo">sep 2024</span>' in breve
+    assert '<span class="ficha-periodo">sep-2024</span>' in breve
 
 
 def test_la_ficha_de_la_partida_explica_que_el_mes_es_una_eleccion(cliente):
@@ -276,8 +276,8 @@ def test_la_ficha_de_la_partida_explica_que_el_mes_es_una_eleccion(cliente):
     texto = cliente.get("/ficha/cifra/ejecucion/unr-arts34-partida", headers={"HX-Request": "true"}).text
     assert "no dice de qué mes" in texto.split('<details class="ficha-detalle">')[0]
     cada_mes = texto.split("<dt>Cada mes</dt>")[1]
-    assert '<tr class="total"><th>sep 2024</th><td>$ 1.529.018.216</td></tr>' in cada_mes
-    assert "<th>dic 2024</th><td>$ 2.408.852.952</td>" in cada_mes
+    assert '<tr class="total"><th>sep-2024</th><td>$ 1.529.018.216</td></tr>' in cada_mes
+    assert "<th>dic-2024</th><td>$ 2.408.852.952</td>" in cada_mes
 
 
 def test_control_muestra_el_mapa_de_quien_audita(cliente):
@@ -300,3 +300,56 @@ def test_el_mapa_de_control_solo_cita_hechos_existentes():
     from core.ejes import construir_ejes
     for organo in construir_ejes(cargar())["control"].detalle["organos"]:
         assert organo["marco"], organo["sigla"]
+
+
+def test_el_billete_no_usa_dobles_negativos_y_conecta_las_dos_cifras(cliente):
+    # «Perdió 25,0 %», no «Perdió −25,0 %»; y desde que rige la ley, el aumento que recupera el poder de compra.
+    salario = _seccion(cliente.get("/").text, "salario")
+    texto = re.sub(r"<[^>]+>", "", salario)
+    assert "Perdió −" not in texto and "Le falta −" not in texto
+    assert 'href="/ficha/cifra/salario/subir-2026-08"' in salario
+
+
+def test_el_aumento_del_billete_coincide_con_la_brecha_del_art5():
+    from core.carga import cargar
+    from core.ejes import construir_ejes
+    es = construir_ejes(cargar())["salario"]
+    ultimo = es.detalle["billete"][-1]["periodo"]
+    assert round(es.cifra(f"subir-{ultimo}").valor, 6) == round(es.cifra("brecha-art5").valor, 6)
+
+
+def test_ninguna_ficha_menciona_un_adr(cliente):
+    # Los ADR son documentos internos: el lector no los ve.
+    for enlace in set(re.findall(r'hx-get="(/ficha/cifra/[^"]+)"', cliente.get("/").text)):
+        assert "ADR" not in cliente.get(enlace, headers={"HX-Request": "true"}).text, enlace
+
+
+def test_las_tablas_de_transferencias_estan_en_millones(cliente):
+    html = cliente.get("/").text
+    transferencias = html[html.index('id="transferencias"'):html.index('id="ley"')]
+    assert not re.search(r">\$ \d{1,3}(\.\d{3}){2,}<", transferencias)
+
+
+def test_los_enlaces_a_fichas_de_hechos_dicen_ver_ficha(cliente):
+    html = cliente.get("/").text
+    assert "De dónde sale este dato" not in html and "Ver ficha →" in html
+
+
+def test_el_recorrido_de_la_ley_tiene_un_paso_por_sello(cliente):
+    # ADR 0038: un paso por sello (sin el antecedente de 2024), en orden, cada uno con su hecho en la línea de tiempo.
+    from core.ejes import SELLOS_LEY
+    ley = _seccion(cliente.get("/").text, "ley")
+    camino = ley[ley.index("data-camino-ley"):ley.index('class="hoy')]
+    ids = re.findall(r'<a href="#hito-([^"]+)">', camino)
+    assert ids == [i for i in [e.id for e in repo.eventos_de("ley")] if i in SELLOS_LEY and not i.startswith("ley-2024")]
+    assert all(f'id="hito-{i}"' in ley for i in ids)
+    assert camino.count("camino-hoy") == 1
+
+
+def test_la_cuenta_de_2025_es_una_cascada_con_fichas(cliente):
+    # Una cascada por universidades (todas y UNR); cada artículo es un <section>, así que se busca en toda la página.
+    transferencias = cliente.get("/").text
+    assert transferencias.count('class="cuenta cascada"') == 2
+    for clave in ("partida", "partida-art3", "exigido-bim1", "exigido-bim6", "transferido-bim1", "transferido-bim6",
+                  "exigido", "transferido"):
+        assert f'href="/ficha/cifra/ejecucion/arts34-{clave}"' in transferencias

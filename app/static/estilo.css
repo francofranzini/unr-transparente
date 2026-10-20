@@ -89,10 +89,12 @@ nav a:hover { color: var(--acento); }
 .cifra-portada:hover .pie-cifra { color: var(--tinta); }
 
 /* Motivación, justo después de la portada */
-.porque { padding: var(--entre-partes) 0 var(--entre-secciones); max-width: 46rem; }
-.porque blockquote { margin: 0 0 14px; font-size: clamp(1.5rem, 3.6vw, 2.3rem); font-weight: 900; line-height: 1.15; letter-spacing: -.03em; }
-.porque blockquote::before { content: "“"; display: block; font-size: 4rem; line-height: .6; color: var(--tenue); }
+.porque { padding: var(--entre-partes) 0 calc(var(--entre-partes) * .75); max-width: 46rem; }
+.porque blockquote { margin: 0 0 18px; padding-left: 22px; border-left: 5px solid var(--tinta);
+                     font-size: clamp(1.6rem, 4vw, 2.6rem); font-weight: 900; line-height: 1.12; letter-spacing: -.03em; }
 .porque p { color: var(--tenue); margin: 0; max-width: 36rem; }
+.porque .sobretitulo { margin-bottom: 14px; }
+.porque blockquote + p { padding-left: 27px; }
 
 /* Secciones: parte de la página, separadas por una línea */
 .seccion { padding: var(--entre-secciones) 0 calc(var(--entre-secciones) / 2); border-top: 1px solid var(--linea); scroll-margin-top: 84px; }
@@ -131,6 +133,7 @@ nav a:hover { color: var(--acento); }
   .tabla th, .tabla td { display: flex; justify-content: space-between; gap: 12px; border: 0; padding: 2px 0; }
   .tabla td::before { content: attr(data-r); color: var(--tenue); font-size: .85rem; }
   .tabla td.sin-dato { display: none; }
+.tabla small.sin-dato { display: block; font-size: .78rem; color: var(--tenue); }
 }
 
 /* «¿De dónde sale?» y artículo */
@@ -324,7 +327,9 @@ text.rotulo { fill: var(--tinta); font-size: 12px; font-weight: 700; text-transf
 @media (max-width: 759px) { .demo-flecha { transform: rotate(90deg); } }
 .demo-ficha { display: grid; gap: 4px; padding: 16px 18px; border-radius: 14px; background: var(--vidrio-solido);
               border: 1px solid var(--linea); border-top: 4px solid var(--tinta); font-size: .88rem; box-shadow: var(--sombra); }
-.demo-ficha small { font-size: .72rem; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; color: var(--tenue); }
+.demo-ficha > strong { font-size: 1.05rem; line-height: 1.3; }
+.demo-ficha .ficha-valor { margin: 4px 0 10px; font-size: 1.5rem; }
+.demo-ficha .ficha-calculo { margin-bottom: 12px; }
 
 /* Ficha */
 dialog { width: min(600px, calc(100vw - 32px)); padding: 26px; color: var(--tinta); background: var(--vidrio-solido); }
@@ -371,8 +376,10 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wra
 .mapa-lado, .mapa-unr { display: grid; justify-items: center; gap: 14px; text-align: center; position: relative; z-index: 1; }
 .mapa-linea { position: absolute; top: 44px; height: 2px; background: var(--c); z-index: 0; }
 .mapa-linea-izq { left: 16.5%; right: 50%; transform-origin: left; }
-.mapa-linea-der { left: 50%; right: 16.5%; transform-origin: right;
-                  background: repeating-linear-gradient(90deg, var(--c) 0 7px, transparent 7px 13px); }
+.mapa-linea-der { left: 50%; right: 16.5%; transform-origin: right; }
+/* Los dos órganos con el mismo trato: el mismo azul y línea continua, para que ninguno se lea como «bueno» o «malo».
+   El color de su actor queda solo en el punto del rótulo del panel, igual que en los filtros de la línea de tiempo. */
+.mapa-control .organo, .mapa-control .mapa-linea, .mapa-control .organo-panel { --c: var(--serie-1); }
 .mapa-linea i { position: absolute; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--c); opacity: 0; }
 .organo { display: grid; justify-items: center; gap: 2px; font: inherit; color: var(--tinta); background: none; border: 0;
           padding: 0; cursor: pointer; max-width: 11rem; }
@@ -422,3 +429,99 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wra
 @keyframes viaje { 0% { left: 0; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { left: calc(100% - 8px); opacity: 0; } }
 @keyframes viaje-izq { 0% { left: calc(100% - 8px); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { left: 0; opacity: 0; } }
 @keyframes panel-entra { from { opacity: 0; transform: translateY(10px); } }
+
+/* Recorrido de la ley (ADR 0038): un paso por sello sobre una línea; los rótulos alternan arriba y abajo para no
+   pisarse. La línea se dibuja al aparecer, los pasos entran en orden y el último late. */
+.camino-ley { max-width: 64rem; }
+.camino-pista { overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; margin: 0 0 8px; }
+.camino-pista:focus-visible { outline: 3px solid var(--tinta); outline-offset: 4px; border-radius: 8px; }
+.camino { list-style: none; margin: 0; padding: 0; position: relative; display: grid;
+          grid-template-columns: repeat(var(--pasos), minmax(72px, 1fr)); min-width: calc(var(--pasos) * 72px); height: 168px; }
+.camino::before { content: ""; position: absolute; top: 50%; height: 2px; margin-top: -1px; background: var(--tenue); opacity: .45;
+                  left: calc(50% / var(--pasos)); right: calc(50% / var(--pasos)); transform-origin: left; }
+.camino-paso { position: relative; }
+.camino-paso a { position: absolute; inset: 0; color: inherit; text-decoration: none; }
+.camino-punto { position: absolute; left: 50%; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%;
+                background: var(--fondo); border: 3px solid var(--c); transition: transform .2s ease, background .2s ease; }
+.camino-paso a::before { content: ""; position: absolute; left: 50%; width: 1px; height: 10px; background: var(--c); bottom: calc(50% + 9px); }
+.camino-paso.abajo a::before { bottom: auto; top: calc(50% + 9px); }
+.camino-texto { position: absolute; left: 50%; bottom: calc(50% + 22px); width: 140px; transform: translateX(-50%);
+                display: grid; gap: 1px; text-align: center; }
+.camino-paso.abajo .camino-texto { bottom: auto; top: calc(50% + 22px); }
+.camino-paso:first-child .camino-texto { left: 0; width: 120px; transform: none; text-align: left; }
+.camino-paso:last-child .camino-texto { left: auto; right: 0; width: 120px; transform: none; text-align: right; }
+.camino-texto strong { font-size: .82rem; font-weight: 900; line-height: 1.2; }
+.camino-texto small { font-size: .72rem; color: var(--tenue); }
+.camino-paso a:hover .camino-punto, .camino-paso a:focus-visible .camino-punto { transform: scale(1.35); background: var(--c); }
+.camino-paso a:hover strong { text-decoration: underline; text-decoration-color: var(--c); text-decoration-thickness: 2px; }
+.camino-paso a:focus-visible { outline: none; }
+.camino-hoy .camino-punto { background: var(--c); }
+@media (prefers-reduced-motion: no-preference) {
+  .js .camino-ley .camino::before { transform: scaleX(0); transition: transform 1.6s cubic-bezier(.3, .6, .2, 1) .2s; }
+  .js .camino-ley.visible .camino::before { transform: none; }
+  .js .camino-ley .camino-paso { opacity: 0; transform: translateY(8px); transition: opacity .45s ease, transform .45s cubic-bezier(.3, 1.3, .5, 1); }
+  .js .camino-ley.visible .camino-paso { opacity: 1; transform: none; transition-delay: calc(.25s + var(--i) * 110ms); }
+  .js .camino-ley.visible .camino-hoy .camino-punto { animation: latido 2.2s ease-out 2s infinite; }
+}
+@keyframes latido { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c) 55%, transparent); }
+                    100% { box-shadow: 0 0 0 14px color-mix(in srgb, var(--c) 0%, transparent); } }
+.camino-leyenda { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 0; font-size: .78rem; color: var(--tenue); }
+.camino-leyenda span { display: inline-flex; align-items: center; gap: 6px; }
+.camino-leyenda i { width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--c); }
+
+/* Cascada de los arts. 3 y 4 (ADR 0038): de la partida mensual a lo que correspondía en el año. Lo que manda la ley,
+   en el color de la serie «exigido»; lo recibido, en el de «pagado»; lo que falta, en rojo (la ley rige para 2025). */
+.cascada { display: grid; gap: 18px; padding: 18px 18px 14px; }
+.cascada-paso { display: grid; gap: 8px; }
+.cascada-rotulo { display: flex; align-items: baseline; gap: 10px; margin: 0; font-size: .92rem; font-weight: 700; }
+.cascada-rotulo b { flex: none; display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%;
+                       background: var(--tinta); color: var(--fondo); font-size: .75rem; font-weight: 900; }
+.cascada-fila { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; }
+.cascada-fila.con-rotulo { grid-template-columns: 6.5rem minmax(0, 1fr) auto; }
+.cascada-fila small { font-size: .8rem; color: var(--tenue); }
+.cascada-fila .num { white-space: nowrap; font-weight: 700; }
+.cascada-pista { display: block; height: 16px; border-radius: 4px; }
+.cascada-pista.con-falta { border: 2px dashed var(--rojo); }
+.cascada-barra { display: block; height: 100%; width: var(--w); border-radius: 3px; background: var(--serie-2); }
+.cascada-barra.recibido { background: var(--serie-1); }
+.cascada-bimestres { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; align-items: end;
+                     height: 230px; padding-left: 4.5rem; }
+/* El eje empieza en el piso (no en cero): su rótulo, a la izquierda */
+.cascada-bimestres::before { content: attr(data-piso); position: absolute; left: 0; bottom: 61px; font-size: .72rem; color: var(--tenue);
+                             transform: translateY(50%); }
+.cascada-bim { display: grid; grid-template-rows: 1fr auto auto; justify-items: center; height: 100%; text-align: center; font-size: .78rem; }
+/* Cada bimestre: lo que manda la ley (naranja) y, al lado, lo recibido (azul) */
+.cascada-par { align-self: end; display: flex; align-items: flex-end; justify-content: center; gap: 4px; width: 100%; height: 100%; }
+.cascada-columna { display: block; width: min(30px, 32%); height: var(--h); min-height: 3px; border-radius: 3px 3px 0 0; background: var(--serie-2); }
+.cascada-columna.recibido { background: var(--serie-1); }
+.cascada-montos { display: grid; gap: 1px; }
+.cascada-montos .num:first-child { color: var(--serie-2); } .cascada-montos .num:last-child { color: var(--serie-1); }
+.cascada-leyenda { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 4px 0 0; font-size: .78rem; color: var(--tenue); }
+.cascada-leyenda span { display: inline-flex; align-items: center; gap: 6px; }
+.cascada-leyenda i { width: 12px; height: 12px; border-radius: 2px; background: var(--serie-2); }
+.cascada-leyenda i.recibido { background: var(--serie-1); }
+.cascada-bim small { margin-top: 4px; color: var(--tenue); }
+.cascada-bim .num { font-weight: 700; }
+@media (max-width: 600px) {
+  .cascada { padding: 14px 12px 12px; }
+  .cascada-fila.con-rotulo { grid-template-columns: 5rem minmax(0, 1fr); }
+  .cascada-fila.con-rotulo .num { grid-column: 2; }
+  /* En celular, los bimestres van en filas: las dos columnas pasan a barras horizontales, una arriba de la otra */
+  .cascada-bimestres { grid-template-columns: 1fr; height: auto; gap: 10px; padding-left: 0; }
+  .cascada-bimestres::before { position: static; transform: none; padding-left: calc(3.6rem + 8px); }
+  .cascada-bim { grid-template-columns: 3.6rem minmax(0, 1fr) auto; grid-template-rows: none; align-items: center; gap: 8px; text-align: left; font-size: .8rem; }
+  .cascada-par { align-self: center; flex-direction: column; align-items: flex-start; justify-content: center; gap: 3px; height: auto; }
+  .cascada-columna { width: var(--h); height: 7px; border-radius: 3px; }
+  .cascada-montos { text-align: right; }
+  .cascada-bim small { order: -1; margin: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  details[open] .cascada-paso { animation: cascada-entra .5s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--i) * .45s); }
+  details[open] .cascada-barra { animation: cascada-crece .9s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--i, 0) * .45s + .2s); }
+  details[open] .cascada-paso .cascada-barra { animation-delay: inherit; }
+  details[open] .cascada-columna { animation: cascada-sube .6s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(.9s + .25s + var(--j) * .12s); }
+  @media (max-width: 600px) { details[open] .cascada-columna { animation-name: cascada-crece; } }
+}
+@keyframes cascada-entra { from { opacity: 0; transform: translateY(8px); } }
+@keyframes cascada-crece { from { width: 0; } }
+@keyframes cascada-sube { from { height: 0; } }

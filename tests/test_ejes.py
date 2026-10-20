@@ -108,7 +108,7 @@ def test_el_art5_exige_solo_desde_noviembre_de_2025(ejes):
 def test_anio_en_curso_con_referencia_y_sin_exigido(ejes):
     eje = ejes["ejecucion"]
     # Enero a septiembre de 2026 (octubre está en curso): la referencia no es un monto de la ley.
-    assert eje.detalle["ventana_actual"] == "enero a septiembre de 2026"
+    assert eje.detalle["ventana_actual"] == "ene-2026 a sep-2026"
     assert "La ley no lo pide" in eje.cifra("arts34-ref-2026").calculo
     assert eje.cifra("arts34-relacion-2026").valor.quantize(Decimal("0.1")) == Decimal("-34.7")
     assert eje.cifra("unr-arts34-relacion-2026").valor.quantize(Decimal("0.1")) == Decimal("-52.0")

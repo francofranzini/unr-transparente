@@ -2,7 +2,6 @@
 {% from "_cronologia.html" import cronologia %}
 {{ cronologia(el.eventos, "la Ley 27.795", "De lo más antiguo a lo más reciente: del veto de 2024 a hoy.",
               filtros=[("congreso", "Congreso"), ("ejecutivo", "Poder Ejecutivo"), ("justicia", "Justicia"), ("acuerdo", "Acuerdo")],
-              actores_tipo={"legislativo": ("congreso", "Congreso"), "norma": ("ejecutivo", "Poder Ejecutivo"),
-                            "judicial": ("justicia", "Justicia"), "convenio": ("acuerdo", "Acuerdo"), "paritaria": ("acuerdo", "Acuerdo")},
+              actores_tipo=el.detalle.actores,
               sellos=el.detalle.get("sellos", {}), antecedente="ley-2024", transicion=True,
               importante=el.detalle.importante.id if el.detalle.importante else "") }}

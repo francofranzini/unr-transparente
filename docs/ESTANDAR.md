@@ -35,7 +35,8 @@ Este documento fija cómo se ve y cómo funciona el sitio. **Es la base de cualq
 - **Tipografía:** Lato (400, 700, 900).
 - **Composición:** una sola página, sin tarjetas. Secciones numeradas («01 — Salario docente») separadas por una línea fina; la pregunta como título; los datos sobre el papel. Lo secundario va detrás de un «ver más».
 - **Espaciado (ADR 0033):** entre secciones, `--entre-secciones`; entre las partes de una sección (encabezado, cifras, imagen, gráfico, «ver más»), `--entre-partes`. Como cada parte aparece al hacer scroll, el aire hace que entren de a una. Un selector va pegado a lo que cambia.
-- **Tono:** rioplatense, con voseo, frases cortas, meses en palabras («agosto de 2026»), sin jerga de datos. Acompaña al lector; no lo trata como una computadora.
+- **Tono:** rioplatense, con voseo, frases cortas, sin jerga de datos. Acompaña al lector; no lo trata como una computadora.
+- **Fechas y montos (ADR 0038):** en rótulos, tablas, gráficos y fichas, mes-año («ago-2026»; «ene-2026 a sep-2026»); en las frases, el mes en palabras («agosto de 2026»). Desde $ 10 millones, siempre en millones. Con «perdió» o «falta», la cifra va sin signo. Ningún texto visible nombra un ADR.
 
 ## 3. Funcionalidades (congeladas)
 
@@ -46,6 +47,7 @@ Este documento fija cómo se ve y cómo funciona el sitio. **Es la base de cualq
 - **Cronología de la ley:** «Línea de tiempo», vertical, de lo más antiguo a lo más reciente, dentro de un recuadro con scroll propio y el año fijo arriba; filtros por actor; detalle desplegable con «Cómo lo contaron»; recorrido «hecho por hecho» con sellos que nombran el acto (ADR 0030 y 0031, propuestas).
 - **Cronología de Control:** una por universidad, cada una en un recuadro desplegable (hoy, la UNR), con la misma plantilla que la de la ley (`_cronologia.html`), con los actores AGN, SIGEN y Procuración, auditoría interna de la UNR y convenios; debajo de la pregunta, un desplegable «Ver más» / «Ver menos» con la autarquía de las universidades y quién las audita (AGN y SIGEN), sin recuadro aparte; sin sellos, que son solo de la ley (ADR 0025, propuesta).
 - **Accesibilidad:** con «reducir movimiento» no hay animaciones; sin JavaScript se ve todo el contenido; todo se usa con teclado.
+- **Recorrido de la ley (ADR 0038, a prueba):** arriba de «Dónde está hoy», un paso por sello, con el color de su actor; cada paso lleva a su hecho en la línea de tiempo.
 - **Tipos de hecho (ADR 0037):** cada tipo tiene una etiqueta legible y un peso en `TIPOS_EVENTO`. En una misma fecha, el hecho de más peso va último en la línea de tiempo; «Dónde está hoy» lo muestra primero si es posterior al resumen, y lleva la marca «Último hecho importante».
 - **Actualización de la ley (ADR 0035 y 0036):** el vigía avisa las novedades en el issue `vigia-ley`. Lo verificable (normas de InfoLEG, votaciones del Senado, notas que coinciden con un único hito) se carga solo y se publica si pasa la validación y los tests; lo demás se carga a mano con el procedimiento del ADR 0035. «Dónde está hoy» muestra la fecha del resumen y la de consulta de las fuentes.
 - **Validación:** si una fila de `data/` no tiene ficha completa, la aplicación no arranca. La integración continua corre el validador y los tests en cada push y pull request a `main`.
@@ -59,7 +61,7 @@ Se usan tal como están; no se crean clases ni estilos nuevos.
 | Encabezado de sección | `{{ encabezado("03", "Transferencias", "¿Pregunta?") }}` |
 | Fila de datos | `<div class="datos revelar"><div class="dato dato-grande"><small>Rótulo</small>{{ num(eje, "clave", true) }}</div>…</div>` (una sola `dato-grande` por fila) |
 | Nota aclaratoria | `<p class="aviso">…</p>` |
-| Recuadro de estado | `<div class="hoy revelar"><small>Rótulo</small><p>…</p><a class="enlace" …>De dónde sale este dato →</a></div>` |
+| Recuadro de estado | `<div class="hoy revelar"><small>Rótulo</small><p>…</p><a class="enlace" …>Ver ficha →</a></div>` |
 | Desplegable | `<details class="mas-info"><summary>¿De dónde sale…?</summary>…</details>` |
 | Tabla | `<table class="tabla">` con `data-r` en cada `<td>` (para celulares) |
 | Línea de tiempo simple | `{{ linea_tiempo(eje, 4) }}` |

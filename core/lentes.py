@@ -140,7 +140,7 @@ MES_PREVIO_ART3 = "2024-04"  # el art. 3 cuenta el IPC del 1-may-2024 al 31-dic-
 MES_FINAL_ART3 = "2024-12"
 MES_PARTIDA_ARTS_3_4 = "2024-09"  # primer mes en que el devengado del sistema queda estable (igual que agosto)
 PARTIDAS_ARTS_3_4 = {
-    "nivel_sep_2024": "monto mensual de septiembre de 2024",
+    "nivel_sep_2024": "monto mensual de sep-2024",
     "promedio_2024": "promedio mensual de 2024",
 }
 

@@ -232,6 +232,9 @@
     if (botones.length) elegir(botones[0].dataset.universidad);
   });
 
+  // Recorrido de la ley (ADR 0038): en pantallas angostas se desplaza de costado; arranca mostrando el último paso.
+  document.querySelectorAll("[data-camino-pista]").forEach((pista) => { pista.scrollLeft = pista.scrollWidth; });
+
   // Luz que sigue al cursor sobre el vidrio.
   if (!menosMovimiento) document.addEventListener("pointermove", (e) => {
     const vidrio = e.target.closest(".luz");

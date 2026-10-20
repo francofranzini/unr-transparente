@@ -36,7 +36,7 @@ NORMA_ART4 = Norma("Ley 27.795, art. 4 (Boletín Oficial, 21-oct-2025)", BO_LEY_
                    "«…actualizará desde el 1º de enero hasta el 31 de diciembre de 2025, de forma bimestral, de acuerdo "
                    "al Índice de Precios al Consumidor (IPC)… Los aumentos otorgados y oportunamente efectivizados… "
                    "deberán tomarse a cuenta para el cálculo del presente artículo.»")
-NORMA_REFERENCIA = Norma("Ley 27.795, art. 4, extendido a otro año: la ley no lo pide (referencia, ADR 0024)",
+NORMA_REFERENCIA = Norma("Ley 27.795, art. 4, extendido a otro año: la ley no lo pide (es una referencia)",
                          BO_LEY_27795, NORMA_ART4.cita)
 NORMA_ART5 = Norma("Ley 27.795, art. 5 (Boletín Oficial, 21-oct-2025)", BO_LEY_27795,
                    "«…deberá actualizar los salarios… entre el período 1º/12/2023 hasta la sanción de la presente ley, "
@@ -248,7 +248,7 @@ def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str
         acum_transferido += sum(d.valor for d in datos_mes)
         fuentes_exigido = tuple({d.id: d for d in fuentes_exigido + exigido_mes.fuentes}.values())
         fuentes_transferido += datos_mes
-        hasta = f"enero a {MESES_LARGOS[int(mes[5:]) - 1]} de 2025" if mes != "2025-01" else "enero de 2025"
+        hasta = f"ene-2025 a {mes_legible(mes)}" if mes != "2025-01" else "ene-2025"
         eje.cifras.append(Cifra(f"{prefijo}acum-exigido-{mes[5:]}", f"{quien}: la ley manda reconocer por {hasta}",
                                 acum_exigido, "ARS corrientes", mes, fuentes_exigido,
                                 calculo="Partida mensual × inflación de mayo a diciembre de 2024 (art. 3) × inflación acumulada al inicio de cada bimestre de 2025 (art. 4), sumado mes a mes."))
@@ -266,7 +266,7 @@ def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str
     completos = sorted({d.periodo for d in del_anio if "Mes en curso" not in d.nota})
     ventana = lentes._meses(f"{anio}-01", f"{anio}-12")[:min(len(referencia), len(completos))]
     if anio != "2025" and ventana:
-        hasta = mes_largo(ventana[-1])
+        hasta = mes_legible(ventana[-1])
         # Piso: el monto mensual que la ley fija para fin de 2025 (último bimestre del art. 4), sin actualizar.
         ultimo_bim = lentes.bimestres_art4(partida, ipc)[-1]
         piso_mes = ultimo_bim.valor / 2
@@ -281,54 +281,60 @@ def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str
             acum_tr += sum(d.valor for d in datos_mes)
             f_ref = tuple({d.id: d for d in f_ref + ref_mes.fuentes}.values())
             f_tr += datos_mes
-            etiqueta = f"enero a {MESES_LARGOS[int(mes[5:]) - 1]} de {anio}" if mes[5:] != "01" else f"enero de {anio}"
-            eje.cifras.append(Cifra(f"{prefijo}acum-ref-{mes}", f"{quien}: referencia, {etiqueta}", acum_ref,
+            etiqueta = f"ene-{anio} a {mes_legible(mes)}" if mes[5:] != "01" else f"ene-{anio}"
+            eje.cifras.append(Cifra(f"{prefijo}acum-ref-{mes}", f"{quien}: referencia actualizada por inflación, {etiqueta}", acum_ref,
                                     "ARS corrientes", mes, f_ref, calculo=CALC_REFERENCIA))
             eje.cifras.append(Cifra(f"{prefijo}acum-tr-{mes}", f"{quien}: transferido, {etiqueta}", acum_tr,
                                     "ARS corrientes", mes, f_tr, calculo="Devengado acumulado, actividades 14, 15, 16 y 25"))
-            eje.cifras.append(Cifra(f"{prefijo}acum-piso-{mes}", f"{quien}: piso de diciembre de 2025, {etiqueta}",
+            eje.cifras.append(Cifra(f"{prefijo}acum-piso-{mes}", f"{quien}: referencia (monto de dic-2025), {etiqueta}",
                                     acum_piso, "ARS corrientes", mes, ultimo_bim.fuentes,
-                                    calculo="Monto mensual de noviembre-diciembre de 2025 según el art. 4, sin actualizar, sumado mes a mes."))
+                                    calculo="El monto mensual de fines de 2025 según el art. 4, sin actualizar, sumado mes a mes"))
             serie_anio.append({"mes": mes_legible(mes), "exigido": float(acum_piso) / 1e6,
                                "transferido": float(acum_tr) / 1e6})
-        eje.cifras.append(Cifra(f"{prefijo}ref-{anio}", f"{quien}: referencia, enero a {hasta}", acum_ref,
+        eje.cifras.append(Cifra(f"{prefijo}ref-{anio}", f"{quien}: referencia actualizada por inflación, ene-{anio} a {hasta}", acum_ref,
                                 "ARS corrientes", anio, f_ref, calculo=CALC_REFERENCIA))
-        eje.cifras.append(Cifra(f"{prefijo}tr-{anio}", f"{quien}: transferido, enero a {hasta}", acum_tr,
+        eje.cifras.append(Cifra(f"{prefijo}tr-{anio}", f"{quien}: transferido, ene-{anio} a {hasta}", acum_tr,
                                 "ARS corrientes", anio, f_tr, calculo="Devengado de los meses completos"))
         eje.cifras.append(Cifra(f"{prefijo}relacion-{anio}",
-                                f"{quien}: lo transferido frente a la referencia, enero a {hasta}",
+                                f"{quien}: lo transferido frente a la referencia actualizada, ene-{anio} a {hasta}",
                                 (acum_tr / acum_ref - 1) * 100, "porcentaje", anio, f_ref + f_tr,
-                                calculo="(Transferido ÷ referencia − 1) × 100. La referencia no es un monto que fije la ley."))
+                                calculo="Cuánto menos se transfirió que la referencia actualizada por inflación. La ley no fija ese monto"))
         eje.detalle.setdefault("acumulado_actual", {})[prefijo] = serie_anio
-        eje.detalle["ventana_actual"] = f"enero a {hasta}"
+        eje.detalle["ventana_actual"] = f"ene-{anio} a {hasta}"
         eje.detalle["meses_actual"] = [m[5:] for m in ventana]
-        eje.cifras.append(Cifra(f"{prefijo}piso-mes", f"{quien}: monto mensual de noviembre-diciembre de 2025 según la ley",
+        eje.cifras.append(Cifra(f"{prefijo}piso-mes", f"{quien}: monto mensual de fines de 2025 según la ley (nov-dic-2025)",
                                 piso_mes, "ARS corrientes", "2025-12", ultimo_bim.fuentes,
-                                calculo="Último bimestre del art. 4 ÷ 2"))
+                                calculo="Lo que el art. 4 manda reconocer en el último bimestre de 2025, dividido por 2"))
         # Lectura principal para el año en curso (ADR 0024): el piso de diciembre de 2025, sin actualizar.
         piso = acum_piso
-        eje.cifras.append(Cifra(f"{prefijo}piso-{anio}", f"{quien}: piso de diciembre de 2025, enero a {hasta}", piso,
+        eje.cifras.append(Cifra(f"{prefijo}piso-{anio}", f"{quien}: referencia (monto de dic-2025), ene-{anio} a {hasta}", piso,
                                 "ARS corrientes", anio, ultimo_bim.fuentes,
-                                calculo=f"Monto mensual de noviembre-diciembre de 2025 según el art. 4 × {len(ventana)} "
-                                        "meses, sin actualizar. La ley no lo pide: es otra lectura posible (ADR 0024)."))
+                                calculo=f"El monto mensual de fines de 2025 según el art. 4 × {len(ventana)} meses, sin "
+                                        "actualizar. La ley no fija un monto para este año: es una referencia"))
         eje.cifras.append(Cifra(f"{prefijo}relacion-piso-{anio}",
-                                f"{quien}: lo transferido frente al piso de diciembre de 2025, enero a {hasta}",
+                                f"{quien}: lo transferido frente a la referencia, ene-{anio} a {hasta}",
                                 (acum_tr / piso - 1) * 100, "porcentaje", anio, ultimo_bim.fuentes + f_tr,
-                                calculo="(Transferido ÷ piso − 1) × 100. El piso no es un monto que fije la ley."))
+                                calculo="Cuánto menos se transfirió que la referencia (el monto de dic-2025 sin actualizar). La ley no fija ese monto"))
 
     if not detalle:
         return
 
     f3 = lentes.factor_art3(ipc)
-    eje.cifras.append(Cifra(f"{prefijo}ipc-art3", "Inflación de mayo a diciembre de 2024",
+    eje.cifras.append(Cifra(f"{prefijo}ipc-art3", "Inflación de may-2024 a dic-2024",
                             (f3.valor - 1) * 100, "porcentaje", "2024-12", f3.fuentes,
-                            calculo="IPC de diciembre de 2024 ÷ IPC de abril de 2024 − 1"))
+                            calculo="Cuánto subieron los precios (IPC del INDEC) entre abr-2024 y dic-2024"))
+    # Paso intermedio de la cascada (ADR 0038): la partida mensual con la actualización del art. 3, al 1-ene-2025.
+    partida_sep = lentes.partida_arts_3_4(devengado, "nivel_sep_2024")
+    eje.cifras.append(Cifra(f"{prefijo}partida-art3", f"{quien}: monto mensual al 1-ene-2025 según el art. 3",
+                            partida_sep.valor * f3.valor, "ARS corrientes", "2025-01", partida_sep.fuentes + f3.fuentes,
+                            calculo="La partida de sep-2024 actualizada por la inflación de may-2024 a dic-2024 (art. 3)",
+                            normas=(NORMA_ART3,)))
 
     partida = lentes.partida_arts_3_4(devengado, "nivel_sep_2024")
     meses_2025 = lentes._meses("2025-01", "2025-12")
     for i, bimestre in enumerate(lentes.bimestres_art4(partida, ipc), start=1):
         meses = meses_2025[2 * i - 2:2 * i]
-        etiqueta = f"{MESES_LARGOS[int(meses[0][5:]) - 1]} y {MESES_LARGOS[int(meses[1][5:]) - 1]} de 2025"
+        etiqueta = f"{mes_legible(meses[0])} y {mes_legible(meses[1])}"
         eje.cifras.append(Cifra(f"{prefijo}exigido-bim{i}", f"{quien}: correspondía, {etiqueta}", bimestre.valor,
                                 "ARS corrientes", meses[1], bimestre.fuentes,
                                 calculo="Partida × 2 meses × inflación acumulada al inicio del bimestre"))
@@ -371,9 +377,9 @@ def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str
                                 tuple(sin_asignar), calculo="Devengado de «Universidades sin Discriminar», actividades 14, 15, 16 y 25"))
 
 
-CALC_REFERENCIA = ("La regla del art. 4 extendida a este año: partida de septiembre de 2024 × inflación de mayo a "
-                   "diciembre de 2024 × inflación acumulada al inicio de cada bimestre. La ley no lo pide: es una "
-                   "referencia (ADR 0024).")
+CALC_REFERENCIA = ("La regla del art. 4 extendida a este año: la partida de sep-2024 actualizada por la inflación de "
+                   "may-2024 a dic-2024 y por la acumulada al inicio de cada bimestre. La ley no lo pide: es una "
+                   "referencia")
 
 
 MESES_ABREV = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
@@ -417,30 +423,31 @@ def eje_salario(repo: Repositorio) -> Eje:
     confirmados = {m for e in repo.eventos_de("salario") for m in e.confirma_vigencia}
     ultimo_ipc = max(ipc)
     puntos = {p.periodo: p for p in lentes.serie_vigente(grillas, ultimo_ipc, confirmados)}
-    mes, legible = ultimo_ipc, mes_largo(ultimo_ipc)
+    mes, legible = ultimo_ipc, mes_legible(ultimo_ipc)  # en rótulos y fichas, mes-año (ago-2026)
     pagado = puntos[mes]
     aviso = _aviso_vigencia(pagado)
 
     eje.cifras.append(_desde_resultado("brecha-art5", f"Aumento necesario para cumplir el art. 5 ({legible})",
                                        "porcentaje", mes, lentes.brecha_art5(puntos, ipc, mes),
-                                       "(salario exigido ÷ básico pagado − 1) × 100", aviso))
+                                       f"Cuánto tendría que subir el básico de {legible} para llegar al que exige la ley", aviso))
     eje.cifras.append(Cifra("pagado", f"Básico pagado ({legible})", pagado.valor, "ARS corrientes", mes,
                             pagado.fuentes, aviso=aviso))
     eje.cifras.append(_desde_resultado("exigido", f"Salario que exige el art. 5 ({legible})", "ARS corrientes", mes,
                                        lentes.salario_art5(puntos, ipc, mes),
-                                       "básico nov-2023 × IPC del mes ÷ IPC nov-2023"))
+                                       f"El básico de nov-2023 actualizado por la inflación (IPC) hasta {legible}"))
     base = puntos[lentes.MES_PREVIO_ART5]
-    eje.cifras.append(Cifra("basico-nov2023", "Básico de noviembre de 2023", base.valor, "ARS corrientes",
+    eje.cifras.append(Cifra("basico-nov2023", "Básico de nov-2023", base.valor, "ARS corrientes",
                             lentes.MES_PREVIO_ART5, base.fuentes))
-    eje.cifras.append(Cifra("aumento-basico", f"Aumento del básico, de noviembre de 2023 a {legible}",
+    eje.cifras.append(Cifra("aumento-basico", f"Aumento del básico, de nov-2023 a {legible}",
                             (pagado.valor / base.valor - 1) * 100, "porcentaje", mes, pagado.fuentes + base.fuentes,
-                            f"(básico {legible} ÷ básico nov-2023 − 1) × 100", aviso))
-    eje.cifras.append(Cifra("aumento-ipc", f"Aumento de precios (IPC), de noviembre de 2023 a {legible}",
+                            f"Cuánto subió el básico entre nov-2023 y {legible}", aviso))
+    eje.cifras.append(Cifra("aumento-ipc", f"Aumento de precios (IPC), de nov-2023 a {legible}",
                             (ipc[mes].valor / ipc[lentes.MES_PREVIO_ART5].valor - 1) * 100, "porcentaje", mes,
-                            (ipc[mes], ipc[lentes.MES_PREVIO_ART5]), f"(IPC {legible} ÷ IPC nov-2023 − 1) × 100"))
-    eje.cifras.append(_desde_resultado("real-nov_2023", f"Salario real de {legible} frente a noviembre de 2023", "porcentaje",
+                            (ipc[mes], ipc[lentes.MES_PREVIO_ART5]), f"Cuánto subieron los precios (IPC del INDEC) entre nov-2023 y {legible}"))
+    eje.cifras.append(_desde_resultado("real-nov_2023", f"Salario real de {legible} frente a nov-2023", "porcentaje",
                                        mes, lentes.variacion_real(puntos, ipc, mes, "nov_2023"),
-                                       "(salario real del mes ÷ salario real de nov-2023 − 1) × 100", aviso))
+                                       f"Cuánto cambió lo que compra el básico de {legible} frente al de nov-2023, "
+                                       "descontada la inflación", aviso))
 
     # Billete: cuánto compra el sueldo de cada mes frente al de nov-2023 (ADR 0023).
     billete = []
@@ -451,12 +458,29 @@ def eje_salario(repo: Repositorio) -> Eje:
         aviso_mes = _aviso_vigencia(punto)
         rige = periodo >= lentes.MES_VIGENCIA_ART5
         fuentes = variacion.fuentes + (base_ipc,)
-        calculo = (f"(básico de {nombre} ÷ IPC de {nombre}) ÷ (básico de noviembre de 2023 ÷ IPC de noviembre "
-                   f"de 2023)")
-        eje.cifras.append(Cifra(f"compra-{periodo}", f"Lo que compra el sueldo de {nombre}, frente al de noviembre de 2023",
-                                100 + variacion.valor, "porcentaje", periodo, fuentes, f"{calculo} × 100", aviso_mes))
-        eje.cifras.append(Cifra(f"poder-{periodo}", f"Poder de compra del sueldo de {nombre} frente a noviembre de 2023",
-                                variacion.valor, "porcentaje", periodo, fuentes, f"({calculo} − 1) × 100", aviso_mes))
+        corto = mes_legible(periodo)
+        base_mes = periodo == lentes.MES_PREVIO_ART5
+        compra = 100 + variacion.valor
+        if base_mes:
+            calc_compra = "Es el mes de comparación: el punto de partida del billete"
+        else:
+            calc_compra = f"Lo que compra el básico de {corto} frente a lo que compraba el de nov-2023, descontada la inflación"
+        eje.cifras.append(Cifra(f"compra-{periodo}", f"Lo que compra el sueldo de {corto} frente al de nov-2023",
+                                compra, "porcentaje", periodo, fuentes, calc_compra, aviso_mes))
+        eje.cifras.append(Cifra(f"poder-{periodo}", f"Poder de compra del sueldo de {corto} frente a nov-2023",
+                                variacion.valor, "porcentaje", periodo, fuentes,
+                                f"Cuánto cambió lo que compra el básico de {corto} frente al de nov-2023, descontada la "
+                                "inflación", aviso_mes))
+        # Sin signo, para leer con el verbo («perdió 25,0 %»), y el aumento que lo recupera (el mismo cálculo que la
+        # brecha del art. 5: 1 ÷ lo que compra − 1).
+        eje.cifras.append(Cifra(f"perdida-{periodo}", f"Poder de compra que perdió el sueldo de {corto} frente a nov-2023",
+                                -variacion.valor, "porcentaje", periodo, fuentes,
+                                f"Cuánto menos compra el básico de {corto} que el de nov-2023, descontada la inflación",
+                                aviso_mes))
+        eje.cifras.append(Cifra(f"subir-{periodo}", f"Aumento que necesita el sueldo de {corto} para comprar lo mismo que en nov-2023",
+                                (Decimal(100) / compra - 1) * 100, "porcentaje", periodo, fuentes,
+                                f"Cuánto tendría que subir el básico de {corto} para comprar lo mismo que el de nov-2023",
+                                aviso_mes))
         billete.append({"periodo": periodo, "mes": nombre, "corto": mes_legible(periodo),
                         "proporcion": float(1 + variacion.valor / 100), "rige": rige, "aviso": aviso_mes})
 
@@ -476,7 +500,7 @@ def eje_salario(repo: Repositorio) -> Eje:
         "meses_con_grilla": len(grillas),
         "sin_grilla": [(mes_largo(p.periodo), p.vigencia.value, mes_largo(p.fuentes[0].periodo))
                        for p in sin_grilla],
-        "ultima_grilla": ultima_grilla, "ipc": ipc[mes], "ultimo_ipc": legible,
+        "ultima_grilla": ultima_grilla, "ipc": ipc[mes], "ultimo_ipc": mes_largo(mes),
         "grillas_sin_ipc": [mes_largo(d.periodo) for d in grillas if d.periodo > mes],
         "billete": billete,
         "vigencia_art5": mes_largo(lentes.MES_VIGENCIA_ART5),
@@ -604,6 +628,11 @@ SELLOS_LEY = {
 }
 
 
+# Actor de cada tipo de hecho de la ley: color y rótulo en la línea de tiempo y en el recorrido (ADR 0038).
+ACTORES_LEY = {"legislativo": ("congreso", "Congreso"), "norma": ("ejecutivo", "Poder Ejecutivo"),
+               "judicial": ("justicia", "Justicia"), "convenio": ("acuerdo", "Acuerdo"), "paritaria": ("acuerdo", "Acuerdo")}
+
+
 ESTADO_VIGIA_LEY = DIRECTORIO_DATOS / "vigia" / "estado_ley.yaml"
 
 
@@ -635,7 +664,11 @@ def eje_ley(repo: Repositorio) -> Eje:
     eje.detalle = {"sellos": SELLOS_LEY, "resumen": _fecha_larga(estado.fecha) if estado else "",
                    "consultado": _fecha_larga(consultado) if consultado else "", "posteriores": posteriores,
                    "destacado": destacado, "destacado_tipo": etiqueta_tipo(destacado.tipo) if destacado else "",
-                   "importante": importante}
+                   "importante": importante, "actores": ACTORES_LEY,
+                   # Recorrido (ADR 0038): un paso por sello, en orden; el antecedente de 2024 queda solo en la línea de tiempo.
+                   "recorrido": [{"id": e.id, "texto": SELLOS_LEY[e.id][0], "detalle": SELLOS_LEY[e.id][1],
+                                  "fecha": e.fecha, "clase": ACTORES_LEY.get(e.tipo, ("otro", ""))[0]}
+                                 for e in hitos if e.id in SELLOS_LEY and not e.id.startswith("ley-2024")]}
     eje.supuestos = []
     eje.pendientes = ["Lente por artículo (arts. 3, 4 y 5) para la UNR: requiere Presupuesto Abierto 2024-2025, "
                       "IPC y grillas salariales.",

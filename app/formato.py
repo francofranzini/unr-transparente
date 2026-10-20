@@ -23,9 +23,22 @@ def numero(valor: Decimal, decimales: int = 0) -> str:
 def pesos_corto(valor: Decimal) -> str:
     if abs(valor) >= 10**12:
         return f"$ {_agrupar(valor / 10**12, 2)} billones"
-    if abs(valor) >= 10**9:
+    if abs(valor) >= 10**7:  # montos de transferencias: siempre en millones; los sueldos quedan exactos
         return f"$ {_agrupar(valor / 10**6, 0)} millones"
     return f"$ {_agrupar(valor, 0)}"
+
+
+def piso_eje(valor: float, margen: float = .9) -> float:
+    """Un valor redondo por debajo de `valor × margen`, para un eje que no empieza en cero (89.713 → 80.000)."""
+    import math
+    objetivo = valor * margen
+    paso = 10 ** (math.floor(math.log10(objetivo)) - 1) * 5
+    return math.floor(objetivo / paso) * paso
+
+
+def millones_eje(valor: float) -> str:
+    """Rótulo de un eje en millones, como los de los gráficos («$ 75.000 M»)."""
+    return f"$ {_agrupar(Decimal(str(valor)) / 10**6, 0)} M"
 
 
 def cifra_corta(c: Cifra) -> str:
@@ -74,8 +87,8 @@ def fecha_evento(fecha: str) -> str:
     partes = fecha.split("-")
     if len(partes) == 3:
         return f"{int(partes[2])} {MESES[int(partes[1]) - 1]} {partes[0]}"
-    if len(partes) == 2:
-        return f"{MESES[int(partes[1]) - 1]} {partes[0]}"
+    if len(partes) == 2:  # mes-año, como en el resto del sitio (ago-2026)
+        return f"{MESES[int(partes[1]) - 1]}-{partes[0]}"
     return partes[0]
 
 
