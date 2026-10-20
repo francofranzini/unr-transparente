@@ -4,7 +4,8 @@ Cada número que sale de acá es una `Cifra` que lleva los Datos de los que prov
 derivada, la fórmula con la que se calculó. Lo que no tiene datos va a `pendientes`, como texto.
 """
 
-from dataclasses import dataclass, field
+import re
+from dataclasses import dataclass, field, replace
 from datetime import date
 from decimal import Decimal
 
@@ -17,6 +18,32 @@ UNIVERSIDADES_NACIONALES = 61
 
 
 @dataclass(frozen=True)
+class Norma:
+    """La norma que define un cálculo (no un dato): se muestra en la ficha con su cita textual (ADR 0023)."""
+    texto: str
+    url: str
+    cita: str
+
+
+BO_LEY_27795 = "https://www.boletinoficial.gob.ar/detalleAviso/primera/333139/20251021"
+NORMA_ART3 = Norma("Ley 27.795, art. 3 (Boletín Oficial, 21-oct-2025)", BO_LEY_27795,
+                   "«…actualizará al 1º de enero de 2025, según la variación acumulada del Índice de Precios al "
+                   "Consumidor (IPC)… en el período comprendido entre el 1º de mayo al 31 de diciembre de 2024, el "
+                   "monto de los gastos de funcionamiento de las universidades públicas…»")
+NORMA_ART4 = Norma("Ley 27.795, art. 4 (Boletín Oficial, 21-oct-2025)", BO_LEY_27795,
+                   "«…actualizará desde el 1º de enero hasta el 31 de diciembre de 2025, de forma bimestral, de acuerdo "
+                   "al Índice de Precios al Consumidor (IPC)… Los aumentos otorgados y oportunamente efectivizados… "
+                   "deberán tomarse a cuenta para el cálculo del presente artículo.»")
+NORMA_REFERENCIA = Norma("Ley 27.795, art. 4, extendido a otro año: la ley no lo pide (referencia, ADR 0024)",
+                         BO_LEY_27795, NORMA_ART4.cita)
+NORMA_ART5 = Norma("Ley 27.795, art. 5 (Boletín Oficial, 21-oct-2025)", BO_LEY_27795,
+                   "«…deberá actualizar los salarios… entre el período 1º/12/2023 hasta la sanción de la presente ley, "
+                   "en un porcentaje que no puede ser inferior al Índice de Precios al Consumidor (IPC)… Este aumento se "
+                   "hará efectivo al mes siguiente de la publicación… asegurando en todos los casos y tramos de la "
+                   "negociación una actualización mensual no inferior a la inflación…»")
+
+
+@dataclass(frozen=True)
 class Cifra:
     clave: str
     etiqueta: str
@@ -26,6 +53,7 @@ class Cifra:
     fuentes: tuple[Dato, ...]
     calculo: str = ""
     aviso: str = ""  # p. ej. vigencia no confirmada de una grilla (ADR 0004)
+    normas: tuple[Norma, ...] = ()  # la norma que define el cálculo, si la hay (ADR 0023)
 
     @property
     def tipo_fuente(self) -> str:
@@ -122,9 +150,27 @@ def eje_ejecucion(repo: Repositorio, anio: str = "2026") -> Eje:
         "Arts. 3 y 4: la cifra principal es la suma de las universidades nacionales; la UNR va como caso de detalle "
         "(ADR 0021).",
     ]
+    _con_normas(eje, lambda c: _norma_transferencias(c.clave, anio))
     eje.pendientes = ["Los arts. 3 y 4 no fijan una fórmula para 2026: lo transferido en 2026 se muestra sin "
                       "un «exigido»."]
     return eje
+
+
+def _norma_transferencias(clave: str, anio: str) -> tuple[Norma, ...]:
+    if "arts34-" not in clave:
+        return ()
+    resto = clave.split("arts34-", 1)[1]
+    if resto.startswith(("ref-", "acum-ref-", "piso-", "relacion-piso-")) or resto == f"relacion-{anio}":
+        return (NORMA_REFERENCIA,)
+    if resto == "ipc-art3":
+        return (NORMA_ART3,)
+    if re.fullmatch(r"(exigido|brecha|relacion|faltante)(-b)?|exigido-bim\d|acum-exigido-\d\d", resto):
+        return (NORMA_ART3, NORMA_ART4)
+    return ()
+
+
+def _con_normas(eje: Eje, regla) -> None:
+    eje.cifras = [replace(c, normas=regla(c)) if regla(c) else c for c in eje.cifras]
 
 
 def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str, quien: str,
@@ -228,6 +274,17 @@ def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str
                                 calculo="(Transferido ÷ referencia − 1) × 100. La referencia no es un monto que fije la ley."))
         eje.detalle.setdefault("acumulado_actual", {})[prefijo] = serie_anio
         eje.detalle["ventana_actual"] = f"enero a {hasta}"
+        # Otra lectura: el monto que la ley fija para fin de 2025 como piso, sin ajuste posterior.
+        ultimo_bim = lentes.bimestres_art4(partida, ipc)[-1]
+        piso = ultimo_bim.valor / 2 * len(ventana)
+        eje.cifras.append(Cifra(f"{prefijo}piso-{anio}", f"{quien}: piso de diciembre de 2025, enero a {hasta}", piso,
+                                "ARS corrientes", anio, ultimo_bim.fuentes,
+                                calculo=f"Monto mensual de noviembre-diciembre de 2025 según el art. 4 × {len(ventana)} "
+                                        "meses, sin ajuste. La ley no lo pide: es otra lectura posible (ADR 0024)."))
+        eje.cifras.append(Cifra(f"{prefijo}relacion-piso-{anio}",
+                                f"{quien}: lo transferido frente al piso de diciembre de 2025, enero a {hasta}",
+                                (acum_tr / piso - 1) * 100, "porcentaje", anio, ultimo_bim.fuentes + f_tr,
+                                calculo="(Transferido ÷ piso − 1) × 100. El piso no es un monto que fije la ley."))
 
     if not detalle:
         return
@@ -397,6 +454,8 @@ def eje_salario(repo: Repositorio) -> Eje:
         "calendario": calendario,
         "vigencia_art5": mes_largo(lentes.MES_VIGENCIA_ART5),
     }
+    _con_normas(eje, lambda c: (NORMA_ART5,) if c.clave in ("brecha-art5", "exigido") or (
+        c.clave.startswith("faltan-") and c.periodo >= lentes.MES_VIGENCIA_ART5) else ())
     eje.eventos = repo.eventos_de("salario")
     eje.supuestos = [
         "Profesor adjunto, dedicación exclusiva, sin antigüedad: salario básico.",

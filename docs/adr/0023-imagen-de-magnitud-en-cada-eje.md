@@ -36,3 +36,12 @@ La Ley 27.795 se publicó el 21-oct-2025. Cada artículo fija su alcance en el t
   - la brecha de 33,4 % (agosto de 2026) no cambia: es posterior a noviembre de 2025.
 - **Arts. 3 y 4 (funcionamiento):** el texto sí es retroactivo («desde el 1º de enero hasta el 31 de diciembre de 2025»). Lo correcto es «lo que la ley manda reconocer **por** 2025», no «lo que correspondía en enero». Como los aumentos se toman a cuenta, la comparación que fija la ley es el total del año; el acumulado mensual es una reconstrucción y así se rotula.
 - Que la ley rija está además en disputa (Dec. 759/2025, sentencia del 6-oct-2026 y apelación); se usa la fecha de publicación y se enlazan ambos hechos.
+
+## Actualización (2026-10-20): la ficha cita la norma
+
+Las fichas de las cifras que aplican la ley no citaban la ley: mostraban los datos (Presupuesto Abierto, IPC, instructivos), pero no la regla. Ahora una cifra puede llevar **normas** (`Cifra.normas`: texto, enlace al Boletín Oficial y cita textual del artículo), y la ficha las muestra en «Norma», arriba de «Documento». Modifica dos archivos congelados: `core/ejes.py` (modelo `Cifra`, `Norma`) y `_ficha_cifra.html`.
+
+- Transferencias 2025 (lo que correspondía, brechas, bimestres, acumulados): arts. 3 y 4. Inflación de mayo a diciembre de 2024: art. 3.
+- Referencias de años que la ley no regula (2026): «art. 4, extendido a otro año: la ley no lo pide».
+- Salario: brecha y «exige la ley», art. 5 (incluye la cláusula de actualización mensual no inferior a la inflación, que es la que vale para 2026). Días sin cubrir: art. 5 solo desde noviembre de 2025.
+- Para 2026, Transferencias muestra dos lecturas, porque la ley no dice qué pasa después de 2025: seguir actualizando (−34,7 % todas; −52,0 % UNR) o el monto de diciembre de 2025 como piso sin ajuste (−24,2 %; −44,3 %).

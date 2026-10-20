@@ -6,6 +6,8 @@
   <dt>Fuente</dt><dd>{{ cifra.tipo_fuente }}</dd>
   {% if cifra.calculo %}<dt>Cálculo</dt><dd>{{ cifra.calculo }}</dd>{% endif %}
   {% if cifra.aviso %}<dt>Vigencia</dt><dd>{{ cifra.aviso }}</dd>{% endif %}
+  {% if cifra.normas %}<dt>Norma</dt>
+  <dd>{% for n in cifra.normas %}<p><a href="{{ n.url }}" rel="noopener" target="_blank">{{ n.texto }}</a><br><small>{{ n.cita }}</small></p>{% endfor %}</dd>{% endif %}
   <dt>Documento</dt>
   <dd>{% for (documento, url, pagina, tipo, consultado), n in documentos.items() %}
     <p><a href="{{ url }}" rel="noopener" target="_blank">{{ documento }}</a>{% if pagina %}, pág. {{ pagina }}{% endif %}

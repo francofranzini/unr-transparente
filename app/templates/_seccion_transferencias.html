@@ -258,9 +258,23 @@
            (<a href="{{ evento }}ley-27795-fallo-fondo" hx-get="{{ evento }}ley-27795-fallo-fondo" hx-target="#ficha-contenido">octubre de 2026</a>).</p></details>
       {% if ej.detalle.ventana_actual %}
       <details class="mas"><summary>¿Y {{ actual }}?</summary>
-        <p>Ninguno de los 10 artículos de la ley fija cuánto corresponde en {{ actual }}: los que hablan de montos (3, 4 y 9)
-           se refieren a 2025. Por eso {{ actual }} va en gris: la referencia aplica la misma regla del art. 4 (actualizar
-           cada dos meses por inflación) y llega hasta {{ ej.detalle.ventana_actual|replace("enero a ", "") }}, el último mes completo.
+        <p>La ley no menciona {{ actual }}. Los arts. 3 y 4 actualizan los montos durante 2025 y no dicen qué pasa después,
+           así que para {{ actual }} no hay un monto de la ley: cualquier cifra es una lectura. Mostramos dos, de
+           {{ ej.detalle.ventana_actual }} (el último mes completo):</p>
+        <table class="tabla">
+          <thead><tr><th>Lectura</th><th>Todas: referencia</th><th>Todas</th><th>UNR</th></tr></thead>
+          <tbody>
+            <tr><th>Seguir actualizando cada dos meses por inflación (la que muestra el gráfico)</th>
+              <td data-r="Referencia">{{ num(ej, "arts34-ref-" ~ actual) }}</td>
+              <td data-r="Todas">{{ num(ej, "arts34-relacion-" ~ actual) }}</td>
+              <td data-r="UNR">{{ num(ej, "unr-arts34-relacion-" ~ actual) }}</td></tr>
+            <tr><th>Mantener el monto de diciembre de 2025 como piso, sin ajuste</th>
+              <td data-r="Referencia">{{ num(ej, "arts34-piso-" ~ actual) }}</td>
+              <td data-r="Todas">{{ num(ej, "arts34-relacion-piso-" ~ actual) }}</td>
+              <td data-r="UNR">{{ num(ej, "unr-arts34-relacion-piso-" ~ actual) }}</td></tr>
+          </tbody>
+        </table>
+        <p>La ley no decide entre ellas; por eso {{ actual }} va en gris.
            <a href="{{ evento }}estado-ley-27795-octubre-2026" hx-get="{{ evento }}estado-ley-27795-octubre-2026" hx-target="#ficha-contenido">Estado de la ley hoy</a>.</p></details>
       {% endif %}
       <details class="mas"><summary>Ver la cuenta por bimestre</summary>
