@@ -296,6 +296,26 @@ def eje_salario(repo: Repositorio) -> Eje:
                                        mes, lentes.variacion_real(puntos, ipc, mes, "nov_2023"),
                                        "(salario real del mes ÷ salario real de nov-2023 − 1) × 100", aviso))
 
+    # Calendario: para cuántos días del mes alcanza el sueldo, con el poder de compra de nov-2023 (ADR 0023).
+    calendario = []
+    base_ipc = ipc[lentes.MES_PREVIO_ART5]
+    for periodo in sorted(p for p in puntos if lentes.MES_PREVIO_ART5 <= p <= mes):
+        punto, nombre = puntos[periodo], mes_largo(periodo)
+        dias = lentes.dias_de_sueldo(puntos, ipc, periodo)
+        completos = int(dias.valor)  # se cuentan los días completos
+        exacto = f"{dias.valor:.2f}".replace(".", ",")
+        aviso_mes = _aviso_vigencia(punto)
+        calculo = (f"30 × (básico de {nombre} ÷ IPC de {nombre}) ÷ (básico de noviembre de 2023 ÷ IPC de noviembre "
+                   f"de 2023) = {exacto} días. Se cuentan los días completos.")
+        fuentes = dias.fuentes + (base_ipc,)
+        eje.cifras.append(Cifra(f"dias-{periodo}", f"Días que alcanza el sueldo de {nombre}", Decimal(completos),
+                                "días", periodo, fuentes, calculo, aviso_mes))
+        eje.cifras.append(Cifra(f"faltan-{periodo}", f"Días sin cubrir con el sueldo de {nombre}",
+                                Decimal(lentes.DIAS_DEL_MES - completos), "días", periodo, fuentes,
+                                f"30 − días que alcanza ({exacto})", aviso_mes))
+        calendario.append({"periodo": periodo, "mes": nombre, "corto": mes_legible(periodo),
+                           "dias": float(dias.valor), "completos": completos, "aviso": aviso_mes})
+
     for p in puntos.values():
         exigido = (lentes.salario_art5(puntos, ipc, p.periodo).valor
                    if p.periodo >= lentes.MES_PREVIO_ART5 else None)
@@ -311,6 +331,7 @@ def eje_salario(repo: Repositorio) -> Eje:
                        for p in sin_grilla],
         "ultima_grilla": ultima_grilla, "ipc": ipc[mes], "ultimo_ipc": legible,
         "grillas_sin_ipc": [mes_largo(d.periodo) for d in grillas if d.periodo > mes],
+        "calendario": calendario,
     }
     eje.eventos = repo.eventos_de("salario")
     eje.supuestos = [

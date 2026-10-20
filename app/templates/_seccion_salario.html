@@ -5,8 +5,106 @@
     <div class="dato dato-grande"><small>Aumento que falta</small><span class="rojo">{{ num(es, "brecha-art5", true) }}</span></div>
     <div class="dato"><small>Se pagó</small>{{ num(es, "pagado", true) }}</div>
     <div class="dato"><small>La ley exige</small>{{ num(es, "exigido", true) }}</div>
-    <div class="dato"><small>Poder de compra vs. nov-2023</small>{{ num(es, "real-nov_2023", true) }}</div>
+    <div class="dato"><small>Poder de compra vs. nov-2023</small><span class="rojo">{{ num(es, "real-nov_2023", true) }}</span></div>
   </div>
+
+  {# Calendario: para cuántos días del mes alcanza el sueldo, con el poder de compra de nov-2023 (ADR 0023) #}
+  {% set cal = es.detalle.calendario %}
+  {% set actual = cal[-1] %}
+  {% set L, P = 44, 50 %}
+  <div class="revelar" data-calendario='{{ cal|tojson }}'>
+    <div style="display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center">
+      <svg viewBox="0 0 {{ 7 * P - 6 }} {{ 5 * P - 6 }}" width="{{ 7 * P - 6 }}" style="max-width: 100%; height: auto"
+           role="img" aria-label="Calendario de 30 días: en {{ actual.mes }} el sueldo alcanza para {{ actual.completos }} días; los otros {{ 30 - actual.completos }} quedan sin cubrir.">
+        {% for d in range(1, 31) %}
+        {% set x, y = ((d - 1) % 7) * P, ((d - 1) // 7) * P %}
+        {% set lleno = [[actual.dias - (d - 1), 1]|min, 0]|max %}
+        <g data-dia>
+          <rect x="{{ x }}" y="{{ y }}" width="{{ L }}" height="{{ L }}" rx="6" fill="none" stroke="var(--linea)"/>
+          <rect data-lleno x="{{ x }}" y="{{ y }}" width="{{ (L * lleno)|round(1) }}" height="{{ L }}" rx="6" fill="var(--serie-1)"/>
+          <rect data-falta x="{{ x + 1 }}" y="{{ y + 1 }}" width="{{ L - 2 }}" height="{{ L - 2 }}" rx="5" fill="none" stroke="var(--rojo)" stroke-width="2" visibility="{{ 'visible' if lleno < 1 else 'hidden' }}"/>
+          <line data-tacha x1="{{ x + 8 }}" y1="{{ y + L - 8 }}" x2="{{ x + L - 8 }}" y2="{{ y + 8 }}" stroke="var(--rojo)" stroke-width="1.5" visibility="{{ 'visible' if lleno == 0 else 'hidden' }}"/>
+          <text x="{{ x + L / 2 }}" y="{{ y + L / 2 + 5 }}" text-anchor="middle" font-size="14" font-weight="700" fill="{{ 'var(--fondo)' if lleno == 1 else 'var(--tenue)' }}">{{ d }}</text>
+        </g>
+        {% endfor %}
+      </svg>
+      <div style="flex: 1 1 18rem">
+        {% for c in cal %}
+        <div data-mes="{{ loop.index0 }}"{% if not loop.last %} hidden{% endif %}>
+          <div class="datos" style="margin-bottom: 12px">
+            <div class="dato dato-grande"><small>Con el sueldo de {{ c.mes }} se compra lo que en noviembre de 2023 alcanzaba para</small><span>{{ num(es, "dias-" ~ c.periodo) }} días</span></div>
+          </div>
+          <p>Los otros <strong class="rojo">{{ num(es, "faltan-" ~ c.periodo) }} días</strong> del mes quedan sin cubrir.</p>
+          {% if c.aviso %}<p class="aviso">{{ c.aviso }}</p>{% endif %}
+        </div>
+        {% endfor %}
+        <div data-deslizador hidden>
+          <label style="display: block; font-size: .85rem; color: var(--tenue)">Elegí un mes: <strong data-rotulo>{{ actual.mes }}</strong></label>
+          <input type="range" min="0" max="{{ cal|length - 1 }}" value="{{ cal|length - 1 }}" step="1"
+                 aria-label="Mes" style="width: 100%; accent-color: var(--tinta)">
+          <p class="leyenda" style="display: flex; justify-content: space-between; margin: 0"><span>{{ cal[0].corto }}</span><span>{{ actual.corto }}</span></p>
+        </div>
+      </div>
+    </div>
+    <p class="leyenda"><span class="clave pagado"></span>Días que cubre el sueldo
+      <span class="clave" style="border-color: var(--rojo)"></span>Días sin cubrir, frente a noviembre de 2023</p>
+  </div>
+  <script>
+  (() => {
+    const bloque = document.currentScript.previousElementSibling;
+    const meses = JSON.parse(bloque.dataset.calendario), celdas = [...bloque.querySelectorAll("[data-dia]")];
+    const paneles = [...bloque.querySelectorAll("[data-mes]")], L = {{ L }};
+    const deslizador = bloque.querySelector("[data-deslizador]"), rango = deslizador.querySelector("input");
+    const rotulo = deslizador.querySelector("[data-rotulo]");
+    const quieto = matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window);
+
+    function pintar(dias, conFaltantes) {
+      celdas.forEach((g, k) => {
+        const lleno = Math.max(0, Math.min(1, dias - k));
+        g.querySelector("[data-lleno]").setAttribute("width", (L * lleno).toFixed(1));
+        g.querySelector("[data-falta]").setAttribute("visibility", conFaltantes && lleno < 1 ? "visible" : "hidden");
+        g.querySelector("[data-tacha]").setAttribute("visibility", conFaltantes && lleno === 0 ? "visible" : "hidden");
+        g.querySelector("text").setAttribute("fill", lleno === 1 ? "var(--fondo)" : "var(--tenue)");
+      });
+    }
+    // Los días se van llenando de a uno y, al terminar, aparecen en rojo los que no alcanza.
+    let turno = 0;
+    function llenar(dias) {
+      const yo = ++turno, inicio = performance.now(), duracion = 1600;
+      const paso = (t) => {
+        if (yo !== turno) return;
+        const p = Math.min((t - inicio) / duracion, 1);
+        pintar(dias * (1 - Math.pow(1 - p, 2)), p === 1);
+        if (p < 1) requestAnimationFrame(paso);
+        else bloque.querySelectorAll("[data-falta], [data-tacha]").forEach((el) =>
+          el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 400 }));
+      };
+      requestAnimationFrame(paso);
+    }
+    function mostrar(i) {
+      paneles.forEach((p) => { p.hidden = Number(p.dataset.mes) !== i; });
+      rotulo.textContent = meses[i].mes;
+    }
+
+    deslizador.hidden = false;
+    rango.addEventListener("input", () => {
+      const i = Number(rango.value);
+      mostrar(i);
+      turno++;
+      pintar(meses[i].dias, true);
+    });
+    if (!quieto) {
+      pintar(0, false);
+      const obs = new IntersectionObserver((entradas) => {
+        if (!entradas.some((e) => e.isIntersecting)) return;
+        obs.disconnect();
+        llenar(meses[Number(rango.value)].dias);
+      }, { threshold: 0.4 });
+      obs.observe(bloque.querySelector("svg"));
+    }
+  })();
+  </script>
+
   <div class="revelar dibujar">{% include "_grafico_salario.html" %}</div>
   {% if brecha.aviso %}<p class="aviso">{{ brecha.aviso }}</p>{% endif %}
   <details class="mas-info">

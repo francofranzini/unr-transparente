@@ -60,6 +60,10 @@ Se usan tal como están; no se crean clases ni estilos nuevos.
 | Enlace a la ficha de un evento | `<a href="/ficha/evento/ID" hx-get="/ficha/evento/ID" hx-target="#ficha-contenido">…</a>` |
 | Gráfico acumulado con selector (solo sección 03, ADR 0022) | Ver `_seccion_transferencias.html`: SVG con las series `exigido`/`pagado`, botones `.actor` y tabla con fichas |
 
+## 4 bis. Imagen de magnitud (ADR 0023)
+
+Cada eje con una cifra central la muestra también con una imagen que se entiende sin leer números: pilas de fajos (Transferencias), calendario de días de sueldo (Salario). Reglas: proporcional al dato; la cifra que la genera está al lado y abre su ficha (también en cada estado de un selector); rojo solo para lo que falta según la Ley 27.795; animación que muestra cómo se llega al dato, quieta con «reducir movimiento» y completa sin JavaScript; en celular, lo que se compara va lado a lado.
+
 ## 5. Reglas de contenido
 
 Son los principios del `CLAUDE.md` (§2), que siguen vigentes:

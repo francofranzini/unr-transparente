@@ -67,3 +67,8 @@ def test_transferencias_muestra_el_caso_unr_con_grafico(cliente):
     assert "data-bloque-arts34" in texto
     assert 'data-panel="unr-arts34-"' in texto and 'data-panel="arts34-"' in texto
     assert "−42,3 %" in texto and "−32,4 %" in texto
+
+
+def test_salario_muestra_el_calendario(cliente):
+    texto = cliente.get("/").text
+    assert "data-calendario" in texto and 'href="/ficha/cifra/salario/dias-2026-08"' in texto

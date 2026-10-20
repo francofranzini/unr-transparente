@@ -84,3 +84,16 @@ def test_acumulado_mensual_cierra_en_el_total_anual(ejes):
                 == eje.cifra(f"{prefijo}exigido").valor.quantize(centavo))
         assert eje.cifra(f"{prefijo}acum-transferido-12").valor == eje.cifra(f"{prefijo}transferido").valor
         assert len(eje.detalle["acumulado"][prefijo]) == 12
+
+
+def test_calendario_del_sueldo(ejes):
+    eje = ejes["salario"]
+    # Nov-2023 es la base: alcanza para los 30 días.
+    assert eje.cifra("dias-2023-11").valor == 30
+    # Ago-2026: salario real −25,0 % → 30 × 0,7498 = 22,49 → 22 días completos, 8 sin cubrir.
+    assert eje.cifra("dias-2026-08").valor == 22 and eje.cifra("faltan-2026-08").valor == 8
+    assert "22,49" in eje.cifra("dias-2026-08").calculo
+    cal = eje.detalle["calendario"]
+    assert cal[0]["periodo"] == "2023-11" and cal[-1]["periodo"] == eje.cifra("pagado").periodo
+    # Los meses sin escala publicada llevan el aviso de vigencia.
+    assert eje.cifra("dias-2026-08").aviso
