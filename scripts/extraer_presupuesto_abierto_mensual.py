@@ -11,7 +11,8 @@ sumadas para todas las universidades, y aparte el crédito sin universidad asign
 
 El resultado es una propuesta para revisar a mano antes de versionarla (ADR 0010): no hay ingesta automática.
 Presupuesto Abierto informa en millones de pesos; acá se convierte a pesos. Se suman todas las fuentes de
-financiamiento (en 2024 hay «Tesoro Nacional» y «Crédito Interno»); la nota de cada fila dice cuánto vino de cada una.
+financiamiento (en 2024 hay «Tesoro Nacional» y «Crédito Interno»); la columna `fuentes_financiamiento` dice cuánto
+vino de cada una. La nota queda corta e igual para todas las filas: es lo que lee el público en la ficha.
 Los meses posteriores al de la fecha de corte no se escriben: todavía no ocurrieron.
 """
 
@@ -25,16 +26,18 @@ from extraer_presupuesto_abierto import PARCIAL, PROGRAMA, SIN_DISCRIMINAR, UNR,
 
 ACTIVIDADES_ARTS_3_4 = ("14", "15", "16", "25")
 COLUMNAS = ["id", "valor", "unidad", "entidad", "indicador", "actividad_id", "actividad", "fecha_corte",
-            "periodo", "tipo_fuente", "documento", "url", "pagina", "consultado", "nota"]
+            "universidades", "fuentes_financiamiento", "periodo", "tipo_fuente", "documento", "url", "pagina",
+            "consultado", "nota"]
+NOTA = "Presupuesto Abierto informa en millones de pesos; acá se pasa a pesos. Suma todas las fuentes de financiamiento."
 MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre",
          "noviembre", "diciembre"]
 
 
 GRUPOS = {
     # alcance → {entidad: (slug del id, descripción para el documento)}
-    "unr": {"UNR": ("unr", f"subparcial «{UNR}»")},
-    "sistema": {"SISTEMA_UNIVERSITARIO": ("sistema", "suma de todas las universidades (subparciales)"),
-                "CREDITO_NO_ASIGNADO": ("sin-asignar", f"subparcial «{SIN_DISCRIMINAR}»")},
+    "unr": {"UNR": ("unr", "a la UNR")},
+    "sistema": {"SISTEMA_UNIVERSITARIO": ("sistema", "a las universidades nacionales (suma)"),
+                "CREDITO_NO_ASIGNADO": ("sin-asignar", "sin universidad asignada («Universidades sin Discriminar»)")},
 }
 
 
@@ -78,27 +81,24 @@ def main(alcance: str, path: str, url: str, consultado: str) -> None:
     salida = csv.DictWriter(sys.stdout, COLUMNAS, lineterminator="\n")
     salida.writeheader()
     for entidad, (slug, descripcion) in GRUPOS[alcance].items():
-        documento = (f"Presupuesto Abierto — Crédito mensual {anio} (datos abiertos). Programa 26 «{PROGRAMA}», "
-                     f"partida «{PARCIAL}…», {descripcion}, devengado por actividad y mes de impacto")
+        documento = f"Presupuesto Abierto — Crédito mensual {anio}: devengado del Programa 26 {descripcion}"
         for actividad in sorted((a for a in devengado if a[0] == entidad), key=lambda a: int(a[1])):
             if alcance == "unr" and not any(devengado[actividad].values()):
                 continue
-            n = len(universidades[(entidad, actividad[1])])
-            cuantas = f" Suma de {n} universidades con devengado en el año." if entidad == "SISTEMA_UNIVERSITARIO" else ""
+            n = len(universidades[(entidad, actividad[1])]) if entidad == "SISTEMA_UNIVERSITARIO" else ""
             for mes in range(1, ultimo_mes + 1):
                 fuentes = {f: m for f, m in por_fuente[(entidad, actividad[1], mes)].items() if m}
-                detalle = " + ".join(f"{f} {m:f}" for f, m in sorted(fuentes.items())) if len(fuentes) > 1 else ""
+                detalle = " + ".join(f"{f} {m:f}" for f, m in sorted(fuentes.items()))
                 parcial = " Mes en curso a la fecha de corte." if fecha[3] == anio and mes == ultimo_mes else ""
                 salida.writerow({
                     "id": f"pa{anio}-mensual-{slug}-act{actividad[1]}-{anio}-{mes:02d}-devengado",
                     "valor": _pesos(devengado[actividad][mes]),
                     "unidad": "ARS corrientes", "entidad": entidad, "indicador": "devengado",
                     "actividad_id": actividad[1], "actividad": actividad[2], "fecha_corte": fecha_corte,
+                    "universidades": n, "fuentes_financiamiento": detalle,
                     "periodo": f"{anio}-{mes:02d}", "tipo_fuente": "primaria", "documento": documento, "url": url,
                     "pagina": "", "consultado": consultado,
-                    "nota": (f"{leyenda} Valor original en millones de pesos; suma de todas las fuentes de "
-                             f"financiamiento" + (f" (millones: {detalle})" if detalle else "") + "." + cuantas
-                             + parcial),
+                    "nota": NOTA + parcial,
                 })
 
 

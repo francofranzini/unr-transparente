@@ -20,3 +20,10 @@ Con el alcance nacional (ADR 0021), la cifra principal de la sección 03 es la d
 
 - Lo exigido por mes es la mitad del bimestre (`lentes.meses_art4`); el acumulado de diciembre coincide con el total anual (test).
 - Si el equipo adopta el patrón, conviene mover la geometría a `app/graficos.py` y la regla del sombreado a `estilo.css`.
+
+## Actualización (2026-10-19): «correspondían» y textos cortos
+
+- **Verbo:** «según la ley, correspondían», no «la ley exigía». La ley es de octubre de 2025 y manda actualizar desde enero de ese año; antes de la sanción no exigía nada, y la exigibilidad está en disputa (Dec. 759/2025, sentencia del 6-oct-2026 y apelación). Debajo de la cifra se enlazan ambos eventos.
+- **Gráfico:** líneas punteadas en la sanción (21-ago-2025) y la publicación (21-oct-2025).
+- **Artículo:** la explicación es una cuenta de cinco renglones; el resto va en desplegables de una pregunta (`.mas`).
+- **Fichas:** rótulos de una línea, cálculo en una frase, nota única por archivo. El detalle por fuente de financiamiento y la cantidad de universidades pasan a columnas (`fuentes_financiamiento`, `universidades`), que no se muestran en la ficha.

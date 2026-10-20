@@ -59,5 +59,7 @@ Leer antes: [`docs/ESTANDAR.md`](../ESTANDAR.md), ADR 0012, 0013, 0014 y 0015.
 
 ## Propuestas de presentación
 
+- **Para Salario (art. 5):** el mismo problema de «exige»: la ley es de octubre de 2025 y actualiza desde diciembre de 2023, con el aumento efectivo «al mes siguiente de la publicación». Revisar el verbo y marcar sanción y publicación en su gráfico, como en Transferencias (ADR 0022).
+- Las fichas son legibles si los rótulos, cálculos y notas son cortos; sugerir el mismo criterio a los demás ejes.
 - Si se adopta el gráfico del ADR 0022, mover su geometría a `app/graficos.py` y el sombreado a `estilo.css` (archivos congelados).
 - Un selector de universidad para la línea de detalle: los datos mensuales por universidad están en Presupuesto Abierto.
