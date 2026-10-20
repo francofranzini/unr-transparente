@@ -142,6 +142,119 @@
       {% endif %}
     </figure>
 
+    {# «¿De dónde sale este número?» sigue la selección: un artículo por universidades y año. #}
+    {% set mesesl = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"] %}
+    <details class="mas-info">
+      <summary>¿De dónde sale este número?</summary>
+      {% for a in anios %}
+      {% for p, nombre, r_recibido, mayus, minus in entidades %}
+      {% set ley = a == "2025" %}
+      <section class="articulo" data-panel="{{ p }}{{ a }}"{% if not (p == "arts34-" and ley) %} hidden{% endif %}>
+        {% if ley %}
+        <div class="cuenta">
+          <table class="tabla">
+            <tbody>
+              <tr><th>Partida: lo transferido en septiembre de 2024</th><td data-r="">{{ num(ej, p ~ "partida") }} por mes</td></tr>
+              <tr><th>× inflación de mayo a diciembre de 2024 (art. 3)</th><td data-r="">+{{ num(ej, p ~ "ipc-art3") }}</td></tr>
+              <tr><th>× inflación de cada bimestre de 2025 (art. 4)</th><td data-r="">cada dos meses</td></tr>
+              <tr><th>= {{ mayus }} correspondían en 2025</th><td data-r=""><strong>{{ num(ej, p ~ "exigido") }}</strong></td></tr>
+              <tr><th>{{ r_recibido }} en 2025</th><td data-r=""><strong>{{ num(ej, p ~ "transferido") }}</strong></td></tr>
+            </tbody>
+          </table>
+          <p class="resultado">{{ nombre }}: <strong class="rojo">{{ num(ej, p ~ "relacion") }}</strong> frente a lo que {{ minus }} correspondía.</p>
+        </div>
+        <details class="mas"><summary>¿De dónde salen los datos?</summary>
+          <p>Lo transferido, de <a href="https://www.presupuestoabierto.gob.ar/">Presupuesto Abierto</a> (devengado). La inflación,
+             del IPC del INDEC. La cuenta, de los arts. 3 y 4 de la
+             <a href="https://www.boletinoficial.gob.ar/detalleAviso/primera/333139/20251021">Ley 27.795 en el Boletín Oficial</a>.
+             {% if p == "arts34-" %}Sin universidad asignada se transfirieron {{ num(ej, "arts34-sin-asignar") }}.{% endif %}</p></details>
+        <details class="mas"><summary>¿Por qué septiembre de 2024?</summary>
+          <p>La ley no dice de qué mes es «el monto». Septiembre es el que regía después del aumento de mitad de 2024.
+             Con el promedio de 2024 ({{ num(ej, p ~ "partida-b") }} por mes) correspondían {{ num(ej, p ~ "exigido-b") }}:
+             <span class="rojo">{{ num(ej, p ~ "relacion-b") }}</span>.</p></details>
+        <details class="mas"><summary>¿Por qué 2025, si la ley es de octubre?</summary>
+          <p>Los arts. 3 y 4 actualizan los montos «desde el 1º de enero hasta el 31 de diciembre de 2025», y los aumentos
+             se toman «a cuenta»: se compara el año completo. Ver el
+             <a href="{{ evento }}ley-27795-promulgacion" hx-get="{{ evento }}ley-27795-promulgacion" hx-target="#ficha-contenido">Decreto 759/2025</a>
+             y la <a href="{{ evento }}ley-27795-fallo-fondo" hx-get="{{ evento }}ley-27795-fallo-fondo" hx-target="#ficha-contenido">sentencia de fondo</a>.</p></details>
+        <details class="mas"><summary>Por bimestre</summary>
+          <table class="tabla">
+            <thead><tr><th>2025</th><th>Según la ley</th><th>{{ r_recibido }}</th></tr></thead>
+            <tbody>
+              {% for b in ["Ene–feb", "Mar–abr", "May–jun", "Jul–ago", "Sep–oct", "Nov–dic"] %}
+              <tr><th>{{ b }}</th><td data-r="Según la ley">{{ num(ej, p ~ "exigido-bim" ~ loop.index) }}</td><td data-r="{{ r_recibido }}">{{ num(ej, p ~ "transferido-bim" ~ loop.index) }}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table></details>
+        <details class="mas"><summary>Acumulado, mes a mes</summary>
+          <table class="tabla">
+            <thead><tr><th>2025</th><th>Según la ley</th><th>{{ r_recibido }}</th></tr></thead>
+            <tbody>
+              {% for mm in ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"] %}
+              <tr><th>{{ ej.detalle.acumulado[p][loop.index0].mes }}</th>
+                <td data-r="Según la ley">{{ num(ej, p ~ "acum-exigido-" ~ mm) }}</td>
+                <td data-r="{{ r_recibido }}">{{ num(ej, p ~ "acum-transferido-" ~ mm) }}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table></details>
+        <details class="mas"><summary>Lo que este número no dice</summary>
+          <p>No incluye sueldos (art. 5, en <a href="#salario">Salario docente</a>) ni recursos propios. Si en {{ actual }} se pagó
+             algo a cuenta de 2025, no está acá y la diferencia sería menor: hay meses de {{ actual }} muy por encima de lo
+             habitual y los datos no dicen por qué.</p>
+          <table class="tabla">
+            <thead><tr><th>Mes</th><th>2025</th><th>{{ actual }}</th></tr></thead>
+            <tbody>
+              {% for mm in ej.detalle.meses_tabla %}
+              <tr><th>{{ mesesl[mm|int - 1] }}</th>
+                <td data-r="2025">{{ num(ej, p ~ "mes-2025-" ~ mm) }}</td>
+                <td data-r="{{ actual }}">{% if ej.cifras|selectattr("clave", "equalto", p ~ "mes-" ~ actual ~ "-" ~ mm)|list %}{{ num(ej, p ~ "mes-" ~ actual ~ "-" ~ mm) }}{% else %}<span class="sin-dato">—</span>{% endif %}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table></details>
+        {% else %}
+        <div class="cuenta">
+          <table class="tabla">
+            <tbody>
+              <tr><th>Lo que la ley deja por mes a fines de 2025 (art. 4)</th><td data-r="">{{ num(ej, p ~ "piso-mes") }} por mes</td></tr>
+              <tr><th>× {{ ej.detalle.meses_actual|length }} meses ({{ ej.detalle.ventana_actual }}), sin actualizar</th><td data-r=""></td></tr>
+              <tr><th>= Referencia</th><td data-r=""><strong>{{ num(ej, p ~ "piso-" ~ a) }}</strong></td></tr>
+              <tr><th>{{ r_recibido }}</th><td data-r=""><strong>{{ num(ej, p ~ "tr-" ~ a) }}</strong></td></tr>
+            </tbody>
+          </table>
+          <p class="resultado">{{ nombre }}: <strong>{{ num(ej, p ~ "relacion-piso-" ~ a) }}</strong> frente a lo que la ley {{ minus }} dejaba por mes a fines de 2025.</p>
+        </div>
+        <details class="mas"><summary>¿Por qué esta referencia?</summary>
+          <p>La ley no menciona {{ a }}: no fija un monto. Tomamos el de diciembre de 2025 como piso. Si se siguiera
+             actualizando cada dos meses por inflación, la referencia sería {{ num(ej, p ~ "ref-" ~ a) }} y lo transferido
+             quedaría en {{ num(ej, p ~ "relacion-" ~ a) }}. Ver el
+             <a href="{{ evento }}estado-ley-27795-octubre-2026" hx-get="{{ evento }}estado-ley-27795-octubre-2026" hx-target="#ficha-contenido">estado de la ley hoy</a>.</p></details>
+        <details class="mas"><summary>Acumulado, mes a mes</summary>
+          <table class="tabla">
+            <thead><tr><th>{{ a }}</th><th>Referencia</th><th>{{ r_recibido }}</th></tr></thead>
+            <tbody>
+              {% for mm in ej.detalle.meses_actual %}
+              <tr><th>{{ ej.detalle.acumulado_actual[p][loop.index0].mes }}</th>
+                <td data-r="Referencia">{{ num(ej, p ~ "acum-piso-" ~ a ~ "-" ~ mm) }}</td>
+                <td data-r="{{ r_recibido }}">{{ num(ej, p ~ "acum-tr-" ~ a ~ "-" ~ mm) }}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table></details>
+        <details class="mas"><summary>Lo que este número no dice</summary>
+          <p>No incluye sueldos ni recursos propios. Si algo de {{ a }} se pagó a cuenta de 2025, está sumado acá.
+             Hay meses muy por encima de lo habitual; los datos no dicen por qué.</p>
+          <table class="tabla">
+            <thead><tr><th>Mes</th><th>{{ a }}</th></tr></thead>
+            <tbody>
+              {% for mm in ej.detalle.meses_actual %}
+              <tr><th>{{ mesesl[mm|int - 1] }}</th><td data-r="{{ a }}">{{ num(ej, p ~ "mes-" ~ a ~ "-" ~ mm) }}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table></details>
+        {% endif %}
+      </section>
+      {% endfor %}
+      {% endfor %}
+    </details>
   </div>
   <script>
   (() => {
@@ -223,105 +336,5 @@
     });
   })();
   </script>
-
-  <details class="mas-info">
-    <summary>¿De dónde sale este número?</summary>
-    <section class="articulo">
-      <div class="cuenta">
-        <table class="tabla">
-          <tbody>
-            <tr><th>Partida: lo transferido en septiembre de 2024</th><td data-r="">{{ num(ej, "arts34-partida") }} por mes</td></tr>
-            <tr><th>× inflación de mayo a diciembre de 2024 (art. 3)</th><td data-r="">+{{ num(ej, "arts34-ipc-art3") }}</td></tr>
-            <tr><th>× inflación de cada bimestre de 2025 (art. 4)</th><td data-r="">cada dos meses</td></tr>
-            <tr><th>= Correspondían en 2025</th><td data-r=""><strong>{{ num(ej, "arts34-exigido") }}</strong></td></tr>
-            <tr><th>Se transfirió en 2025</th><td data-r=""><strong>{{ num(ej, "arts34-transferido") }}</strong></td></tr>
-          </tbody>
-        </table>
-        <p class="resultado">Se transfirió <strong class="rojo">{{ num(ej, "arts34-relacion") }}</strong> frente a lo que correspondía.</p>
-      </div>
-
-      <details class="mas"><summary>¿De dónde salen los datos?</summary>
-        <p>Lo transferido, de <a href="https://www.presupuestoabierto.gob.ar/">Presupuesto Abierto</a> (Ministerio de Economía).
-           La inflación, del IPC del INDEC. Qué hay que calcular, de los arts. 3 y 4 de la
-           <a href="https://www.boletinoficial.gob.ar/detalleAviso/primera/333139/20251021">Ley 27.795, tal como se publicó en el Boletín Oficial</a>.</p></details>
-      <details class="mas"><summary>¿Por qué no usamos el presupuesto?</summary>
-        <p>Partimos de la ley, no del presupuesto: el presupuesto es justamente lo que no la incluye. Medimos lo que
-           efectivamente se transfirió (el «devengado»). Lo transferido sin universidad asignada sumó {{ num(ej, "arts34-sin-asignar") }}.</p></details>
-      <details class="mas"><summary>¿Por qué septiembre de 2024?</summary>
-        <p>La ley no dice de qué mes es «el monto». Septiembre es el monto que regía después del aumento de mitad de 2024.
-           Partiendo del promedio de todo 2024 ({{ num(ej, "arts34-partida-b") }} por mes), correspondían
-           {{ num(ej, "arts34-exigido-b") }}, y lo transferido queda en <span class="rojo">{{ num(ej, "arts34-relacion-b") }}</span>.</p></details>
-      <details class="mas"><summary>¿Por qué 2025, si la ley es de octubre?</summary>
-        <p>Los arts. 3 y 4 mandan actualizar estos montos «desde el 1º de enero hasta el 31 de diciembre de 2025»: es lo
-           que la ley manda reconocer por ese año, no lo que se debía mes a mes. Como los aumentos se toman «a cuenta», la
-           comparación que fija la ley es la del año completo. El Poder Ejecutivo suspendió la ejecución de la ley
-           (<a href="{{ evento }}ley-27795-promulgacion" hx-get="{{ evento }}ley-27795-promulgacion" hx-target="#ficha-contenido">Decreto 759/2025</a>);
-           un juez declaró inconstitucional esa suspensión y el Gobierno apeló
-           (<a href="{{ evento }}ley-27795-fallo-fondo" hx-get="{{ evento }}ley-27795-fallo-fondo" hx-target="#ficha-contenido">octubre de 2026</a>).</p></details>
-      {% if ej.detalle.ventana_actual %}
-      <details class="mas"><summary>¿Y {{ actual }}?</summary>
-        <p>La ley no menciona {{ actual }}. Los arts. 3 y 4 actualizan los montos durante 2025 y no dicen qué pasa después,
-           así que para {{ actual }} no hay un monto de la ley: cualquier cifra es una lectura. Mostramos dos, de
-           {{ ej.detalle.ventana_actual }} (el último mes completo):</p>
-        <table class="tabla">
-          <thead><tr><th>Lectura</th><th>Todas: referencia</th><th>Todas</th><th>UNR</th></tr></thead>
-          <tbody>
-            <tr><th>El monto que la ley deja para diciembre de 2025, como piso y sin actualizar (la que muestra el gráfico)</th>
-              <td data-r="Referencia">{{ num(ej, "arts34-piso-" ~ actual) }}</td>
-              <td data-r="Todas">{{ num(ej, "arts34-relacion-piso-" ~ actual) }}</td>
-              <td data-r="UNR">{{ num(ej, "unr-arts34-relacion-piso-" ~ actual) }}</td></tr>
-            <tr><th>Seguir actualizando cada dos meses por inflación</th>
-              <td data-r="Referencia">{{ num(ej, "arts34-ref-" ~ actual) }}</td>
-              <td data-r="Todas">{{ num(ej, "arts34-relacion-" ~ actual) }}</td>
-              <td data-r="UNR">{{ num(ej, "unr-arts34-relacion-" ~ actual) }}</td></tr>
-          </tbody>
-        </table>
-        <p>El gráfico usa el piso porque solo supone que lo que la ley ordenó para 2025 no se pierde. Aun así, la ley
-           no decide entre las dos; por eso {{ actual }} va en gris. Las líneas punteadas marcan el acuerdo del 10 de junio
-           (según la cobertura, un 20 % más para funcionamiento) y la sentencia de fondo.
-           <a href="{{ evento }}estado-ley-27795-octubre-2026" hx-get="{{ evento }}estado-ley-27795-octubre-2026" hx-target="#ficha-contenido">Estado de la ley hoy</a>.</p></details>
-      {% endif %}
-      <details class="mas"><summary>Ver la cuenta por bimestre</summary>
-        <table class="tabla">
-          <thead><tr><th>2025</th><th>Según la ley</th><th>Se transfirió</th></tr></thead>
-          <tbody>
-            {% for nombre in ["Ene–feb", "Mar–abr", "May–jun", "Jul–ago", "Sep–oct", "Nov–dic"] %}
-            <tr><th>{{ nombre }}</th><td data-r="Según la ley">{{ num(ej, "arts34-exigido-bim" ~ loop.index) }}</td><td data-r="Se transfirió">{{ num(ej, "arts34-transferido-bim" ~ loop.index) }}</td></tr>
-            {% endfor %}
-          </tbody>
-        </table></details>
-      <details class="mas"><summary>Lo que este número no dice</summary>
-        <p>No incluye sueldos (art. 5, en <a href="#salario">Salario docente</a>) ni recursos propios.</p>
-        <p>Compara contra lo transferido <strong>en el ejercicio 2025</strong>. La ley se publicó en octubre de 2025 y
-           manda reconocer todo ese año, así que parte del pago podría haber llegado en {{ ej.cifra("arts34-transferido-actual").periodo }}:
-           si se pagó algo a cuenta de 2025, no está en esta cuenta y la diferencia sería menor. En {{ ej.cifra("arts34-transferido-actual").periodo }}
-           hay meses con montos muy por encima de lo habitual; los datos no dicen por qué. Buscamos el acto que los dispuso.</p>
-        <table class="tabla">
-          <thead><tr><th>Mes</th><th>2025</th><th>{{ ej.cifra("arts34-transferido-actual").periodo }}</th></tr></thead>
-          <tbody>
-            {% set anio = ej.cifra("arts34-transferido-actual").periodo %}
-            {% for mm in ej.detalle.meses_tabla %}
-            <tr><th>{{ ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"][mm|int - 1] }}</th>
-              <td data-r="2025">{{ num(ej, "arts34-mes-2025-" ~ mm) }}</td>
-              <td data-r="{{ anio }}">{% if ej.cifras|selectattr("clave", "equalto", "arts34-mes-" ~ anio ~ "-" ~ mm)|list %}{{ num(ej, "arts34-mes-" ~ anio ~ "-" ~ mm) }}{% else %}<span class="sin-dato">—</span>{% endif %}</td></tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        <p>Para {{ anio }} la ley no fija fórmula: hasta {{ ej.detalle.corte_actual }} se transfirieron {{ num(ej, "arts34-transferido-actual") }}.</p></details>
-      <details class="mas"><summary>Ver los números de la UNR y del sistema, mes a mes</summary>
-        <table class="tabla">
-          <thead><tr><th>Acumulado</th><th>UNR: según la ley</th><th>UNR: recibió</th><th>Todas: según la ley</th><th>Todas: recibieron</th></tr></thead>
-          <tbody>
-            {% for mm in ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"] %}
-            <tr><th>{{ ej.detalle.acumulado["arts34-"][loop.index0].mes }}</th>
-              <td data-r="UNR: según la ley">{{ num(ej, "unr-arts34-acum-exigido-" ~ mm) }}</td>
-              <td data-r="UNR: recibió">{{ num(ej, "unr-arts34-acum-transferido-" ~ mm) }}</td>
-              <td data-r="Todas: según la ley">{{ num(ej, "arts34-acum-exigido-" ~ mm) }}</td>
-              <td data-r="Todas: recibieron">{{ num(ej, "arts34-acum-transferido-" ~ mm) }}</td></tr>
-            {% endfor %}
-          </tbody>
-        </table></details>
-    </section>
-  </details>
 
 </section>
