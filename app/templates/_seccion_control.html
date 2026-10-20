@@ -1,10 +1,40 @@
-{% from "_macros.html" import num, encabezado, linea_tiempo %}
+{% from "_macros.html" import num, encabezado %}
+{# Historial de auditorías: quién controla a las universidades, de lo más antiguo a lo más reciente, con el mismo
+   recuadro que la cronología de la ley (ADR 0030). La UNR es el caso de detalle (ADR 0021). #}
+{% set organos = [("agn-", "congreso", "AGN · Congreso"), ("sigen-", "ejecutivo", "SIGEN · Poder Ejecutivo"),
+                  ("res-sigen-", "ejecutivo", "SIGEN · Poder Ejecutivo"), ("ptn-", "ejecutivo", "Procuración del Tesoro · Poder Ejecutivo"),
+                  ("convenio-", "acuerdo", "Convenio"), ("uai-", "otro", "Auditoría interna de la UNR"), ("estado-", "otro", "Estado")] %}
 <section class="seccion" id="control">
-  {{ encabezado("04", "Control", "¿Quién audita a la UNR?") }}
+  {{ encabezado("04", "Control", "¿Quién audita a las universidades?") }}
   <div class="hoy revelar">
-    <small>Último control externo publicado</small>
+    <small>Último control externo publicado sobre la UNR</small>
     <p>Informe 161/2022 de la Auditoría General de la Nación, sobre el ejercicio 2017.</p>
     <a class="enlace" href="/ficha/evento/agn-informe-161-2022" hx-get="/ficha/evento/agn-informe-161-2022" hx-target="#ficha-contenido">De dónde sale este dato →</a>
   </div>
-  <div class="revelar">{{ linea_tiempo(ec, 4) }}</div>
+  <div class="cronologia">
+    <h3 class="cronologia-titulo">Historial de auditorías</h3>
+    <p class="cronologia-guia">De lo más antiguo a lo más reciente.</p>
+    <div class="cronologia-scroll" tabindex="0" role="region" aria-label="Historial de auditorías">
+    <ol class="linea-v" aria-label="Historial de auditorías, de lo más antiguo a lo más reciente">
+      {% for e in ec.eventos %}
+      {% set org = namespace(clase="otro", quien="") %}
+      {% for prefijo, c, q in organos if e.id.startswith(prefijo) %}{% set org.clase = c %}{% set org.quien = q %}{% endfor %}
+      {% set clase, quien = org.clase, org.quien %}
+      {% if loop.first or e.fecha[:4] != loop.previtem.fecha[:4] %}<li class="anio" aria-hidden="true">{{ e.fecha[:4] }}</li>{% endif %}
+      <li class="hito actor-{{ clase }}">
+        <span class="hito-marca"></span>
+        <time>{{ fmt.fecha_evento(e.fecha) }}</time>
+        <span class="hito-actor">{{ quien }}</span>
+        <details class="hito-detalle">
+          <summary class="hito-titulo">{{ e.titulo }}</summary>
+          <div class="hito-cuerpo">
+            {% if e.nota %}<p class="hito-argumento">{{ e.nota }}</p>{% endif %}
+            <a class="hito-ficha" href="/ficha/evento/{{ e.id }}" hx-get="/ficha/evento/{{ e.id }}" hx-target="#ficha-contenido">De dónde sale este dato →</a>
+          </div>
+        </details>
+      </li>
+      {% endfor %}
+    </ol>
+    </div>
+  </div>
 </section>

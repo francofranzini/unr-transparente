@@ -92,6 +92,17 @@ def test_transferencias_muestra_el_caso_unr_con_grafico(cliente):
     assert "−42,3 %" in texto and "−32,4 %" in texto
 
 
+@pytest.mark.parametrize("panel, cifra", [
+    ("arts34-2025", "ejecucion/arts34-exigido"), ("unr-arts34-2025", "ejecucion/unr-arts34-exigido"),
+    ("arts34-2026", "ejecucion/arts34-piso-2026"), ("unr-arts34-2026", "ejecucion/unr-arts34-piso-2026"),
+])
+def test_de_donde_sale_sigue_la_seleccion(cliente, panel, cifra):
+    # «¿De dónde sale este número?» explica el número de las universidades y el año elegidos.
+    texto = cliente.get("/").text
+    articulo = re.search(rf'<section class="articulo" data-panel="{panel}".*?</section>', texto, flags=re.S)
+    assert articulo and f'/ficha/cifra/{cifra}"' in articulo[0]
+
+
 def test_salario_muestra_el_billete(cliente):
     texto = cliente.get("/").text
     assert "data-billete" in texto and 'href="/ficha/cifra/salario/compra-2026-08"' in texto
