@@ -214,6 +214,24 @@ def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str
                                 sum(d.valor for d in datos), "ARS corrientes", meses[1], tuple(datos),
                                 calculo="Devengado de los dos meses"))
 
+    # Transferido mes a mes en 2025 y en el año en curso: si en el año en curso se pagó algo a cuenta de 2025,
+    # no entra en la comparación (que es por ejercicio); la tabla deja ver los saltos (ADR 0020).
+    meses_tabla = []
+    for a in ("2025", anio):
+        for mes in lentes._meses(f"{a}-01", f"{a}-12"):
+            datos = tuple(d for d in devengado if d.periodo == mes
+                          and d.dimensiones.get("actividad_id") in lentes.ACTIVIDADES_ARTS_3_4)
+            if not datos:
+                continue
+            parcial = any("Mes en curso" in d.nota for d in datos)
+            eje.cifras.append(Cifra(f"{prefijo}mes-{mes}", f"{quien}: transferido en {mes_largo(mes)}",
+                                    sum(d.valor for d in datos), "ARS corrientes", mes, datos,
+                                    calculo="Devengado del mes, actividades 14, 15, 16 y 25",
+                                    aviso="Mes en curso a la fecha de corte del dato." if parcial else ""))
+            if mes[5:] not in meses_tabla:
+                meses_tabla.append(mes[5:])
+    eje.detalle["meses_tabla"] = meses_tabla
+
     actual = lentes.transferido_arts_3_4(devengado, anio)
     if actual.fuentes:
         corte = actual.fuentes[0].dimensiones["fecha_corte"]

@@ -225,8 +225,23 @@
           </tbody>
         </table></details>
       <details class="mas"><summary>Lo que este número no dice</summary>
-        <p>No incluye sueldos (art. 5, en <a href="#salario">Salario docente</a>) ni recursos propios. Para 2026 la ley
-           no fija fórmula: hasta {{ ej.detalle.corte_actual }} se transfirieron {{ num(ej, "arts34-transferido-actual") }}.</p></details>
+        <p>No incluye sueldos (art. 5, en <a href="#salario">Salario docente</a>) ni recursos propios.</p>
+        <p>Compara contra lo transferido <strong>en el ejercicio 2025</strong>. La ley se publicó en octubre de 2025 y
+           manda reconocer todo ese año, así que parte del pago podría haber llegado en {{ ej.cifra("arts34-transferido-actual").periodo }}:
+           si se pagó algo a cuenta de 2025, no está en esta cuenta y la diferencia sería menor. En {{ ej.cifra("arts34-transferido-actual").periodo }}
+           hay meses con montos muy por encima de lo habitual; los datos no dicen por qué. Buscamos el acto que los dispuso.</p>
+        <table class="tabla">
+          <thead><tr><th>Mes</th><th>2025</th><th>{{ ej.cifra("arts34-transferido-actual").periodo }}</th></tr></thead>
+          <tbody>
+            {% set anio = ej.cifra("arts34-transferido-actual").periodo %}
+            {% for mm in ej.detalle.meses_tabla %}
+            <tr><th>{{ ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"][mm|int - 1] }}</th>
+              <td data-r="2025">{{ num(ej, "arts34-mes-2025-" ~ mm) }}</td>
+              <td data-r="{{ anio }}">{% if ej.cifras|selectattr("clave", "equalto", "arts34-mes-" ~ anio ~ "-" ~ mm)|list %}{{ num(ej, "arts34-mes-" ~ anio ~ "-" ~ mm) }}{% else %}<span class="sin-dato">—</span>{% endif %}</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <p>Para {{ anio }} la ley no fija fórmula: hasta {{ ej.detalle.corte_actual }} se transfirieron {{ num(ej, "arts34-transferido-actual") }}.</p></details>
       <details class="mas"><summary>Ver los números de la UNR y del sistema, mes a mes</summary>
         <table class="tabla">
           <thead><tr><th>Acumulado</th><th>UNR: según la ley</th><th>UNR: recibió</th><th>Todas: según la ley</th><th>Todas: recibieron</th></tr></thead>
