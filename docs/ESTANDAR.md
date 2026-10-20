@@ -33,12 +33,14 @@ Este documento fija cómo se ve y cómo funciona el sitio. **Es la base de cualq
 - **Colores de actores** (Congreso azul, Poder Ejecutivo naranja, Justicia verde, Acuerdo amarillo) y **series del gráfico** (pagado azul, exigido naranja): validados para daltonismo; no se cambian.
 - **Tipografía:** Lato (400, 700, 900).
 - **Composición:** una sola página, sin tarjetas. Secciones numeradas («01 — Salario docente») separadas por una línea fina; la pregunta como título; los datos sobre el papel. Lo secundario va detrás de un «ver más».
+- **Espaciado (ADR 0033):** entre secciones, `--entre-secciones`; entre las partes de una sección (encabezado, cifras, imagen, gráfico, «ver más»), `--entre-partes`. Como cada parte aparece al hacer scroll, el aire hace que entren de a una. Un selector va pegado a lo que cambia.
 - **Tono:** rioplatense, con voseo, frases cortas, meses en palabras («agosto de 2026»), sin jerga de datos. Acompaña al lector; no lo trata como una computadora.
 
 ## 3. Funcionalidades (congeladas)
 
 - **Orden y anclas de las secciones:** `#salario` (01), `#transferencias` (02), `#ley` (03), `#control` (04), «Cómo leer los números» (05). Graduación quedó fuera (ADR 0024). Las direcciones `/salario`, `/ley`, etc. redirigen a su ancla.
 - **Cada número abre su ficha** (documento, página, fecha de consulta, tipo de fuente, cálculo). Se escribe siempre con `num(eje, clave)`; nunca un número a mano en una plantilla.
+- **La ficha es breve (ADR 0032):** a la vista, el número con su período, «Cómo se calcula» y «Sale de»; el valor exacto, las citas de la ley, los documentos completos y los ids van en «Ver el detalle». Por eso el `calculo` de cada `Cifra` es una frase corta en castellano llano. Si la cifra depende de una elección del portal que la norma no fija, se dice en `criterio`; si se eligió de una serie, la serie va en `serie`.
 - **Cifras que cuentan desde 0:** `num(eje, clave, true)` en las filas de datos.
 - **Cronología de la ley:** «Línea de tiempo», vertical, de lo más antiguo a lo más reciente, dentro de un recuadro con scroll propio y el año fijo arriba; filtros por actor; detalle desplegable con «Cómo lo contaron»; recorrido «hecho por hecho» con sellos que nombran el acto (ADR 0030 y 0031, propuestas).
 - **Cronología de Control:** una por universidad, cada una en un recuadro desplegable (hoy, la UNR), con la misma plantilla que la de la ley (`_cronologia.html`), con los actores AGN, SIGEN y Procuración, auditoría interna de la UNR y convenios; debajo de la pregunta, un desplegable «Ver más» / «Ver menos» con la autarquía de las universidades y quién las audita (AGN y SIGEN), sin recuadro aparte; sin sellos, que son solo de la ley (ADR 0025, propuesta).

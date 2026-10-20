@@ -1,6 +1,6 @@
 # 0033. Más espacio entre secciones y entre las partes de cada sección
 
-- Estado: propuesta (Fran). Se adopta si el equipo la aprueba al integrar el trabajo.
+- Estado: aceptada (2026-10-20)
 - Fecha: 2026-10-20
 - Modifica: `docs/ESTANDAR.md` §2 (composición).
 

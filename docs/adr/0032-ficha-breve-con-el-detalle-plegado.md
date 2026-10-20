@@ -1,6 +1,6 @@
 # 0032. Ficha breve: cómo se calcula y de dónde sale, con el detalle plegado
 
-- Estado: propuesta (Fran). Se adopta si el equipo la aprueba al integrar el trabajo.
+- Estado: aceptada (2026-10-20)
 - Fecha: 2026-10-20
 - Modifica: `docs/ESTANDAR.md` §3 («Cada número abre su ficha»).
 
