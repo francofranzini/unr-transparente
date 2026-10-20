@@ -1,7 +1,19 @@
 {% from "_macros.html" import num, encabezado %}
 {% from "_cronologia.html" import cronologia %}
+{% macro icono(nombre) -%}
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+{%- if nombre == "lupa" %}<circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/><path d="M8 9h5M8 12h3.5"/>
+{%- elif nombre == "escudo" %}<path d="M12 3l7 3v5c0 4.6-3 8.1-7 10-4-1.9-7-5.4-7-10V6z"/><path d="M9 12l2 2 4-4"/>
+{%- elif nombre == "universidad" %}<path d="M3 9.5L12 4l9 5.5z"/><path d="M6 11v6M10 11v6M14 11v6M18 11v6M3.5 20h17"/>
+{%- endif %}</svg>
+{%- endmacro %}
+{% macro boton_organo(o) -%}
+<button type="button" class="organo actor-{{ o.actor }}" data-organo="{{ o.clave }}" aria-pressed="false" aria-controls="organo-{{ o.clave }}">
+  <span class="organo-icono">{{ icono(o.icono) }}</span><strong>{{ o.sigla }}</strong><small>{{ o.rol }}</small>
+</button>
+{%- endmacro %}
 <section class="seccion" id="control">
-  {{ encabezado("04", "Control", "¿Quién audita a la UNR?") }}
+  {{ encabezado("04", "Control", "¿Quién audita a las universidades?") }}
   <details class="mas-info presentacion revelar">
     <summary><span class="si-cerrado">Ver más</span><span class="si-abierto">Ver menos</span></summary>
     <p>El <a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/0-4999/804/norma.htm" rel="noopener" target="_blank">artículo 75, inciso 19, de la Constitución Nacional</a> garantiza los principios de gratuidad y equidad de la educación pública estatal y la autonomía y autarquía de las universidades nacionales.</p>
@@ -13,15 +25,53 @@
     </ul>
     <p>Auditar a las universidades es facultad del Poder Ejecutivo y del Poder Legislativo.</p>
   </details>
-  <div class="cronologia-universidades">
+  {# Mapa de quién audita a las universidades (ADR 0034): al centro las universidades nacionales; a un lado el control
+     externo (AGN), al otro el del Poder Ejecutivo (SIGEN). Sin JavaScript se ven los dos paneles, uno debajo del otro. #}
+  {% set org = {} %}{% for o in ec.detalle.organos %}{% set _ = org.update({o.clave: o}) %}{% endfor %}
+  <div class="mapa-control revelar" data-mapa-control>
+    <p class="cronologia-guia">Tocá cada órgano para ver qué hace y qué rige para todas las universidades.</p>
+    <div class="mapa-escena">
+      <span class="mapa-linea mapa-linea-izq actor-congreso" aria-hidden="true"><i></i></span>
+      <span class="mapa-linea mapa-linea-der actor-ejecutivo" aria-hidden="true"><i></i></span>
+      <div class="mapa-lado">{{ boton_organo(org.agn) }}</div>
+      <div class="mapa-unr">
+        <span class="unr-icono">{{ icono("universidad") }}</span>
+        <strong>Universidades nacionales</strong>
+      </div>
+      <div class="mapa-lado">{{ boton_organo(org.sigen) }}</div>
+    </div>
+    <div class="organo-paneles">
+      {% for o in ec.detalle.organos %}
+      <div class="organo-panel actor-{{ o.actor }}" id="organo-{{ o.clave }}" data-panel-organo="{{ o.clave }}">
+        <p class="organo-rol"><i></i>{{ o.rol }}</p>
+        <h4>{{ o.nombre }} ({{ o.sigla }})</h4>
+        <p>{{ o.depende }} {{ o.relacion }}</p>
+        {% if o.marco %}<p class="organo-rol">Para todas las universidades</p>
+        <ol class="organo-hechos">
+          {% for e in o.marco %}<li><time>{{ fmt.fecha_evento(e.fecha) }}</time><a href="/ficha/evento/{{ e.id }}" hx-get="/ficha/evento/{{ e.id }}" hx-target="#ficha-contenido">{{ e.titulo }}</a></li>{% endfor %}
+        </ol>{% endif %}
+        <button type="button" class="recorrido-boton" data-ver-hechos="{{ o.actor }}" hidden>Ver sus hechos en la línea de tiempo ↓</button>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  {# Línea de tiempo por universidad (ADR 0025 y 0034): un selector como el de Transferencias; hoy, solo la UNR.
+     Para sumar otra universidad: ver UNIVERSIDADES_CONTROL en core/ejes.py. Sin JavaScript se ven todas. #}
+  <div class="cronologia-universidades" data-universidades>
     <h3 class="cronologia-titulo">Línea de tiempo</h3>
-    <p class="cronologia-guia">Una por universidad, de lo más antiguo a lo más reciente.</p>
+    <div class="filtros revelar" role="group" aria-label="Universidad">
+      <span class="filtros-rotulo">Ver:</span>
+      {% for u in ec.detalle.universidades %}
+      <button type="button" class="actor actor-otro" data-universidad="{{ u.sigla }}" aria-pressed="{{ 'true' if loop.first else 'false' }}"><i></i>{{ u.sigla }}</button>
+      {% endfor %}
+    </div>
     {% for u in ec.detalle.universidades %}
-    <details class="universidad" open>
-      <summary><span class="universidad-nombre">{{ u.nombre }} ({{ u.sigla }})</span><span class="universidad-cuenta">{{ u.hechos }} hechos desde {{ u.desde }}</span></summary>
+    <div class="universidad" data-panel-universidad="{{ u.sigla }}">
+      <p class="universidad-titulo"><span class="universidad-nombre">{{ u.nombre }} ({{ u.sigla }})</span><span class="universidad-cuenta">{{ u.hechos }} hechos desde {{ u.desde }}, de lo más antiguo a lo más reciente</span></p>
       <p class="aviso">Incluye hechos que alcanzan a todas las universidades nacionales, como los dictámenes de la Procuración del Tesoro y los convenios del CIN.</p>
       {{ cronologia(u.eventos, "los controles sobre la " ~ u.sigla, "", filtros=ec.detalle.filtros, actores_id=u.actores, titulo="", transicion=True) }}
-    </details>
+    </div>
     {% endfor %}
   </div>
 </section>

@@ -170,6 +170,43 @@
     aplicar();
   });
 
+  // Mapa de quién audita (ADR 0034): un panel por órgano; «Ver sus hechos» filtra la línea de tiempo de la sección.
+  document.querySelectorAll("[data-mapa-control]").forEach((mapa) => {
+    const botones = [...mapa.querySelectorAll("[data-organo]")];
+    const paneles = [...mapa.querySelectorAll("[data-panel-organo]")];
+    const elegir = (clave) => {
+      botones.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.organo === clave)));
+      paneles.forEach((p) => { p.hidden = p.dataset.panelOrgano !== clave; });
+    };
+    botones.forEach((b) => b.addEventListener("click", () => elegir(b.dataset.organo)));
+    elegir(botones[0].dataset.organo);
+    const seccion = mapa.closest("section");
+    if (!seccion.querySelector("[data-cronologia]")) return;
+    mapa.querySelectorAll("[data-ver-hechos]").forEach((b) => {
+      b.hidden = false;
+      b.addEventListener("click", () => {
+        // La cronología de la universidad elegida en el selector «Ver:».
+        const crono = [...seccion.querySelectorAll("[data-cronologia]")].find((c) => !c.closest("[hidden]"));
+        crono.querySelectorAll("[data-filtro]").forEach((f) => {
+          if ((f.getAttribute("aria-pressed") === "true") !== (f.dataset.filtro === b.dataset.verHechos)) f.click();
+        });
+        crono.scrollIntoView({ behavior: menosMovimiento ? "auto" : "smooth", block: "start" });
+      });
+    });
+  });
+
+  // Línea de tiempo de Control: el selector «Ver:» elige la universidad (ADR 0034). Sin JavaScript se ven todas.
+  document.querySelectorAll("[data-universidades]").forEach((bloque) => {
+    const botones = [...bloque.querySelectorAll("[data-universidad]")];
+    const paneles = [...bloque.querySelectorAll("[data-panel-universidad]")];
+    const elegir = (sigla) => {
+      botones.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.universidad === sigla)));
+      paneles.forEach((p) => { p.hidden = p.dataset.panelUniversidad !== sigla; });
+    };
+    botones.forEach((b) => b.addEventListener("click", () => elegir(b.dataset.universidad)));
+    if (botones.length) elegir(botones[0].dataset.universidad);
+  });
+
   // Luz que sigue al cursor sobre el vidrio.
   if (!menosMovimiento) document.addEventListener("pointermove", (e) => {
     const vidrio = e.target.closest(".luz");

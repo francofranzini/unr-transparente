@@ -513,13 +513,28 @@ def _actor_control(evento: Evento) -> tuple[str, str]:
     raise ValueError(f"Evento de control sin actor: {evento.id} (agregarlo en ACTORES_CONTROL)")
 
 
+# Mapa de quién audita a las universidades (ADR 0034): AGN y SIGEN. Los textos describen la función según la norma
+# citada; `marco` son los hechos de control.yaml que alcanzan a todas las universidades (convenios, dictámenes,
+# resoluciones), por id. Lo propio de cada universidad va en su línea de tiempo.
+ORGANOS_CONTROL = [
+    {"clave": "agn", "sigla": "AGN", "nombre": "Auditoría General de la Nación", "icono": "lupa",
+     "rol": "Control externo", "depende": "Asiste técnicamente al Congreso de la Nación (Ley 24.156).",
+     "relacion": "Audita a las universidades desde afuera e informa al Congreso.",
+     "marco": ["convenio-cin-agn-2024"]},
+    {"clave": "sigen", "sigla": "SIGEN", "nombre": "Sindicatura General de la Nación", "icono": "escudo",
+     "rol": "Control interno del Poder Ejecutivo", "depende": "Órgano del Poder Ejecutivo Nacional (Ley 24.156).",
+     "relacion": "Su alcance sobre las universidades lo definen los dictámenes de la Procuración del Tesoro.",
+     "marco": ["ptn-dictamen-2022-11-28", "res-sigen-299-2023", "convenio-cin-sigen-2023", "ptn-dictamen-2024-10-15"]},
+]
+
+
 # Una cronología de control por universidad (ADR 0025): (sigla, nombre, eje de sus eventos en data/eventos/).
 # Para sumar otra: cargar sus hechos en data/eventos/control_<sigla>.yaml con `ejes: [control-<sigla>]` y agregarla acá.
 UNIVERSIDADES_CONTROL = [("UNR", "Universidad Nacional de Rosario", "control")]
 
 
 def eje_control(repo: Repositorio) -> Eje:
-    eje = Eje("control", "Control", "¿Quién audita a la UNR?")
+    eje = Eje("control", "Control", "¿Quién audita a las universidades?")
     universidades = []
     for sigla, nombre, clave in UNIVERSIDADES_CONTROL:
         eventos = repo.eventos_de(clave)
@@ -528,7 +543,14 @@ def eje_control(repo: Repositorio) -> Eje:
                               "desde": hitos[0].fecha[:4] if hitos else "",
                               "actores": {e.id: _actor_control(e) for e in hitos}})
         eje.eventos += eventos
-    eje.detalle = {"universidades": universidades, "filtros": FILTROS_CONTROL}
+    por_id = {e.id: e for e in repo.eventos}
+    faltan = [i for o in ORGANOS_CONTROL for i in o["marco"] if i not in por_id]
+    if faltan:
+        raise ValueError(f"Hechos del mapa de control que no existen en data/eventos: {faltan}")
+    organos = [{**o, "actor": ACTORES_CONTROL[o["clave"]][0],
+                "marco": sorted((por_id[i] for i in o["marco"]), key=lambda e: e.fecha, reverse=True)}
+               for o in ORGANOS_CONTROL]
+    eje.detalle = {"universidades": universidades, "filtros": FILTROS_CONTROL, "organos": organos}
     eje.pendientes = ["Informe AGN 161/2022 (original).", "Informes individuales de la Unidad de Auditoría Interna."]
     return eje
 
