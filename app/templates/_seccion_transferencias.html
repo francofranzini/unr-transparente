@@ -140,22 +140,6 @@
       {% endif %}
     </figure>
 
-    <p class="aviso" data-anio="2025">Funcionamiento, hospitales, ciencia y técnica y extensión (arts. 3 y 4 de la Ley 27.795).
-       La ley es de octubre de 2025, pero manda actualizar estos montos desde enero de ese año: no es lo que se debía
-       mes a mes, sino lo que la ley manda reconocer por 2025. Como los aumentos se toman «a cuenta» (art. 4), la
-       comparación que fija la ley es la del año completo.
-       El Poder Ejecutivo suspendió su ejecución
-       (<a href="{{ evento }}ley-27795-promulgacion" hx-get="{{ evento }}ley-27795-promulgacion" hx-target="#ficha-contenido">Decreto 759/2025</a>);
-       un juez declaró inconstitucional esa suspensión y el Gobierno apeló
-       (<a href="{{ evento }}ley-27795-fallo-fondo" hx-get="{{ evento }}ley-27795-fallo-fondo" hx-target="#ficha-contenido">octubre de 2026</a>).</p>
-    {% if anios|length > 1 %}
-    <p class="aviso" data-anio="{{ actual }}" hidden>Para {{ actual }} la ley no fija cuánto corresponde: los arts. 3 y 4 solo
-       regulan 2025. La referencia en gris aplica a {{ actual }} la misma regla del art. 4 (actualizar cada dos meses por
-       inflación); la ley no lo pide. Va de {{ ej.detalle.ventana_actual }}, el último mes completo.
-       <a href="{{ evento }}estado-ley-27795-octubre-2026" hx-get="{{ evento }}estado-ley-27795-octubre-2026" hx-target="#ficha-contenido">Estado de la ley a octubre de 2026</a>:
-       la ejecución sigue suspendida por el Decreto 759/2025; un juez declaró inconstitucional esa suspensión y el
-       Gobierno apeló.</p>
-    {% endif %}
   </div>
   <script>
   (() => {
@@ -265,6 +249,20 @@
         <p>La ley no dice de qué mes es «el monto». Septiembre es el monto que regía después del aumento de mitad de 2024.
            Partiendo del promedio de todo 2024 ({{ num(ej, "arts34-partida-b") }} por mes), correspondían
            {{ num(ej, "arts34-exigido-b") }}, y lo transferido queda en <span class="rojo">{{ num(ej, "arts34-relacion-b") }}</span>.</p></details>
+      <details class="mas"><summary>¿Por qué 2025, si la ley es de octubre?</summary>
+        <p>Los arts. 3 y 4 mandan actualizar estos montos «desde el 1º de enero hasta el 31 de diciembre de 2025»: es lo
+           que la ley manda reconocer por ese año, no lo que se debía mes a mes. Como los aumentos se toman «a cuenta», la
+           comparación que fija la ley es la del año completo. El Poder Ejecutivo suspendió la ejecución de la ley
+           (<a href="{{ evento }}ley-27795-promulgacion" hx-get="{{ evento }}ley-27795-promulgacion" hx-target="#ficha-contenido">Decreto 759/2025</a>);
+           un juez declaró inconstitucional esa suspensión y el Gobierno apeló
+           (<a href="{{ evento }}ley-27795-fallo-fondo" hx-get="{{ evento }}ley-27795-fallo-fondo" hx-target="#ficha-contenido">octubre de 2026</a>).</p></details>
+      {% if ej.detalle.ventana_actual %}
+      <details class="mas"><summary>¿Y {{ actual }}?</summary>
+        <p>Ninguno de los 10 artículos de la ley fija cuánto corresponde en {{ actual }}: los que hablan de montos (3, 4 y 9)
+           se refieren a 2025. Por eso {{ actual }} va en gris: la referencia aplica la misma regla del art. 4 (actualizar
+           cada dos meses por inflación) y llega hasta {{ ej.detalle.ventana_actual|replace("enero a ", "") }}, el último mes completo.
+           <a href="{{ evento }}estado-ley-27795-octubre-2026" hx-get="{{ evento }}estado-ley-27795-octubre-2026" hx-target="#ficha-contenido">Estado de la ley hoy</a>.</p></details>
+      {% endif %}
       <details class="mas"><summary>Ver la cuenta por bimestre</summary>
         <table class="tabla">
           <thead><tr><th>2025</th><th>Según la ley</th><th>Se transfirió</th></tr></thead>
