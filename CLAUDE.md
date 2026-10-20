@@ -49,7 +49,7 @@ Cinco secciones, más una función diferencial:
 
 - **Plata:** crédito asignado a la UNR por año, su participación en el total del sistema universitario, y la ejecución cuando exista. Con selector de lente. Incluye el control cruzado entre el anexo de la ley y la resolución de distribución propia de la UNR, y el desglose interno de 2023, que también rige en 2024 y 2025 por prórroga (ADR 0007). Los hitos de la negociación presupuestaria se marcan sobre el gráfico.
 - **Salarios:** salario básico del cargo testigo (profesor adjunto, dedicación exclusiva, sin antigüedad), mes a mes, contra el IPC y contra lo que exige el art. 5 de la Ley 27.795, con los eventos paritarios (ADR 0003, 0004 y 0015).
-- **Gente:** ingresantes, estudiantes, egresados y docentes, con su período y fuente. Por ahora en valores absolutos; la tasa de egreso con desfase se incorpora si se consiguen los ingresantes desde 2016 (ADR 0009).
+- ~~**Gente:**~~ graduados y alumnos quedaron fuera del sitio (ADR 0024).
 - **Ley 27.795:** lo que exige cada artículo (arts. 3, 4 y 5) contra lo que salió, para la UNR; estimaciones de costo de terceros como secundarias; línea de tiempo del estado de la ley (ADR 0014).
 - **Control:** quién audita a la universidad (AGN, SIGEN, Unidad de Auditoría Interna) y una línea de tiempo de hechos documentados, incluida la negociación sobre el financiamiento (ADR 0005).
 - **Funcionamiento (FCEIA):** concursos docentes, proyectos de investigación y tesinas, a partir de la API de la FCEIA (sección 5.4).

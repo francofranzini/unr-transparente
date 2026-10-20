@@ -16,8 +16,8 @@
     <p>Reunimos {{ d.meses_con_grilla }} instructivos, de {{ d.desde }} a {{ d.hasta_grilla }}. A veces un instructivo
        corrige lo que anunciaba el anterior; en ese caso usamos el más reciente.
        {%- for mes, _, desde in confirmados %} En {{ mes }} no hubo instructivo nuevo: el de {{ desde }} ya fijaba los valores hasta el mes siguiente.{% endfor %}
-       {%- if sin_confirmar %} Para {{ sin_confirmar|map(attribute=0)|join(" y ") }} la UNR todavía no publicó instructivo,
-       así que usamos el de {{ sin_confirmar[0][2] }} y lo marcamos con línea punteada en el gráfico.{% endif %}</p>
+       {%- if sin_confirmar %} Para {{ sin_confirmar|map(attribute=0)|join(" y ") }} usamos el de {{ sin_confirmar[0][2] }},
+       con línea punteada en el gráfico.{% endif %}</p>
   </div>
 
   <div class="paso">

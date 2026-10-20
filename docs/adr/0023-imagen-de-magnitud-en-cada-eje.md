@@ -49,3 +49,7 @@ Las fichas de las cifras que aplican la ley no citaban la ley: mostraban los dat
 ## Actualización (2026-10-20): el calendario se reemplaza por un billete
 
 El calendario de 30 días quedó recargado. Se reemplaza por un **billete**: el contorno punteado es el sueldo de noviembre de 2023; el billete azul se achica a lo que compra el sueldo del mes (agosto de 2026: 75,0 %); en el hueco va lo que falta (−25,0 %), en rojo desde noviembre de 2025 y en gris antes. La animación muestra cómo se achica; el deslizador recorre los meses. Cifras por mes con ficha: `compra-AAAA-MM` y `poder-AAAA-MM` (esta con la norma del art. 5 desde que rige). La proporción es directa (ancho = salario real ÷ salario real de nov-2023), así que la imagen no exagera.
+
+## Actualización (2026-10-20): la ficha lleva al sitio oficial
+
+Cuando el documento de una ficha es un archivo de datos (el ZIP de Presupuesto Abierto, el JSON de la API de series del IPC), el enlace principal lleva a la página oficial (Presupuesto Abierto: datos abiertos; INDEC: IPC) y la descarga queda al lado como «descargar los datos». Quien verifica quiere ver el sitio de la fuente, no bajar un CSV. La tabla de equivalencias está en `app/formato.py` (`SITIOS`).

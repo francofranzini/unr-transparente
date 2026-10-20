@@ -53,3 +53,7 @@ Lo que la oración no dice va en el sitio: qué transfiere la Nación, qué hace
 - **«Reproducí el titular» queda fuera** del proyecto. El punto 1 de este ADR deja de remitir a esa función; las otras lentes se explican en los desplegables de cada eje.
 - **Transferencias:** «¿De dónde sale este número?» sigue la selección (Todas/UNR × 2025/2026): la cuenta, los desplegables y las tablas son los del número que se está viendo. La UNR tiene ahora los mismos detalles que el sistema (bimestres, mes a mes).
 - Se dejan como están: el título de Transferencias para 2026, la cobertura de la lente (arts. 3, 4 y 5 son un recorte de lo que se presenta) y el peso visual de las mejoras.
+
+## Actualización (2026-10-20): fuera Graduación
+
+Se quita la sección Graduación (alumnos y egresados de la UNR): no se mide contra la ley y sus egresados eran fuente secundaria. Salen `_seccion_graduacion.html`, `eje_graduacion`, `data/alumnos.csv`, `data/egresados.csv` y su test (`test_graduacion_no_calcula_tasas`, que probaba solo ese eje). «Cómo leer los números» pasa a ser la 05. `/graduacion` deja de existir.

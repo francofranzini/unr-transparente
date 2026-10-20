@@ -123,3 +123,14 @@ def test_las_cifras_de_la_ley_citan_la_norma(cliente, ficha, norma):
 def test_antes_de_que_rija_la_ley_no_hay_norma(cliente):
     # Mayo de 2025: pérdida de poder de compra, pero el art. 5 todavía no regía.
     assert "<dt>Norma</dt>" not in cliente.get("/ficha/cifra/salario/poder-2025-05", headers={"HX-Request": "true"}).text
+
+
+@pytest.mark.parametrize("ficha, sitio", [
+    ("ejecucion/arts34-transferido", "https://www.presupuestoabierto.gob.ar/sici/datos-abiertos"),
+    ("ejecucion/arts34-ipc-art3", "https://www.indec.gob.ar/indec/web/Nivel4-Tema-3-5-31"),
+])
+def test_la_ficha_lleva_al_sitio_oficial_y_no_a_una_descarga(cliente, ficha, sitio):
+    # El documento abre la página oficial; el archivo de datos queda como «descargar los datos».
+    texto = cliente.get(f"/ficha/cifra/{ficha}", headers={"HX-Request": "true"}).text
+    documento = re.search(r'<a href="([^"]+)" rel="noopener" target="_blank">', texto.split("<dt>Documento</dt>")[1])
+    assert documento[1] == sitio and "descargar los datos" in texto

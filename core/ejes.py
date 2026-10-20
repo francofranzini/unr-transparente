@@ -383,7 +383,7 @@ def _aviso_vigencia(punto: lentes.Punto) -> str:
     mes, desde = mes_largo(punto.periodo), mes_largo(punto.fuentes[0].periodo)
     if punto.vigencia == Vigencia.CONFIRMADA:
         return f"Para {mes} rige la escala de {desde}: un documento confirma que no hubo cambios."
-    return (f"La UNR todavía no publicó la escala de {mes}. Usamos la de {desde}, la última disponible; "
+    return (f"No hay escala publicada para {mes}. Usamos la de {desde}, la última disponible; "
             f"si hubo un aumento en el medio, este número cambia.")
 
 
@@ -482,22 +482,6 @@ def eje_control(repo: Repositorio) -> Eje:
     return eje
 
 
-def eje_graduacion(repo: Repositorio) -> Eje:
-    eje = Eje("graduacion", "Graduación", "¿Cuántos estudian y se reciben?")
-    for dato in sorted(repo.buscar(entidad="UNR", indicador="egresados"),
-                       key=lambda d: (d.dimensiones.get("nivel", ""), d.periodo)):
-        nivel = dato.dimensiones["nivel"]
-        eje.cifras.append(_directa(f"egresados-{nivel}-{dato.periodo}".lower().replace(" ", "-"),
-                                   f"Egresados {dato.periodo} — {nivel}", dato))
-    for dato in repo.buscar(entidad="UNR", indicador="alumnos"):
-        nivel = dato.dimensiones["nivel"]
-        eje.cifras.append(_directa(f"alumnos-{nivel}-{dato.periodo}".lower().replace("/", "-"),
-                                   f"Alumnos {dato.periodo} — {nivel}", dato))
-    eje.supuestos = ["Valores absolutos: no hay tasa de egreso hasta tener ingresantes por cohorte (ADR 0009)."]
-    eje.pendientes = ["Ingresantes de la UNR desde 2016, para la tasa de egreso con desfase n."]
-    return eje
-
-
 # Sellos del recorrido «hecho por hecho» (ADR 0031): nombran el acto, no lo califican, y se reparten entre
 # Congreso, Poder Ejecutivo y Justicia. El detalle evita leer el sello fuera de contexto; sin cifras, que van con ficha.
 SELLOS_LEY = {
@@ -537,7 +521,6 @@ CONSTRUCTORES = {
     "ley": eje_ley,
     "ejecucion": eje_ejecucion,
     "control": eje_control,
-    "graduacion": eje_graduacion,
 }
 
 
