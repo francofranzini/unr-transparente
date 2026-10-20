@@ -5,6 +5,8 @@
 #   filtro  — expresión regular sobre el título o la fila (opcional)
 #   bloque  — etiqueta HTML que separa filas, p. ej. "tr", para tomar el texto de la fila como título (enlaces)
 #   ignorar — enlaces ya revisados que no corresponden a un hecho nuevo. Anotar por qué, en un comentario.
+#   carga   — qué hace scripts/actualizar_ley.py (ADR 0033): norma o votacion (hito oficial que se publica solo),
+#             prensa (nota que se suma sola a un hito, con `medio`), o aviso (solo se informa en el issue; por defecto).
 #
 # Un enlace citado en cualquier evento de data/eventos/ ya no es novedad. En los feeds, solo cuenta lo publicado desde
 # la fecha del evento de estado del eje (la última revisión cargada).
@@ -18,6 +20,7 @@
   url: https://servicios.infoleg.gob.ar/infolegInternet/verVinculos.do?modo=2&id=419006
   metodo: enlaces
   patron: "verNorma\\.do.*\\?id=\\d+"
+  carga: norma
   ignorar:
     - https://servicios.infoleg.gob.ar/infolegInternet/verNorma.do?id=417371  # Dto. 647/2025: cargado (ley-27795-veto, BO)
     - https://servicios.infoleg.gob.ar/infolegInternet/verNorma.do?id=419007  # Dto. 759/2025: cargado (ley-27795-promulgacion, BO)
@@ -30,6 +33,7 @@
   bloque: tr
   patron: "/votaciones/detalleActa/\\d+"
   filtro: "27\\.795|financiamiento\\s+(de\\s+la\\s+educaci[oó]n\\s+)?universitari"
+  carga: votacion
   ignorar: []
 
 - id: cin-noticias
@@ -54,3 +58,15 @@
   url: "https://news.google.com/rss/search?q=%22ley+de+financiamiento+universitario%22+(juez+OR+C%C3%A1mara+OR+Corte+OR+decreto+OR+Senado+OR+Diputados)&hl=es-419&gl=AR&ceid=AR:es-419"
   metodo: feed
   ignorar: []
+
+# --- Medios: sus notas se suman solas a «Cómo lo contaron» de un hito (carga: prensa, ADR 0033) ----------------------
+# Feeds de sección o mapas de noticias (news sitemaps, últimas 48 h): los de portada rotan en pocas horas y pierden notas.
+# Líneas editoriales distintas. Pendiente: Página/12, Clarín y Perfil con una sección o un mapa que traiga estas notas.
+
+- {id: rss-infobae-politica, eje: ley, nombre: "Infobae — Política (RSS)", medio: "Infobae", url: "https://www.infobae.com/arc/outboundfeeds/rss/category/politica/", metodo: feed, carga: prensa}
+- {id: rss-la-nacion-politica, eje: ley, nombre: "La Nación — Política (RSS)", medio: "La Nación", url: "https://www.lanacion.com.ar/arc/outboundfeeds/rss/category/politica/", metodo: feed, carga: prensa}
+- {id: sitemap-ambito, eje: ley, nombre: "Ámbito (mapa de noticias)", medio: "Ámbito", url: "https://www.ambito.com/sitemap-news.xml", metodo: feed, carga: prensa}
+- {id: sitemap-el-destape, eje: ley, nombre: "El Destape (mapa de noticias)", medio: "El Destape", url: "https://www.eldestapeweb.com/sitemap-news.xml", metodo: feed, carga: prensa}
+- {id: sitemap-la-capital, eje: ley, nombre: "La Capital (mapa de noticias)", medio: "La Capital", url: "https://www.lacapital.com.ar/sitemap-news.xml", metodo: feed, carga: prensa}
+- {id: rss-clarin, eje: ley, nombre: "Clarín (RSS)", medio: "Clarín", url: "https://www.clarin.com/rss/lo-ultimo/", metodo: feed, carga: prensa}
+- {id: rss-perfil, eje: ley, nombre: "Perfil (RSS)", medio: "Perfil", url: "https://www.perfil.com/feed", metodo: feed, carga: prensa}

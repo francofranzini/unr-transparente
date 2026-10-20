@@ -34,7 +34,8 @@ def test_ninguna_noticia_es_anterior_al_hecho(evento):
     assert anteriores == [], f"{evento.id} ({evento.fecha}): notas anteriores al hecho"
 
 
-def test_un_solo_estado_y_al_dia_con_el_ultimo_hecho():
+def test_un_solo_estado_y_el_atraso_se_muestra():
+    # El resumen lo escribe una persona; los hechos pueden cargarse solos después (ADR 0033). Si el resumen quedó atrás,
+    # la página tiene que decirlo (se verifica en test_app.py).
     estados = [e for e in EVENTOS if e.tipo == "estado"]
     assert len(estados) == 1, "«Dónde está hoy» sale de un único evento de estado: reemplazarlo, no sumar otro"
-    assert estados[0].fecha >= max(e.fecha for e in HITOS), "el evento de estado es anterior al último hecho cargado"

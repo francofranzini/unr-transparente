@@ -40,6 +40,7 @@ Reemplazar en cada evento `documento`, `url`, `pagina` y `tipo_fuente: primaria`
 
 ### 5. Coordinar
 - [ ] El art. 8 de la ley asigna a la AGN el control de las universidades. Acordar con Tero si se carga como evento con `ejes: [ley, control]` y en qué archivo.
+- [ ] Pedir a Fran: Actions con permiso de escritura (el vigía hace commit en `main`), conectar el repo a Vercel y acordar el ADR 0033.
 - [ ] Pedir a Fran que habilite GitHub Actions en el repositorio y marque `validar.yml` como obligatorio para fusionar en `main`.
 - [ ] Proponer a Fran y Tero sumar sus fuentes a `data/fuentes.yaml` (Presupuesto Abierto, AGN, SIGEN) con su `eje`.
 - [x] El acuerdo salarial del 10-jun-2026 aparece en `ley.yaml` y en `salario.yaml` (instructivo). Consistentes: 1.520.087,32 ÷ 1.252.853,64 = +21,33 %.
@@ -58,6 +59,13 @@ Reemplazar en cada evento `documento`, `url`, `pagina` y `tipo_fuente: primaria`
 - Reglas de verificación como tests (`tests/test_eventos_ley.py`). Al escribirlas apareció un error: el hito del 30-sep tenía las tres notas del 22-sep y le faltaba la de Minutouno. Corregido.
 - «Dónde está hoy · revisado el …», calculado desde el evento de estado.
 - Vigía de fuentes con tests sin red (`tests/test_vigia.py`), control de enlaces (`scripts/verificar_enlaces.py`) y copias en la Wayback Machine (`scripts/archivar_fuentes.py`, `data/archivo_web.yaml`: 76 de 92 enlaces, con todas las fichas de los eventos).
+
+**2026-10-20** (rama `feat/automate-news`, ADR 0033, propuesta)
+- Carga automática de lo verificable: normas de InfoLEG y actas del Senado (hitos `primaria`), notas de prensa que coinciden con un único hito (`data/vigia/claves_ley.yaml`) y la fecha de consulta. Workflow cada 3 horas: si la validación y los tests pasan, commit en `main`; Vercel publica (`vercel.json`, `api/index.py`).
+- «Dónde está hoy · resumen del … · fuentes consultadas el …» y aviso automático de hechos posteriores al resumen.
+- Cargado el hecho del 20-oct-2026 (`ley-27795-camara-vigencia-cautelar`, secundaria): la Sala III concedió la apelación del Gobierno sobre la vigencia de la cautelar; el mismo día Santilli pidió suspender las multas. Infobae, El Destape y Ámbito; sello «Apelación concedida»; claves en `data/vigia/claves_ley.yaml` para que las notas siguientes se sumen solas. «Dónde está hoy» actualizado al 20-oct.
+- [ ] Pasar ese hito a primaria cuando se publique el texto de la resolución del 20-oct-2026.
+- Tipos de hecho legibles en la ficha y con peso (ADR 0034): «Dónde está hoy» destaca el hecho de más peso desde el resumen, que es el mismo que cierra la línea de tiempo; una sola fecha si el resumen está al día.
 
 **Pendiente detectado**
 - Media sanción en Diputados (6-ago-2025, 158-75-5): hoy está en la nota de la sanción; podría ser un hito propio.

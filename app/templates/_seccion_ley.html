@@ -3,10 +3,29 @@
   {{ encabezado("03", "Ley 27.795", "¿En qué estado está la ley de financiamiento universitario?") }}
   {% if hoy %}
   <div class="hoy revelar">
-    <small>Dónde está hoy{% if el.detalle.revisado %} · revisado el {{ el.detalle.revisado }}{% endif %}</small>
-    <p>{{ hoy_texto[0]|upper }}{{ hoy_texto[1:] }}.</p>
+    {# Una sola fecha si el resumen está al día con la consulta de fuentes; las dos, si el resumen quedó atrás (ADR 0033). #}
+    {% if el.detalle.consultado and el.detalle.consultado != el.detalle.resumen %}
+    <small>Dónde está hoy · resumen del {{ el.detalle.resumen }} · fuentes consultadas el {{ el.detalle.consultado }}</small>
+    {% else %}
+    <small>Dónde está hoy · {{ el.detalle.resumen }}</small>
+    {% endif %}
+    {% set d = el.detalle.destacado %}
+    {% set resumen_texto = hoy_texto[0]|upper ~ hoy_texto[1:] %}
+    {% if d %}
+    {# El hecho de más peso desde el resumen va primero; el resumen, debajo (ADR 0034). #}
+    <p>{{ d.titulo }}.</p>
+    <a class="enlace" href="/ficha/evento/{{ d.id }}" hx-get="/ficha/evento/{{ d.id }}" hx-target="#ficha-contenido">{{ el.detalle.destacado_tipo }} · {{ fmt.fecha_evento(d.fecha) }} · De dónde sale este dato →</a>
+    <a class="enlace" href="#hito-{{ d.id }}">Ver en la línea de tiempo ↓</a>
+    <p class="hoy-resumen"><strong>{{ "Resumen de la situación" if d.fecha == hoy.fecha else "Resumen del " ~ el.detalle.resumen ~ ", anterior a este hecho" }}:</strong> {{ resumen_texto }}. <a href="/ficha/evento/{{ hoy.id }}" hx-get="/ficha/evento/{{ hoy.id }}" hx-target="#ficha-contenido">Ver ficha →</a></p>
+    {% else %}
+    <p>{{ resumen_texto }}.</p>
     <a class="enlace" href="/ficha/evento/{{ hoy.id }}" hx-get="/ficha/evento/{{ hoy.id }}" hx-target="#ficha-contenido">De dónde sale este dato →</a>
+    {% endif %}
   </div>
+  {% set nuevos = el.detalle.posteriores %}
+  {% if nuevos|length > 1 %}
+  <p class="aviso">Desde el resumen hubo {{ nuevos|length }} hechos nuevos; están al final de la línea de tiempo.</p>
+  {% endif %}
   {% endif %}
   {% include "_cronologia_ley.html" %}
 </section>
