@@ -186,6 +186,11 @@ def bimestres_art4(partida: Resultado, ipc: dict[str, Dato]) -> list[Resultado]:
     return bimestres
 
 
+def meses_art4(partida: Resultado, ipc: dict[str, Dato]) -> list[Resultado]:
+    """Lo que correspondía en cada mes de 2025: la mitad de su bimestre (el monto es el mismo en los dos meses)."""
+    return [Resultado(b.valor / 2, b.fuentes) for b in bimestres_art4(partida, ipc) for _ in range(2)]
+
+
 def exigido_arts_3_4(partida: Resultado, ipc: dict[str, Dato]) -> Resultado:
     """Total que correspondía transferir en 2025 según los arts. 3 y 4."""
     bimestres = bimestres_art4(partida, ipc)

@@ -11,9 +11,120 @@
      durante 2025 (arts. 3 y 4 de la Ley 27.795). Si se parte del promedio mensual de 2024 en lugar del monto de
      septiembre de 2024, la ley exigía {{ num(ej, "arts34-exigido-b") }}: {{ num(ej, "arts34-brecha-b") }} más que lo
      transferido.</p>
-  <p class="aviso">Un caso: a la Universidad Nacional de Rosario (UNR) la ley le exigía transferir
-     {{ num(ej, "unr-arts34-exigido") }} y recibió {{ num(ej, "unr-arts34-transferido") }}, es decir
-     {{ num(ej, "unr-arts34-brecha") }} más.</p>
+
+  {# El caso de la UNR: gráfico acumulado con selector (ADR 0022) #}
+  <p class="sec-numero revelar">El caso de la UNR</p>
+  <h3 class="revelar">¿Y a la Universidad Nacional de Rosario?</h3>
+  <div class="datos revelar">
+    <div class="dato dato-grande"><small>La ley le exigía más que lo recibido</small>{{ num(ej, "unr-arts34-brecha", true) }}</div>
+    <div class="dato"><small>La ley exigía</small>{{ num(ej, "unr-arts34-exigido", true) }}</div>
+    <div class="dato"><small>Recibió</small>{{ num(ej, "unr-arts34-transferido", true) }}</div>
+    <div class="dato"><small>Todo el sistema</small>{{ num(ej, "arts34-brecha", true) }}</div>
+  </div>
+
+  {% set formatos = {"ancho": {"w": 720, "h": 300, "izq": 72, "der": 128, "sup": 16, "inf": 28},
+                     "angosto": {"w": 360, "h": 280, "izq": 58, "der": 82, "sup": 12, "inf": 26}} %}
+  {% set entidades = [("unr-arts34-", "UNR"), ("arts34-", "Todas las universidades")] %}
+  <figure class="grafico revelar" data-grafico-arts34>
+    <div class="filtros" role="group" aria-label="Elegir qué mostrar en el gráfico">
+      <span class="filtros-rotulo">Ver:</span>
+      {% for prefijo, nombre in entidades %}
+      <button type="button" class="actor actor-otro" data-entidad="{{ prefijo }}" aria-pressed="{{ 'true' if loop.first else 'false' }}"><i></i>{{ nombre }}</button>
+      {% endfor %}
+    </div>
+    <figcaption>Lo que la ley exigía y lo que se transfirió, acumulado mes a mes en 2025, en millones de pesos de cada mes.
+       Gastos de funcionamiento, hospitales, ciencia y técnica y extensión.</figcaption>
+    {% for prefijo, nombre in entidades %}
+    {% set serie = ej.detalle.acumulado[prefijo] %}
+    {% set maximo = serie|map(attribute="exigido")|max %}
+    {% set pasos = [500, 1000, 2500, 5000, 10000, 25000, 50000, 100000, 150000, 250000]|select("ge", maximo / 5)|list %}
+    {% set paso = pasos[0] %}
+    {% set tope = paso * ((maximo // paso) + 1) %}
+    <div data-panel="{{ prefijo }}"{% if not loop.first %} hidden{% endif %}>
+      {% for formato, f in formatos.items() %}
+      {% set uw = f.w - f.izq - f.der %}{% set uh = f.h - f.sup - f.inf %}
+      {% set ns = namespace(exigido="", transferido="", ida="", vuelta="", puntos=[]) %}
+      {% for p in serie %}
+        {% set x = (f.izq + uw * loop.index0 / 11)|round(1) %}
+        {% set ye = (f.sup + uh * (1 - p.exigido / tope))|round(1) %}
+        {% set yt = (f.sup + uh * (1 - p.transferido / tope))|round(1) %}
+        {% set ns.exigido = ns.exigido ~ ("M" if loop.first else " L") ~ x ~ "," ~ ye %}
+        {% set ns.transferido = ns.transferido ~ ("M" if loop.first else " L") ~ x ~ "," ~ yt %}
+        {% set ns.ida = ns.ida ~ " " ~ x ~ "," ~ ye %}
+        {% set ns.vuelta = x ~ "," ~ yt ~ " " ~ ns.vuelta %}
+        {% set ns.puntos = ns.puntos + [{"x": x, "ye": ye, "yt": yt, "mes": p.mes, "exigido": p.exigido, "transferido": p.transferido}] %}
+      {% endfor %}
+      {% set fin = ns.puntos[-1] %}
+      <div class="grafico-lienzo solo-{{ formato }}" data-puntos='{{ ns.puntos|tojson }}'>
+        <svg viewBox="0 0 {{ f.w }} {{ f.h }}" role="img"
+             aria-label="{{ nombre }}: lo exigido por los arts. 3 y 4 y lo transferido, acumulado por mes en 2025. Detalle en la tabla de abajo.">
+          {% for i in range(0, (tope // paso)|int + 1) %}
+            {% set yv = (f.sup + uh * (1 - i * paso / tope))|round(1) %}
+            <line class="grilla" x1="{{ f.izq }}" x2="{{ f.w - f.der }}" y1="{{ yv }}" y2="{{ yv }}"/>
+            <text class="eje-texto" x="{{ f.izq - 8 }}" y="{{ yv + 4 }}" text-anchor="end">{{ "0" if i == 0 else "$ " ~ "{:,.0f}".format(i * paso).replace(",", ".") ~ " M" }}</text>
+          {% endfor %}
+          {% for p in ns.puntos %}{% if formato == "ancho" or loop.index0 is even %}
+            <text class="eje-texto" x="{{ p.x }}" y="{{ f.h - 8 }}" text-anchor="middle">{{ p.mes[:3] }}</text>
+          {% endif %}{% endfor %}
+          <polygon points="{{ ns.ida }} {{ ns.vuelta }}" fill="var(--serie-2)" fill-opacity=".14"/>
+          <path class="linea exigido" d="{{ ns.exigido }}"/>
+          <path class="linea pagado" d="{{ ns.transferido }}"/>
+          <circle class="punto exigido" cx="{{ fin.x }}" cy="{{ fin.ye }}" r="4"/>
+          <circle class="punto pagado" cx="{{ fin.x }}" cy="{{ fin.yt }}" r="4"/>
+          <text class="rotulo" x="{{ fin.x + 10 }}" y="{{ fin.ye + 4 }}">Exigía la ley</text>
+          <text class="rotulo" x="{{ fin.x + 10 }}" y="{{ fin.yt + 4 }}">Se transfirió</text>
+          <line class="cruz" x1="0" x2="0" y1="{{ f.sup }}" y2="{{ f.h - f.inf }}" visibility="hidden"/>
+          <rect class="zona" x="{{ f.izq }}" y="0" width="{{ uw }}" height="{{ f.h }}"/>
+        </svg>
+        <div class="tooltip" hidden></div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+    <p class="leyenda"><span class="clave exigido"></span>Lo que exigía la ley
+      <span class="clave pagado"></span>Lo que se transfirió (devengado)</p>
+  </figure>
+  <script>
+  (() => {
+    const fig = document.currentScript.previousElementSibling;
+    const botones = [...fig.querySelectorAll("[data-entidad]")];
+    botones.forEach((b) => b.addEventListener("click", () => {
+      botones.forEach((o) => o.setAttribute("aria-pressed", o === b ? "true" : "false"));
+      fig.querySelectorAll("[data-panel]").forEach((p) => { p.hidden = p.dataset.panel !== b.dataset.entidad; });
+    }));
+    const m = (v) => "$ " + Math.round(v).toLocaleString("es-AR") + " M";
+    fig.querySelectorAll(".grafico-lienzo").forEach((lienzo) => {
+      const svg = lienzo.querySelector("svg"), zona = lienzo.querySelector(".zona"), cruz = lienzo.querySelector(".cruz");
+      const tip = lienzo.querySelector(".tooltip"), puntos = JSON.parse(lienzo.dataset.puntos), vb = svg.viewBox.baseVal;
+      zona.addEventListener("pointermove", (ev) => {
+        const r = svg.getBoundingClientRect(), xv = (ev.clientX - r.left) * vb.width / r.width;
+        const p = puntos.reduce((a, b) => Math.abs(b.x - xv) < Math.abs(a.x - xv) ? b : a);
+        cruz.setAttribute("x1", p.x); cruz.setAttribute("x2", p.x); cruz.setAttribute("visibility", "visible");
+        const falta = p.exigido - p.transferido;
+        tip.innerHTML = `<strong>Hasta ${p.mes}</strong><br>Exigía la ley: ${m(p.exigido)}<br>Se transfirió: ${m(p.transferido)}` +
+          `<br>Diferencia: ${m(falta)} (${(falta / p.transferido * 100).toLocaleString("es-AR", {maximumFractionDigits: 1})} % más)`;
+        tip.hidden = false;
+        tip.style.left = Math.max(0, Math.min(p.x * r.width / vb.width + 12, r.width - tip.offsetWidth)) + "px";
+      });
+      zona.addEventListener("pointerleave", () => { tip.hidden = true; cruz.setAttribute("visibility", "hidden"); });
+    });
+  })();
+  </script>
+  <details class="mas-info">
+    <summary>Ver los números mes a mes</summary>
+    <table class="tabla">
+      <thead><tr><th>Acumulado de 2025</th><th>UNR: exigía</th><th>UNR: recibió</th><th>Todas: exigía</th><th>Todas: recibieron</th></tr></thead>
+      <tbody>
+        {% for mm in ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"] %}
+        <tr><th>{{ ej.detalle.acumulado["arts34-"][loop.index0].mes }}</th>
+          <td data-r="UNR: exigía">{{ num(ej, "unr-arts34-acum-exigido-" ~ mm) }}</td>
+          <td data-r="UNR: recibió">{{ num(ej, "unr-arts34-acum-transferido-" ~ mm) }}</td>
+          <td data-r="Todas: exigía">{{ num(ej, "arts34-acum-exigido-" ~ mm) }}</td>
+          <td data-r="Todas: recibieron">{{ num(ej, "arts34-acum-transferido-" ~ mm) }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </details>
 
   <details class="mas-info">
     <summary>¿De dónde sale este número?</summary>

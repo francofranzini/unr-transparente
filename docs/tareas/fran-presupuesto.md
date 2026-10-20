@@ -52,11 +52,12 @@ Leer antes: [`docs/ESTANDAR.md`](../ESTANDAR.md), ADR 0012, 0013, 0014 y 0015.
 - En 2024 parte de las partidas se financió con «Crédito Interno»; se suman todas las fuentes y la nota de cada fila lo detalla.
 - El 88 % del presupuesto 2026 pasó a un «ver más», ahora con las 61 universidades primero.
 
+- **El caso de la UNR** tiene bloque propio con gráfico acumulado de 2025 (exigido contra transferido), selector UNR / todas las universidades, tooltip por mes y tabla mes a mes con fichas (ADR 0022). Revisado en claro, oscuro y a 390 px de ancho.
+
 **Pendiente**
 - Tarea 5 (reverificar `credito_asignado_ley.csv` contra los PDF oficiales, y el acto que creó el crédito de «Universidades sin Discriminar» 2026).
-- Revisar la página en modo claro, oscuro y en celular.
 
 ## Propuestas de presentación
 
-- Un gráfico de barras por bimestre (exigido contra transferido) en lugar de la tabla, con los colores ya validados del gráfico de Salario (pagado azul, exigido naranja).
+- Si se adopta el gráfico del ADR 0022, mover su geometría a `app/graficos.py` y el sombreado a `estilo.css` (archivos congelados).
 - Un selector de universidad para la línea de detalle: los datos mensuales por universidad están en Presupuesto Abierto.

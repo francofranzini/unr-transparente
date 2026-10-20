@@ -74,3 +74,13 @@ def test_arts_3_4_de_la_unr_como_detalle(ejes):
     # Partida × 2 × 1,319675 × (1 + IPC feb/dic + abr/dic + jun/dic + ago/dic + oct/dic) = 27.267 millones.
     assert eje.cifra("unr-arts34-exigido").valor.quantize(Decimal("1E6")) == Decimal("27267E6")
     assert eje.cifra("unr-arts34-brecha").valor.quantize(Decimal("0.1")) == Decimal("73.3")
+
+
+def test_acumulado_mensual_cierra_en_el_total_anual(ejes):
+    eje = ejes["ejecucion"]
+    for prefijo in ("arts34-", "unr-arts34-"):
+        centavo = Decimal("0.01")  # el reparto por mes divide por 2: se compara al centavo
+        assert (eje.cifra(f"{prefijo}acum-exigido-12").valor.quantize(centavo)
+                == eje.cifra(f"{prefijo}exigido").valor.quantize(centavo))
+        assert eje.cifra(f"{prefijo}acum-transferido-12").valor == eje.cifra(f"{prefijo}transferido").valor
+        assert len(eje.detalle["acumulado"][prefijo]) == 12

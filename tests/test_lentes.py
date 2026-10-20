@@ -126,3 +126,11 @@ def test_transferido_arts_3_4_solo_el_anio_y_las_actividades():
     devengado = [_devengado("2025-01", "700", "14"), _devengado("2025-12", "800", "25"),
                  _devengado("2025-03", "9000", "13"), _devengado("2024-12", "999", "14")]
     assert lentes.transferido_arts_3_4(devengado, "2025").valor == Decimal("1500")
+
+
+def test_meses_art4_reparten_cada_bimestre_en_dos():
+    # Mismos factores que el caso anterior: 150, 150, 165, 165, ..., 225, 225; suman 2.250.
+    partida = lentes.partida_arts_3_4([_devengado("2024-09", "100")], "nivel_sep_2024")
+    meses = lentes.meses_art4(partida, _ipc_arts_3_4())
+    assert [r.valor for r in meses[:4]] == [Decimal("150"), Decimal("150"), Decimal("165"), Decimal("165")]
+    assert len(meses) == 12 and sum(r.valor for r in meses) == Decimal("2250")

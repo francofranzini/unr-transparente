@@ -164,6 +164,32 @@ def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str
                                 f"{quien} — Exigido menos transferido en 2025 (partida: {nombre})",
                                 exigido.valor - transferido.valor, "ARS corrientes", "2025",
                                 exigido.fuentes + transferido.fuentes, calculo="Exigido 2025 − devengado 2025"))
+
+    # Acumulado mes a mes de 2025, para el gráfico y su tabla (cada punto es una Cifra con ficha).
+    partida = lentes.partida_arts_3_4(devengado, "nivel_sep_2024")
+    meses = lentes._meses("2025-01", "2025-12")
+    acum_exigido = acum_transferido = Decimal(0)
+    fuentes_exigido: tuple[Dato, ...] = ()
+    fuentes_transferido: tuple[Dato, ...] = ()
+    serie = []
+    for mes, exigido_mes in zip(meses, lentes.meses_art4(partida, ipc)):
+        datos_mes = tuple(d for d in transferido.fuentes if d.periodo == mes)
+        acum_exigido += exigido_mes.valor
+        acum_transferido += sum(d.valor for d in datos_mes)
+        fuentes_exigido = tuple({d.id: d for d in fuentes_exigido + exigido_mes.fuentes}.values())
+        fuentes_transferido += datos_mes
+        hasta = f"enero a {MESES_LARGOS[int(mes[5:]) - 1]} de 2025" if mes != "2025-01" else "enero de 2025"
+        eje.cifras.append(Cifra(f"{prefijo}acum-exigido-{mes[5:]}", f"{quien} — Exigido acumulado, {hasta}",
+                                acum_exigido, "ARS corrientes", mes, fuentes_exigido,
+                                calculo="Suma de lo que correspondía cada mes: partida de septiembre de 2024 × IPC "
+                                        "acumulado del art. 3 y de los bimestres del art. 4"))
+        eje.cifras.append(Cifra(f"{prefijo}acum-transferido-{mes[5:]}", f"{quien} — Devengado acumulado, {hasta}",
+                                acum_transferido, "ARS corrientes", mes, fuentes_transferido,
+                                calculo=f"Suma de {len(fuentes_transferido)} registros mensuales"))
+        serie.append({"mes": mes_legible(mes), "exigido": float(acum_exigido) / 1e6,
+                      "transferido": float(acum_transferido) / 1e6})
+    eje.detalle.setdefault("acumulado", {})[prefijo] = serie
+
     if not detalle:
         return
 

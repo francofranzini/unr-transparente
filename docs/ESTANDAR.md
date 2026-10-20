@@ -58,6 +58,7 @@ Se usan tal como están; no se crean clases ni estilos nuevos.
 | Línea de tiempo simple | `{{ linea_tiempo(eje, 4) }}` |
 | Pasos de un artículo | `<section class="articulo"><div class="paso"><h3><span>1</span>Título</h3><p>…</p></div></section>` |
 | Enlace a la ficha de un evento | `<a href="/ficha/evento/ID" hx-get="/ficha/evento/ID" hx-target="#ficha-contenido">…</a>` |
+| Gráfico acumulado con selector (solo sección 03, ADR 0022) | Ver `_seccion_transferencias.html`: SVG con las series `exigido`/`pagado`, botones `.actor` y tabla con fichas |
 
 ## 5. Reglas de contenido
 
