@@ -1,10 +1,27 @@
-{% from "_macros.html" import num, encabezado, linea_tiempo %}
+{% from "_macros.html" import num, encabezado %}
+{% from "_cronologia.html" import cronologia %}
 <section class="seccion" id="control">
   {{ encabezado("04", "Control", "¿Quién audita a la UNR?") }}
-  <div class="hoy revelar">
-    <small>Último control externo publicado</small>
-    <p>Informe 161/2022 de la Auditoría General de la Nación, sobre el ejercicio 2017.</p>
-    <a class="enlace" href="/ficha/evento/agn-informe-161-2022" hx-get="/ficha/evento/agn-informe-161-2022" hx-target="#ficha-contenido">De dónde sale este dato →</a>
+  <details class="mas-info presentacion revelar">
+    <summary><span class="si-cerrado">Ver más</span><span class="si-abierto">Ver menos</span></summary>
+    <p>El <a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/0-4999/804/norma.htm" rel="noopener" target="_blank">artículo 75, inciso 19, de la Constitución Nacional</a> garantiza los principios de gratuidad y equidad de la educación pública estatal y la autonomía y autarquía de las universidades nacionales.</p>
+    <p>Que las universidades sean autárquicas significa que gestionan sus propios fondos, que reciben del Poder Ejecutivo. Para una universidad transparente es necesario realizar auditorías.</p>
+    <p><strong>¿Quiénes realizan las auditorías?</strong> Dos órganos:</p>
+    <ul>
+      <li><strong>La AGN (Auditoría General de la Nación)</strong>, creada por la <a href="https://servicios.infoleg.gob.ar/infolegInternet/anexos/0-4999/554/texact.htm" rel="noopener" target="_blank">Ley 24.156</a>. Su principal misión, en el ejercicio del control externo, es realizar auditorías y estudios especiales asistiendo técnicamente al Congreso de la Nación.</li>
+      <li><strong>La SIGEN (Sindicatura General de la Nación)</strong> es el órgano de control interno del Poder Ejecutivo Nacional que audita a las universidades nacionales.</li>
+    </ul>
+    <p>Auditar a las universidades es facultad del Poder Ejecutivo y del Poder Legislativo.</p>
+  </details>
+  <div class="cronologia-universidades">
+    <h3 class="cronologia-titulo">Línea de tiempo</h3>
+    <p class="cronologia-guia">Una por universidad, de lo más antiguo a lo más reciente.</p>
+    {% for u in ec.detalle.universidades %}
+    <details class="universidad" open>
+      <summary><span class="universidad-nombre">{{ u.nombre }} ({{ u.sigla }})</span><span class="universidad-cuenta">{{ u.hechos }} hechos desde {{ u.desde }}</span></summary>
+      <p class="aviso">Incluye hechos que alcanzan a todas las universidades nacionales, como los dictámenes de la Procuración del Tesoro y los convenios del CIN.</p>
+      {{ cronologia(u.eventos, "los controles sobre la " ~ u.sigla, "", filtros=ec.detalle.filtros, actores_id=u.actores, titulo="", transicion=True) }}
+    </details>
+    {% endfor %}
   </div>
-  <div class="revelar">{{ linea_tiempo(ec, 4) }}</div>
 </section>

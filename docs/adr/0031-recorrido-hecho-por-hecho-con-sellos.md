@@ -25,3 +25,4 @@ Con 19 hechos, la lista con scroll propio (ADR 0030) sirve para buscar, pero no 
 - Archivos congelados que se tocan: `_cronologia_ley.html` (título, controles, sellos), `estilo.css` (`.cronologia-titulo`, `.recorrido-*`, `.sello`, animaciones `estampar` y `golpe`) e `interacciones.js` (modo recorrido).
 - `tests/test_app.py` verifica que los controles nacen ocultos y que cada sello corresponde a un evento existente.
 - Para agregar un sello a un hecho nuevo, se suma su id a `SELLOS_LEY` con el mismo criterio: describir el acto y mantener el reparto entre actores.
+- Desde el ADR 0025, el paso entre hechos se desliza y el sello cae cuando el hecho terminó de entrar.

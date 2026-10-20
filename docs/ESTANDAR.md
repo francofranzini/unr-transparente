@@ -25,10 +25,11 @@ Este documento fija cómo se ve y cómo funciona el sitio. **Es la base de cualq
 
 ## 2. Identidad visual (congelada)
 
+- **Identidad (ADR 0024):** «Un monitor del financiamiento universitario frente a la Ley 27.795, con la fuente de cada número». La lente de la ley se declara; las demás elecciones metodológicas quedan a la vista.
 - **Nombre:** «Universidad Transparente» (ADR 0021), siempre con «sitio independiente» visible. No se usa el logo ni el escudo de ninguna universidad.
 - **Alcance:** el sistema universitario nacional. La UNR aparece solo como caso de detalle donde un dato lo requiere, rotulada como tal.
 - **Paleta de papel y tinta** (variables en `estilo.css`): fondo crema `#f2efe4` con cuadrícula tenue, papel `#ebe7d8`, tinta azul marino `#141b34`. En modo oscuro se invierte (fondo `#141b34`, tinta `#f2efe4`). No se agregan colores.
-- **Rojo** (`--rojo`): reservado para lo que falta según la Ley 27.795: la brecha del art. 5 (sueldo) y la de los arts. 3 y 4 (funcionamiento, ADR 0022). No se usa para nada más.
+- **Rojo** (`--rojo`): reservado para lo que falta según la Ley 27.795, desde que la ley rige para ese dato: la brecha del art. 5 desde noviembre de 2025 (sueldo) y la de los arts. 3 y 4 por 2025 (funcionamiento). ADR 0022 y 0023. No se usa para nada más.
 - **Colores de actores** (Congreso azul, Poder Ejecutivo naranja, Justicia verde, Acuerdo amarillo) y **series del gráfico** (pagado azul, exigido naranja): validados para daltonismo; no se cambian.
 - **Tipografía:** Lato (400, 700, 900).
 - **Composición:** una sola página, sin tarjetas. Secciones numeradas («01 — Salario docente») separadas por una línea fina; la pregunta como título; los datos sobre el papel. Lo secundario va detrás de un «ver más».
@@ -36,10 +37,11 @@ Este documento fija cómo se ve y cómo funciona el sitio. **Es la base de cualq
 
 ## 3. Funcionalidades (congeladas)
 
-- **Orden y anclas de las secciones:** `#salario` (01), `#ley` (02), `#transferencias` (03), `#control` (04), `#graduacion` (05), «Cómo leer los números» (06). Las direcciones `/salario`, `/ley`, etc. redirigen a su ancla.
+- **Orden y anclas de las secciones:** `#salario` (01), `#transferencias` (02), `#ley` (03), `#control` (04), «Cómo leer los números» (05). Graduación quedó fuera (ADR 0024). Las direcciones `/salario`, `/ley`, etc. redirigen a su ancla.
 - **Cada número abre su ficha** (documento, página, fecha de consulta, tipo de fuente, cálculo). Se escribe siempre con `num(eje, clave)`; nunca un número a mano en una plantilla.
 - **Cifras que cuentan desde 0:** `num(eje, clave, true)` en las filas de datos.
 - **Cronología de la ley:** «Línea de tiempo», vertical, de lo más antiguo a lo más reciente, dentro de un recuadro con scroll propio y el año fijo arriba; filtros por actor; detalle desplegable con «Cómo lo contaron»; recorrido «hecho por hecho» con sellos que nombran el acto (ADR 0030 y 0031, propuestas).
+- **Cronología de Control:** una por universidad, cada una en un recuadro desplegable (hoy, la UNR), con la misma plantilla que la de la ley (`_cronologia.html`), con los actores AGN, SIGEN y Procuración, auditoría interna de la UNR y convenios; debajo de la pregunta, un desplegable «Ver más» / «Ver menos» con la autarquía de las universidades y quién las audita (AGN y SIGEN), sin recuadro aparte; sin sellos, que son solo de la ley (ADR 0025, propuesta).
 - **Accesibilidad:** con «reducir movimiento» no hay animaciones; sin JavaScript se ve todo el contenido; todo se usa con teclado.
 - **Validación:** si una fila de `data/` no tiene ficha completa, la aplicación no arranca.
 
@@ -58,7 +60,11 @@ Se usan tal como están; no se crean clases ni estilos nuevos.
 | Línea de tiempo simple | `{{ linea_tiempo(eje, 4) }}` |
 | Pasos de un artículo | `<section class="articulo"><div class="paso"><h3><span>1</span>Título</h3><p>…</p></div></section>` |
 | Enlace a la ficha de un evento | `<a href="/ficha/evento/ID" hx-get="/ficha/evento/ID" hx-target="#ficha-contenido">…</a>` |
-| Gráfico acumulado con selector (solo sección 03, ADR 0022) | Ver `_seccion_transferencias.html`: SVG con las series `exigido`/`pagado`, botones `.actor` y tabla con fichas |
+| Gráfico acumulado con selector (solo sección 02, ADR 0022) | Ver `_seccion_transferencias.html`: SVG con las series `exigido`/`pagado`, botones `.actor` y tabla con fichas |
+
+## 4 bis. Imagen de magnitud (ADR 0023)
+
+Cada eje con una cifra central la muestra también con una imagen que se entiende sin leer números: pilas de fajos (Transferencias), billete que se achica según el poder de compra (Salario). Reglas: proporcional al dato; la cifra que la genera está al lado y abre su ficha (también en cada estado de un selector); rojo solo para lo que falta según la Ley 27.795 y solo desde que la ley rige para ese dato (antes, gris y rotulado como referencia); animación que muestra cómo se llega al dato, quieta con «reducir movimiento» y completa sin JavaScript; en celular, lo que se compara va lado a lado.
 
 ## 5. Reglas de contenido
 

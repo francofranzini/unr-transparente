@@ -11,6 +11,8 @@
   --serie-1: #2a78d6; --serie-2: #eb6834; --grilla: rgb(20 27 52 / .08);
   --actor-congreso: #2a78d6; --actor-ejecutivo: #eb6834; --actor-justicia: #1baf7a; --actor-acuerdo: #eda100;
   --radio: 18px;
+  /* Espaciado (ADR 0033): las partes aparecen al hacer scroll; con aire entre ellas, entra una cosa por vez */
+  --entre-secciones: clamp(96px, 14vw, 160px); --entre-partes: clamp(48px, 7vw, 80px);
   color-scheme: light dark;
   interpolate-size: allow-keywords;
 }
@@ -87,14 +89,18 @@ nav a:hover { color: var(--acento); }
 .cifra-portada:hover .pie-cifra { color: var(--tinta); }
 
 /* Motivación, justo después de la portada */
-.porque { padding: 40px 0 56px; max-width: 46rem; }
+.porque { padding: var(--entre-partes) 0 var(--entre-secciones); max-width: 46rem; }
 .porque blockquote { margin: 0 0 14px; font-size: clamp(1.5rem, 3.6vw, 2.3rem); font-weight: 900; line-height: 1.15; letter-spacing: -.03em; }
 .porque blockquote::before { content: "“"; display: block; font-size: 4rem; line-height: .6; color: var(--tenue); }
 .porque p { color: var(--tenue); margin: 0; max-width: 36rem; }
 
 /* Secciones: parte de la página, separadas por una línea */
-.seccion { padding: 56px 0 24px; border-top: 1px solid var(--linea); scroll-margin-top: 84px; }
-.sec-encabezado { margin-bottom: 28px; }
+.seccion { padding: var(--entre-secciones) 0 calc(var(--entre-secciones) / 2); border-top: 1px solid var(--linea); scroll-margin-top: 84px; }
+.sec-encabezado { margin-bottom: var(--entre-partes); }
+/* Cada parte de una sección (cifras, imagen, gráfico, «ver más») separada de la anterior */
+.seccion > :not(:first-child), [data-bloque-arts34] > :not(:first-child) { margin-top: var(--entre-partes); }
+/* El selector «Ver:» queda pegado a las cifras que cambia */
+[data-bloque-arts34] > [data-cifras] { margin-top: 24px; }
 .sec-encabezado h2 { margin: 0; font-size: clamp(1.7rem, 4vw, 2.6rem); font-weight: 900; line-height: 1.1; letter-spacing: -.03em; max-width: 40rem; }
 
 /* Fila de datos, sin recuadros: separados por líneas verticales */
@@ -135,6 +141,21 @@ nav a:hover { color: var(--acento); }
 .mas-info[open] > summary::before { transform: rotate(45deg); }
 .mas-info::details-content { block-size: 0; overflow: clip; transition: block-size .45s ease, content-visibility .45s allow-discrete; }
 .mas-info[open]::details-content { block-size: auto; }
+/* Rótulo de un desplegable que cambia al abrirlo: «Ver más» / «Ver menos» (ADR 0025) */
+details:not([open]) > summary .si-abierto, details[open] > summary .si-cerrado { display: none; }
+/* Texto de presentación de una sección, antes de su cronología (ADR 0025) */
+.presentacion { max-width: 52rem; margin: 0 0 36px; }
+/* Una cronología por universidad, cada una en su recuadro desplegable (ADR 0025) */
+.universidad { max-width: 54rem; margin: 12px 0 0; padding: 0 20px; border: 1px solid var(--linea); border-radius: 14px; }
+.universidad[open] { padding-bottom: 18px; }
+@media (max-width: 600px) { .universidad { padding-inline: 12px; } }
+.universidad > summary { list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; padding: 14px 0; }
+.universidad > summary::-webkit-details-marker { display: none; }
+.universidad > summary::before { content: "▸"; display: inline-block; font-size: .9rem; transition: transform .2s; }
+.universidad[open] > summary::before { transform: rotate(90deg); }
+.universidad-nombre { font-weight: 900; font-size: 1.1rem; }
+.universidad-cuenta { font-size: .85rem; color: var(--tenue); }
+.universidad .aviso { margin-top: 0; }
 .articulo { margin-top: 14px; }
 .entrada { color: var(--tenue); margin: 0 0 14px; }
 .paso { padding: 14px 0 14px 18px; margin: 0 0 4px; border-left: 2px solid var(--linea); max-width: 46rem; }
@@ -249,6 +270,8 @@ text.rotulo { fill: var(--tinta); font-size: 12px; font-weight: 700; text-transf
 
 .sello { display: none; }
 .cronologia-scroll.modo-carrusel { max-height: none; overflow: visible; min-height: 17rem; }
+/* Sin sellos (p. ej. Control, ADR 0025) no hace falta reservar su lugar. */
+.cronologia-scroll.modo-carrusel:not(:has(.sello)) { min-height: 0; }
 .modo-carrusel .linea-v { background: none; padding-block: 28px; }
 .modo-carrusel .hito { transition-delay: 0s; }
 .modo-carrusel .hito-titulo { font-size: 1.3rem; }
@@ -269,6 +292,18 @@ text.rotulo { fill: var(--tinta); font-size: 12px; font-weight: 700; text-transf
   100% { opacity: .92; transform: scale(1) rotate(-4deg); }
 }
 @keyframes golpe { 0%, 100% { translate: 0; } 25% { translate: 0 3px; } 50% { translate: -2px -1px; } 75% { translate: 1px 1px; } }
+/* Paso suave entre hechos del recorrido, en las cronologías con data-transicion (ADR 0025) */
+@media (prefers-reduced-motion: no-preference) {
+  [data-transicion] .hito.sale-izq { animation: salir-izq .18s ease-in forwards; }
+  [data-transicion] .hito.sale-der { animation: salir-der .18s ease-in forwards; }
+  [data-transicion] .hito.entra-der { animation: entrar-der .28s cubic-bezier(.2, .7, .2, 1) both; }
+  [data-transicion] .hito.entra-izq { animation: entrar-izq .28s cubic-bezier(.2, .7, .2, 1) both; }
+  [data-transicion] .hito:is(.entra-der, .entra-izq) .sello { opacity: 0; } /* el sello cae después de que entra el hecho */
+}
+@keyframes salir-izq { to { opacity: 0; translate: -32px 0; } }
+@keyframes salir-der { to { opacity: 0; translate: 32px 0; } }
+@keyframes entrar-der { from { opacity: 0; translate: 32px 0; } }
+@keyframes entrar-izq { from { opacity: 0; translate: -32px 0; } }
 
 /* Entrada escalonada de cada hecho */
 @media (prefers-reduced-motion: no-preference) {
@@ -291,10 +326,29 @@ dialog { width: min(600px, calc(100vw - 32px)); padding: 26px; color: var(--tint
 dialog::backdrop { background: rgb(20 27 52 / .3); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 .ficha-rotulo { margin: 0; font-size: .74rem; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; color: var(--acento); }
 dialog h3, .ficha-pagina h3 { margin: 4px 0 0; font-size: 1.15rem; line-height: 1.3; }
-.ficha-valor { font-size: 1.7rem; font-weight: 900; margin: 8px 0 16px; overflow-wrap: anywhere; }
+.ficha-valor { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; font-size: 1.7rem; font-weight: 900;
+               margin: 8px 0 16px; overflow-wrap: anywhere; }
+.ficha-periodo { font-size: .85rem; font-weight: 700; color: var(--tenue); }
+.ficha-subtitulo { margin: 0 0 6px; font-size: .74rem; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; color: var(--tenue); }
+.ficha-calculo { margin: 0 0 18px; padding: 14px 16px; border-radius: 12px; background: var(--papel-2); border-left: 4px solid var(--tinta); }
+.ficha-calculo > p { margin: 0; line-height: 1.45; }
+.ficha-calculo .ficha-nota { margin-top: 10px; font-size: .86rem; color: var(--tenue); }
+.ficha-suma { list-style: none; margin: 10px 0 0; padding: 0; font-size: .88rem; }
+.ficha-suma li { display: flex; justify-content: space-between; gap: 12px; padding: 4px 0; border-bottom: 1px solid var(--linea); }
+.ficha-suma li span:last-child { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ficha-suma .total { font-weight: 900; border-bottom: 0; }
+.ficha-origen { margin: 0; padding-left: 18px; font-size: .92rem; line-height: 1.5; }
+.ficha-pie { margin: 8px 0 0; font-size: .78rem; color: var(--tenue); }
+.ficha-detalle { margin-top: 16px; border-top: 1px solid var(--linea); padding-top: 12px; }
+.ficha-detalle summary { cursor: pointer; font-size: .85rem; font-weight: 700; }
+.ficha-detalle .ficha { margin-top: 12px; }
 .ficha { display: grid; grid-template-columns: max-content 1fr; gap: 8px 16px; margin: 0; font-size: .92rem; }
 .ficha dt { font-size: .74rem; text-transform: uppercase; color: var(--tenue); padding-top: 2px; }
 .ficha dd { margin: 0; } .ficha dd p { margin: 0 0 8px; }
+.ficha-composicion { width: 100%; border-collapse: collapse; font-size: .86rem; }
+.ficha-composicion th, .ficha-composicion td { padding: 4px 0; border-bottom: 1px solid var(--linea); text-align: left; vertical-align: top; font-weight: 400; }
+.ficha-composicion td { padding-left: 12px; white-space: nowrap; text-align: right; font-variant-numeric: tabular-nums; }
+.ficha-composicion .total th, .ficha-composicion .total td { font-weight: 700; border-bottom: 0; }
 .ids { margin-top: 16px; font-size: .74rem; color: var(--tenue); }
 code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; overflow-wrap: anywhere; }
 .cerrar { margin-top: 16px; font: inherit; font-weight: 900; font-size: .85rem; cursor: pointer;

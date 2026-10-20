@@ -1,6 +1,6 @@
 # Fran — Presupuesto y transferencias
 
-**Sección:** 03 — `#transferencias`. **Archivos propios:** `data/ejecucion_programa26_*.csv`, `data/credito_asignado_ley.csv`, CSV nuevos `data/presupuesto_*.csv`, `app/templates/_seccion_transferencias.html`, `eje_ejecucion` en `core/ejes.py`, lentes nuevas en `core/lentes.py`. **Rama:** `fran/presupuesto`. **ADR:** `0020`–`0024`.
+**Sección:** 02 — `#transferencias`. **Archivos propios:** `data/ejecucion_programa26_*.csv`, `data/credito_asignado_ley.csv`, CSV nuevos `data/presupuesto_*.csv`, `app/templates/_seccion_transferencias.html`, `eje_ejecucion` en `core/ejes.py`, lentes nuevas en `core/lentes.py`. **Rama:** `fran/presupuesto`. **ADR:** `0020`–`0024`.
 
 Leer antes: [`docs/ESTANDAR.md`](../ESTANDAR.md), ADR 0012, 0013, 0014 y 0015.
 
@@ -55,6 +55,7 @@ Leer antes: [`docs/ESTANDAR.md`](../ESTANDAR.md), ADR 0012, 0013, 0014 y 0015.
 - **El caso de la UNR** tiene bloque propio con gráfico acumulado de 2025 (exigido contra transferido), selector UNR / todas las universidades, tooltip por mes y tabla mes a mes con fichas (ADR 0022). Revisado en claro, oscuro y a 390 px de ancho.
 
 **Pendiente**
+- **¿Pagos en 2026 a cuenta de 2025?** Los arts. 3 y 4 mandan reconocer todo 2025, pero la ley se publicó en octubre: parte podría haberse pagado en 2026, fuera de la comparación (que es por ejercicio). Junio (82.265 M) y septiembre de 2026 (122.176 M) casi triplican lo habitual, después de un julio en 0. Buscar en el Boletín Oficial las resoluciones de la Secretaría de Educación o decisiones administrativas de 2026 que asignan fondos de funcionamiento; si alguna es a cuenta de la Ley 27.795 o de 2025, cargarla como evento y recalcular la brecha.
 - Tarea 5 (reverificar `credito_asignado_ley.csv` contra los PDF oficiales, y el acto que creó el crédito de «Universidades sin Discriminar» 2026).
 
 ## Propuestas de presentación
@@ -66,3 +67,4 @@ Leer antes: [`docs/ESTANDAR.md`](../ESTANDAR.md), ADR 0012, 0013, 0014 y 0015.
 - Las fichas son legibles si los rótulos, cálculos y notas son cortos; sugerir el mismo criterio a los demás ejes.
 - Si se adopta el gráfico del ADR 0022, mover su geometría a `app/graficos.py` y el sombreado a `estilo.css` (archivos congelados).
 - Un selector de universidad para la línea de detalle: los datos mensuales por universidad están en Presupuesto Abierto.
+- **Ficha breve (ADR 0032, propuesta):** la ficha muestra el número, «Cómo se calcula» (con los sumandos y el criterio, si los hay) y «Sale de»; citas, documentos completos e ids pasan a «Ver el detalle». Toca archivos congelados: hay que aprobarla entre los tres.

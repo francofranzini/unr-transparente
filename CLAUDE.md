@@ -9,9 +9,11 @@
 
 ## 1. Qué es
 
-Un portal que muestra el estado financiero y de funcionamiento de una universidad pública argentina (alcance: **el sistema universitario nacional**; la Universidad Nacional de Rosario, UNR, queda como caso de detalle en áreas específicas, ADR 0021) a partir de **documentos oficiales**, para cualquier ciudadano, no solo estudiantes.
+> **Un monitor del financiamiento universitario frente a la Ley 27.795, con la fuente de cada número** (ADR 0024).
 
-**Tesis del producto:** el ruido sobre el financiamiento universitario no viene de datos distintos, sino de **elecciones metodológicas ocultas**: qué inflación se usa, contra qué año se compara, si se mide lo asignado o lo ejecutado, y si la cifra es de "educación", "educación superior" o "universidades". El portal **no elige una lente: las hace explícitas y deja cambiarlas**.
+Alcance: **el sistema universitario nacional**; la Universidad Nacional de Rosario (UNR) queda como caso de detalle (ADR 0021). Se basa en **documentos oficiales** y está pensado para cualquier ciudadano, no solo para estudiantes.
+
+**Tesis del producto:** el ruido sobre el financiamiento universitario no viene de datos distintos, sino de **elecciones metodológicas ocultas**: qué inflación se usa, contra qué año se compara, si se mide lo asignado o lo ejecutado, y si la cifra es de "educación", "educación superior" o "universidades". El portal **declara su lente, lo que exige la Ley 27.795, y hace explícitas las demás para que se puedan cambiar** (ADR 0024; antes la tesis era no elegir ninguna). El diferencial es seguir el conflicto: los gráficos suman períodos y estados de la ley a medida que hay datos nuevos, y muestran las mejoras con el mismo énfasis que las pérdidas.
 
 Ejemplo real que motiva el proyecto. Las tres cifras salen del mismo presupuesto 2026:
 
@@ -31,7 +33,7 @@ Las fuentes de estas afirmaciones están en la sección 9.
 4. **Asignado ≠ ejecutado.** Siempre se rotula si la cifra es crédito asignado (ley), crédito vigente o devengado (lo efectivamente transferido).
 5. **El atraso de los datos se muestra, no se esconde.** Cada cifra indica el período al que corresponde y la fecha de consulta.
 6. **Primaria vs secundaria.** Una cifra tomada de la prensa o de un informe de terceros se marca como *secundaria* y cita a la fuente original que esa nota menciona.
-7. **El LLM nunca produce números.** Solo interpreta lenguaje natural (ver la sección 6). Todo número sale de un cálculo sobre datos con ficha.
+7. **Ningún número sale de un LLM.** Todo número sale de un cálculo sobre datos con ficha.
 
 ## 3. Alcance del MVP
 
@@ -47,11 +49,11 @@ Cinco secciones, más una función diferencial:
 
 - **Plata:** crédito asignado a la UNR por año, su participación en el total del sistema universitario, y la ejecución cuando exista. Con selector de lente. Incluye el control cruzado entre el anexo de la ley y la resolución de distribución propia de la UNR, y el desglose interno de 2023, que también rige en 2024 y 2025 por prórroga (ADR 0007). Los hitos de la negociación presupuestaria se marcan sobre el gráfico.
 - **Salarios:** salario básico del cargo testigo (profesor adjunto, dedicación exclusiva, sin antigüedad), mes a mes, contra el IPC y contra lo que exige el art. 5 de la Ley 27.795, con los eventos paritarios (ADR 0003, 0004 y 0015).
-- **Gente:** ingresantes, estudiantes, egresados y docentes, con su período y fuente. Por ahora en valores absolutos; la tasa de egreso con desfase se incorpora si se consiguen los ingresantes desde 2016 (ADR 0009).
+- ~~**Gente:**~~ graduados y alumnos quedaron fuera del sitio (ADR 0024).
 - **Ley 27.795:** lo que exige cada artículo (arts. 3, 4 y 5) contra lo que salió, para la UNR; estimaciones de costo de terceros como secundarias; línea de tiempo del estado de la ley (ADR 0014).
 - **Control:** quién audita a la universidad (AGN, SIGEN, Unidad de Auditoría Interna) y una línea de tiempo de hechos documentados, incluida la negociación sobre el financiamiento (ADR 0005).
 - **Funcionamiento (FCEIA):** concursos docentes, proyectos de investigación y tesinas, a partir de la API de la FCEIA (sección 5.4).
-- **Diferencial: "Reproducí el titular"** (sección 6).
+- **Diferencial: seguir el conflicto** (ADR 0024). «Reproducí el titular» quedó fuera del proyecto.
 
 Fuera del MVP: otras universidades en detalle (solo el total del sistema como contexto), ingesta automática de datos, login, edición por parte de usuarios.
 
@@ -169,7 +171,9 @@ Desglose por función de la UNR:
 
 Las fuentes están en la sección 9. Antes de la demo, volver a abrir cada PDF y verificar estos valores contra el original.
 
-## 6. "Reproducí el titular"
+## 6. "Reproducí el titular" (fuera del proyecto, ADR 0024)
+
+> Se conserva como registro de la idea original; no se implementa.
 
 El usuario pega una afirmación, por ejemplo: *"El presupuesto universitario cayó 30 % desde 2023"*.
 
@@ -195,8 +199,7 @@ La tabla de la sección 1 son los casos de prueba de esta función: las tres afi
 - **Python con FastAPI y Jinja2.** HTMX para la interactividad: el cambio de lente reemplaza solo el gráfico y el clic sobre una cifra abre su ficha.
 - **Gráficos con Plotly.** Cada gráfico se acompaña de la lista de supuestos de la lente activa.
 - **Pydantic como esquema único** para Dato, Evento y el objeto de la sección 6. Valida `data/` en el build y la salida del LLM.
-- **`core/`:** lentes y motor de "Reproducí el titular", sin dependencias web, probados con pytest y valores calculados a mano.
-- **LLM:** SDK de Anthropic para Python con salida estructurada, usado **solo** en el paso 1 de la sección 6. Si la llamada falla, se usa un formulario manual con los mismos campos.
+- **`core/`:** lentes y ejes, sin dependencias web, probados con pytest y valores calculados a mano.
 - **Series externas** (IPC, PBI, RIPTE, REM): un script las descarga y las guarda versionadas en `data/` con su fecha de consulta. La demo no depende de APIs en vivo.
 - **Despliegue:** local (`uvicorn`) para la demo.
 
@@ -213,14 +216,13 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 ## 8. Criterios de aceptación de la demo
 
 - [ ] Cada cifra en pantalla abre su ficha (documento, URL, período, asignado o ejecutado, primaria o secundaria).
-- [ ] La serie de la UNR cambia en vivo al cambiar la lente (nominal, real con IPC, real con inflación presupuestada, participación) y muestra los supuestos activos.
-- [ ] Las tres afirmaciones de la sección 1 se analizan con "Reproducí el titular", incluidas las advertencias de alcance, de comparación mixta y de supuesto ajeno.
+- [ ] Salario y Transferencias se miden contra lo que manda la Ley 27.795, con la selección (Todas/UNR, año) aplicada también a «¿De dónde sale este número?».
 - [ ] La serie salarial del cargo testigo se muestra contra el IPC, con la vigencia de cada grilla rotulada.
 - [ ] La sección Control muestra la cronología de dictámenes y auditorías, incluidos los eventos de estado.
 - [ ] Ningún texto del portal usa adjetivos valorativos.
 - [ ] Hay tests de las lentes con valores calculados a mano.
 
-**Guion sugerido (3 minutos):** mostrar tres titulares contradictorios → el portal reproduce los tres desde la misma fuente oficial, cambiando un solo supuesto → mostrar la participación de la UNR en el sistema → cierre con "no te decimos qué pensar; te mostramos cómo se calcula cada número".
+**Guion sugerido (3 minutos):** la cifra de la portada (lo que le falta al sueldo docente para cumplir la ley) → el billete que se achica → las pilas de Transferencias, de todas las universidades a la UNR, de 2025 a 2026 → tocar un número y abrir su ficha y su cuenta → cierre con "medimos contra la ley; cada número muestra de dónde sale".
 
 ## 9. Fuentes consultadas
 

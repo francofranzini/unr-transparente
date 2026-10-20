@@ -16,8 +16,8 @@
     <p>Reunimos {{ d.meses_con_grilla }} instructivos, de {{ d.desde }} a {{ d.hasta_grilla }}. A veces un instructivo
        corrige lo que anunciaba el anterior; en ese caso usamos el más reciente.
        {%- for mes, _, desde in confirmados %} En {{ mes }} no hubo instructivo nuevo: el de {{ desde }} ya fijaba los valores hasta el mes siguiente.{% endfor %}
-       {%- if sin_confirmar %} Para {{ sin_confirmar|map(attribute=0)|join(" y ") }} la UNR todavía no publicó instructivo,
-       así que usamos el de {{ sin_confirmar[0][2] }} y lo marcamos con línea punteada en el gráfico.{% endif %}</p>
+       {%- if sin_confirmar %} Para {{ sin_confirmar|map(attribute=0)|join(" y ") }} usamos el de {{ sin_confirmar[0][2] }},
+       con línea punteada en el gráfico.{% endif %}</p>
   </div>
 
   <div class="paso">
@@ -31,7 +31,7 @@
 
   <div class="paso">
     <h3><span>3</span>Qué exige la ley</h3>
-    <p>La <a href="https://www.consejosalta.org.ar/wp-content/uploads/Ley-27.795-y-Dec-759-2025.pdf">Ley 27.795 de Financiamiento Universitario</a>
+    <p>La <a href="https://www.boletinoficial.gob.ar/detalleAviso/primera/333139/20251021">Ley 27.795 de Financiamiento Universitario</a>
        dice en su artículo 5 que los salarios docentes deben actualizarse desde el 1 de diciembre de 2023
        «en un porcentaje que no puede ser inferior al Índice de Precios al Consumidor», y que después cada
        actualización mensual tiene que ser «no inferior a la inflación».</p>

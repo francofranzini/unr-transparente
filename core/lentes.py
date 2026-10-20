@@ -100,6 +100,9 @@ def variacion_real(puntos: dict[str, Punto], ipc: dict[str, Dato], mes: str, bas
 # --- Ley 27.795, art. 5 ------------------------------------------------------
 
 MES_PREVIO_ART5 = "2023-11"  # el art. 5 cuenta el IPC desde el 1-dic-2023: el salario de partida es el de nov-2023
+# El aumento del art. 5 «se hará efectivo al mes siguiente de la publicación» (BO 21-oct-2025). Antes, la ley no exigía
+# nada: el sueldo de nov-2023 actualizado por IPC es solo una referencia (ADR 0023).
+MES_VIGENCIA_ART5 = "2025-11"
 FECHAS_CORTE_ART5 = {
     "2025-08-21": "sanción (21-ago-2025)",
     "2025-10-02": "confirmación del Congreso (2-oct-2025)",
@@ -206,3 +209,21 @@ def transferido_arts_3_4(devengado: list[Dato], anio: str) -> Resultado:
     fuentes = tuple(d for d in _de_actividades(devengado) if d.periodo.startswith(f"{anio}-"))
     return Resultado(sum(d.valor for d in fuentes), fuentes, [
         f"Devengado {anio} de las actividades 14, 15, 16 y 25 (Presupuesto Abierto, todas las fuentes)."])
+
+
+
+def referencia_art4(partida: Resultado, ipc: dict[str, Dato], anio: str) -> list[Resultado]:
+    """La regla del art. 4 (actualización bimestral por IPC) aplicada a cualquier año, mes a mes (ADR 0024).
+
+    Para 2025 es lo que la ley manda. Para otros años la ley no lo pide: es solo una referencia. Cada bimestre usa
+    el IPC del último mes del bimestre anterior (enero-febrero, el de diciembre del año anterior). Devuelve los
+    meses cuyo IPC de referencia ya está publicado."""
+    f3 = factor_art3(ipc)
+    meses = []
+    for b in range(6):
+        referencia = f"{int(anio) - 1}-12" if b == 0 else f"{anio}-{2 * b:02d}"
+        if referencia not in ipc:
+            break
+        valor = partida.valor * f3.valor * ipc[referencia].valor / ipc[MES_FINAL_ART3].valor
+        meses += [Resultado(valor, partida.fuentes + f3.fuentes + (ipc[referencia],))] * 2
+    return meses

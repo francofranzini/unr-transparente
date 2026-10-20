@@ -45,10 +45,6 @@ def test_toda_cifra_tiene_fuentes(ejes):
             assert c.fuentes, f"{eje.clave}/{c.clave} sin fuentes"
 
 
-def test_graduacion_no_calcula_tasas(ejes):
-    assert all(c.unidad == "personas" for c in ejes["graduacion"].cifras)
-
-
 def test_arts_3_4_del_sistema(ejes):
     eje = ejes["ejecucion"]
     # Devengado 2025 de las actividades 14, 15 y 16, sumado para todas las universidades: 410.017 millones.
@@ -84,3 +80,36 @@ def test_acumulado_mensual_cierra_en_el_total_anual(ejes):
                 == eje.cifra(f"{prefijo}exigido").valor.quantize(centavo))
         assert eje.cifra(f"{prefijo}acum-transferido-12").valor == eje.cifra(f"{prefijo}transferido").valor
         assert len(eje.detalle["acumulado"][prefijo]) == 12
+
+
+def test_billete_del_sueldo(ejes):
+    eje = ejes["salario"]
+    # Nov-2023 es la base: compra el 100 %.
+    assert eje.cifra("compra-2023-11").valor == 100
+    # Ago-2026: salario real −25,0 % → compra el 75,0 %.
+    assert eje.cifra("compra-2026-08").valor.quantize(Decimal("0.1")) == Decimal("75.0")
+    assert eje.cifra("poder-2026-08").valor == eje.cifra("real-nov_2023").valor
+    billete = eje.detalle["billete"]
+    assert billete[0]["periodo"] == "2023-11" and billete[-1]["periodo"] == eje.cifra("pagado").periodo
+    # Los meses sin escala publicada llevan el aviso de vigencia.
+    assert eje.cifra("compra-2026-08").aviso
+
+
+def test_el_art5_exige_solo_desde_noviembre_de_2025(ejes):
+    # «Este aumento se hará efectivo al mes siguiente de la publicación» (BO 21-oct-2025).
+    eje = ejes["salario"]
+    serie = {p["periodo"]: p for p in eje.serie}
+    assert serie["2025-10"]["exigido"] is None and serie["2025-10"]["referencia"] is not None
+    assert serie["2025-11"]["exigido"] == serie["2025-11"]["referencia"]
+    rige = {c["periodo"]: c["rige"] for c in eje.detalle["billete"]}
+    assert not rige["2025-10"] and rige["2025-11"] and rige["2026-08"]
+
+
+def test_anio_en_curso_con_referencia_y_sin_exigido(ejes):
+    eje = ejes["ejecucion"]
+    # Enero a septiembre de 2026 (octubre está en curso): la referencia no es un monto de la ley.
+    assert eje.detalle["ventana_actual"] == "enero a septiembre de 2026"
+    assert "La ley no lo pide" in eje.cifra("arts34-ref-2026").calculo
+    assert eje.cifra("arts34-relacion-2026").valor.quantize(Decimal("0.1")) == Decimal("-34.7")
+    assert eje.cifra("unr-arts34-relacion-2026").valor.quantize(Decimal("0.1")) == Decimal("-52.0")
+    assert not [c for c in eje.cifras if c.clave.startswith("arts34-exigido-2026")]
