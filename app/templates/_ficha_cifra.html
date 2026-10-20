@@ -29,7 +29,7 @@
     <dd><table class="ficha-composicion">
       {% for periodo, valor in cifra.serie %}<tr{% if periodo == cifra.periodo %} class="total"{% endif %}><th>{{ fmt.fecha_evento(periodo) }}</th><td>$ {{ fmt.numero(valor) }}</td></tr>{% endfor %}
     </table>
-    <small>Devengado de las mismas actividades, mismo documento.{% if cifra.serie|selectattr(0, "equalto", cifra.periodo)|list %} En negrita, el mes elegido.{% endif %}</small></dd>{% endif %}
+    <small>{{ cifra.serie_nota }}{% if cifra.serie|selectattr(0, "equalto", cifra.periodo)|list %} En negrita, el mes elegido.{% endif %}</small></dd>{% endif %}
     {% if composicion %}<dt>Montos exactos</dt>
     <dd><table class="ficha-composicion">
       {% for concepto, monto in composicion %}<tr><th>{{ concepto }}</th><td>$ {{ fmt.numero(monto, 2) }}</td></tr>{% endfor %}

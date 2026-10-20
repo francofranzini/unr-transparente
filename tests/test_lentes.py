@@ -48,6 +48,24 @@ def test_brecha_art5_a_mano():
     assert lentes.brecha_art5(puntos, ipc, "2024-01").valor.quantize(Decimal("0.01")) == Decimal("33.33")
 
 
+def test_no_cobrado_art5_a_mano():
+    # IPC 100 → 200 → 300; básico 100 → 150 → 150. Exigido: 200 y 300. Falta: 50 + 150 = 200.
+    grillas = [_dato("2023-11", "100"), _dato("2023-12", "150")]
+    ipc = lentes.serie_por_periodo([_dato("2023-11", "100", "ipc"), _dato("2023-12", "200", "ipc"), _dato("2024-01", "300", "ipc")])
+    puntos = {p.periodo: p for p in lentes.serie_vigente(grillas, "2024-01")}
+    total, detalle = lentes.no_cobrado_art5(puntos, ipc, "2023-12", "2024-01")
+    assert detalle == [("2023-12", Decimal("50")), ("2024-01", Decimal("150"))]
+    assert total.valor == Decimal("200")
+
+
+def test_no_cobrado_art5_no_resta_si_se_paga_de_mas():
+    # Si el básico supera lo exigido, ese mes suma 0 (no compensa otros meses).
+    grillas = [_dato("2023-11", "100"), _dato("2023-12", "250")]
+    ipc = lentes.serie_por_periodo([_dato("2023-11", "100", "ipc"), _dato("2023-12", "200", "ipc")])
+    puntos = {p.periodo: p for p in lentes.serie_vigente(grillas, "2023-12")}
+    assert lentes.no_cobrado_art5(puntos, ipc, "2023-12", "2023-12")[0].valor == Decimal("0")
+
+
 @pytest.fixture(scope="module")
 def reales():
     repo = cargar()

@@ -58,6 +58,7 @@ class Cifra:
     normas: tuple[Norma, ...] = ()  # la norma que define el cálculo, si la hay (ADR 0023)
     criterio: str = ""  # una elección del portal que la norma no fija (p. ej. el mes de la partida, ADR 0020)
     serie: tuple[tuple[str, Decimal], ...] = ()  # (período, valor) de donde se eligió la cifra, para la ficha
+    serie_nota: str = ""  # qué es cada valor de `serie`, debajo de la tabla de la ficha
 
     @property
     def tipo_fuente(self) -> str:
@@ -209,6 +210,7 @@ def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str
         eje.cifras.append(Cifra(f"{prefijo}partida{sufijo}", f"{quien}: {nombre}", partida.valor,
                                 "ARS corrientes", lentes.MES_PARTIDA_ARTS_3_4 if opcion == "nivel_sep_2024" else "2024",
                                 partida.fuentes, criterio=CRITERIO_PARTIDA[opcion], serie=serie_2024,
+                                serie_nota="Devengado de las mismas actividades, mismo documento.",
                                 calculo=("Lo transferido en septiembre de 2024 para gastos de funcionamiento: la suma "
                                          "de las cuatro actividades del Programa 26 que nombra la ley"
                                          if opcion == "nivel_sep_2024" else
@@ -449,6 +451,21 @@ def eje_salario(repo: Repositorio) -> Eje:
                                        f"Cuánto cambió lo que compra el básico de {legible} frente al de nov-2023, "
                                        "descontada la inflación", aviso))
 
+    # Lo que no se cobró desde que el art. 5 rige (nov-2025) hasta el último mes con IPC (ADR 0039).
+    no_cobrado, por_mes = lentes.no_cobrado_art5(puntos, ipc, lentes.MES_VIGENCIA_ART5, mes)
+    sin_escala = [mes_legible(m) for m, _ in por_mes if puntos[m].vigencia == Vigencia.NO_CONFIRMADA]
+    aviso_no_cobrado = (f"{' y '.join(sin_escala)} no tienen escala publicada: se usa la última disponible; si hubo un "
+                        "aumento en el medio, este número cambia.") if sin_escala else ""
+    eje.cifras.append(Cifra("no-cobrado", f"Lo que dejó de cobrar un adjunto exclusivo, de {mes_legible(lentes.MES_VIGENCIA_ART5)} a {legible}",
+                            no_cobrado.valor, "ARS corrientes", mes, no_cobrado.fuentes,
+                            calculo=f"Cada mes, lo que exige la ley menos el básico que se cobró, sumado de "
+                                    f"{mes_legible(lentes.MES_VIGENCIA_ART5)} a {legible}, en pesos de cada mes",
+                            aviso=aviso_no_cobrado,
+                            criterio="Desde nov-2025, el mes siguiente a la publicación de la ley, que es cuando el "
+                                     "art. 5 manda pagar el aumento. Solo el básico: sin aguinaldo, antigüedad ni "
+                                     "adicionales. Un mes en que se cobrara más de lo exigido sumaría 0.",
+                            serie=tuple(por_mes), serie_nota="Lo que exige la ley menos el básico cobrado, en pesos de cada mes."))
+
     # Billete: cuánto compra el sueldo de cada mes frente al de nov-2023 (ADR 0023).
     billete = []
     base_ipc = ipc[lentes.MES_PREVIO_ART5]
@@ -505,7 +522,7 @@ def eje_salario(repo: Repositorio) -> Eje:
         "billete": billete,
         "vigencia_art5": mes_largo(lentes.MES_VIGENCIA_ART5),
     }
-    _con_normas(eje, lambda c: (NORMA_ART5,) if c.clave in ("brecha-art5", "exigido") or (
+    _con_normas(eje, lambda c: (NORMA_ART5,) if c.clave in ("brecha-art5", "exigido", "no-cobrado") or (
         c.clave.startswith("poder-") and c.periodo >= lentes.MES_VIGENCIA_ART5) else ())
     eje.eventos = repo.eventos_de("salario")
     eje.supuestos = [

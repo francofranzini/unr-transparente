@@ -353,3 +353,14 @@ def test_la_cuenta_de_2025_es_una_cascada_con_fichas(cliente):
     for clave in ("partida", "partida-art3", "exigido-bim1", "exigido-bim6", "transferido-bim1", "transferido-bim6",
                   "exigido", "transferido"):
         assert f'href="/ficha/cifra/ejecucion/arts34-{clave}"' in transferencias
+
+
+def test_salario_muestra_lo_que_dejo_de_cobrar(cliente):
+    # ADR 0039: la suma, mes a mes desde nov-2025, de lo que exige el art. 5 menos el básico cobrado.
+    from core.carga import cargar
+    from core.ejes import construir_ejes
+    c = construir_ejes(cargar())["salario"].cifra("no-cobrado")
+    assert c.serie[0][0] == "2025-11" and c.valor == sum(v for _, v in c.serie) > 0
+    assert 'href="/ficha/cifra/salario/no-cobrado"' in _seccion(cliente.get("/").text, "salario")
+    ficha = cliente.get("/ficha/cifra/salario/no-cobrado", headers={"HX-Request": "true"}).text
+    assert "Norma: <a" in ficha and "documentos," in ficha

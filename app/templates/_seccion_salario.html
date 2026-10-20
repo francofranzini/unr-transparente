@@ -7,6 +7,10 @@
     <div class="dato"><small>La ley exige</small>{{ num(es, "exigido", true) }}</div>
     <div class="dato"><small>Poder de compra frente a nov-2023</small><span class="rojo">{{ num(es, "real-nov_2023", true) }}</span></div>
   </div>
+  {# Lo que no se cobró desde que rige el art. 5 (ADR 0039): la suma, mes a mes, de lo que exige la ley menos lo cobrado. #}
+  <div class="datos revelar">
+    <div class="dato dato-grande"><small>Lo que dejó de cobrar un adjunto exclusivo, de nov-2025 a {{ fmt.fecha_evento(es.cifra("no-cobrado").periodo) }}, frente a lo que manda la ley</small><span class="rojo">{{ num(es, "no-cobrado", true) }}</span></div>
+  </div>
 
   {# Billete: cuánto compra el sueldo de cada mes frente al de nov-2023 (ADR 0023). El contorno es el sueldo de
      nov-2023; el billete azul se achica a lo que compra hoy; lo que falta va en rojo desde que rige la ley. #}

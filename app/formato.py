@@ -72,15 +72,27 @@ def origenes(c: Cifra) -> list[tuple[str, str, int | None]]:
     """(nombre corto, enlace, página) de cada documento distinto del que sale la cifra, para la vista breve.
 
     El nombre corto es el del documento hasta el primer «:» o «(»; el enlace, el sitio oficial si lo hay. Si dos
-    documentos distintos comparten nombre corto (dos instructivos de la SPU), se agrega el período de cada uno."""
+    documentos distintos comparten nombre corto (dos instructivos de la SPU), se agrega el período de cada uno; si son
+    más de dos, van en un solo renglón con la cantidad y el rango de períodos (el detalle está en «Ver el detalle»)."""
     vistos: dict[tuple[str, str], tuple[str, str, int | None, str]] = {}
     for d in c.fuentes:
         corto = re.split(r":| \(", d.documento, maxsplit=1)[0].strip()
         s = sitio(d.url)
         vistos.setdefault((corto, d.documento if not s else corto), (corto, s[1] if s else d.url, d.pagina, d.periodo))
-    nombres = [corto for corto, *_ in vistos.values()]
-    return [(f"{corto}, {fecha_evento(periodo)}" if nombres.count(corto) > 1 else corto, enlace, pagina)
-            for corto, enlace, pagina, periodo in vistos.values()]
+    grupos: dict[str, list[tuple[str, int | None, str]]] = {}
+    for corto, enlace, pagina, periodo in vistos.values():
+        grupos.setdefault(corto, []).append((enlace, pagina, periodo))
+    filas = []
+    for corto, docs in grupos.items():
+        if len(docs) == 1:
+            filas.append((corto, docs[0][0], docs[0][1]))
+        elif len(docs) == 2:
+            filas += [(f"{corto}, {fecha_evento(periodo)}", enlace, pagina) for enlace, pagina, periodo in docs]
+        else:
+            docs = sorted(docs, key=lambda d: d[2])
+            rango = f"{fecha_evento(docs[0][2])} a {fecha_evento(docs[-1][2])}"
+            filas.append((f"{corto} ({len(docs)} documentos, {rango})", docs[-1][0], None))
+    return filas
 
 
 def fecha_evento(fecha: str) -> str:

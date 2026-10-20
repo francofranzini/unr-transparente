@@ -121,6 +121,22 @@ def salario_art5(puntos: dict[str, Punto], ipc: dict[str, Dato], mes: str) -> Re
     ])
 
 
+def no_cobrado_art5(puntos: dict[str, Punto], ipc: dict[str, Dato], desde: str, hasta: str) -> tuple[Resultado, list[tuple[str, Decimal]]]:
+    """Lo que no se cobró entre `desde` y `hasta`: por mes, lo que exige el art. 5 menos el básico pagado (nunca
+    negativo), sumado en pesos de cada mes. Devuelve el total y el detalle mes a mes."""
+    meses = [m for m in _meses(desde, hasta) if m in puntos and m in ipc]
+    detalle, fuentes = [], ()
+    for mes in meses:
+        exigido = salario_art5(puntos, ipc, mes)
+        detalle.append((mes, max(exigido.valor - puntos[mes].valor, Decimal(0))))
+        fuentes += tuple(d for d in puntos[mes].fuentes + exigido.fuentes if d not in fuentes)
+    total = sum((v for _, v in detalle), Decimal(0))
+    return Resultado(total, fuentes, [
+        "Por mes: lo que exige el art. 5 menos el básico pagado; sumado en pesos de cada mes, sin ajustar.",
+        "Sin aguinaldo, antigüedad ni adicionales.",
+    ]), detalle
+
+
 def brecha_art5(puntos: dict[str, Punto], ipc: dict[str, Dato], mes: str) -> Resultado:
     """Cuánto habría que aumentar el básico del mes para alcanzar lo que exige el art. 5, en %."""
     exigido = salario_art5(puntos, ipc, mes)
