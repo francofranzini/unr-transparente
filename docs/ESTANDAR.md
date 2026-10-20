@@ -28,7 +28,7 @@ Este documento fija cómo se ve y cómo funciona el sitio. **Es la base de cualq
 - **Nombre:** «Universidad Transparente» (ADR 0021), siempre con «sitio independiente» visible. No se usa el logo ni el escudo de ninguna universidad.
 - **Alcance:** el sistema universitario nacional. La UNR aparece solo como caso de detalle donde un dato lo requiere, rotulada como tal.
 - **Paleta de papel y tinta** (variables en `estilo.css`): fondo crema `#f2efe4` con cuadrícula tenue, papel `#ebe7d8`, tinta azul marino `#141b34`. En modo oscuro se invierte (fondo `#141b34`, tinta `#f2efe4`). No se agregan colores.
-- **Rojo** (`--rojo`): reservado para lo que falta según la Ley 27.795: la brecha del art. 5 (sueldo) y la de los arts. 3 y 4 (funcionamiento, ADR 0022). No se usa para nada más.
+- **Rojo** (`--rojo`): reservado para lo que falta según la Ley 27.795, desde que la ley rige para ese dato: la brecha del art. 5 desde noviembre de 2025 (sueldo) y la de los arts. 3 y 4 por 2025 (funcionamiento). ADR 0022 y 0023. No se usa para nada más.
 - **Colores de actores** (Congreso azul, Poder Ejecutivo naranja, Justicia verde, Acuerdo amarillo) y **series del gráfico** (pagado azul, exigido naranja): validados para daltonismo; no se cambian.
 - **Tipografía:** Lato (400, 700, 900).
 - **Composición:** una sola página, sin tarjetas. Secciones numeradas («01 — Salario docente») separadas por una línea fina; la pregunta como título; los datos sobre el papel. Lo secundario va detrás de un «ver más».
@@ -62,7 +62,7 @@ Se usan tal como están; no se crean clases ni estilos nuevos.
 
 ## 4 bis. Imagen de magnitud (ADR 0023)
 
-Cada eje con una cifra central la muestra también con una imagen que se entiende sin leer números: pilas de fajos (Transferencias), calendario de días de sueldo (Salario). Reglas: proporcional al dato; la cifra que la genera está al lado y abre su ficha (también en cada estado de un selector); rojo solo para lo que falta según la Ley 27.795; animación que muestra cómo se llega al dato, quieta con «reducir movimiento» y completa sin JavaScript; en celular, lo que se compara va lado a lado.
+Cada eje con una cifra central la muestra también con una imagen que se entiende sin leer números: pilas de fajos (Transferencias), calendario de días de sueldo (Salario). Reglas: proporcional al dato; la cifra que la genera está al lado y abre su ficha (también en cada estado de un selector); rojo solo para lo que falta según la Ley 27.795 y solo desde que la ley rige para ese dato (antes, gris y rotulado como referencia); animación que muestra cómo se llega al dato, quieta con «reducir movimiento» y completa sin JavaScript; en celular, lo que se compara va lado a lado.
 
 ## 5. Reglas de contenido
 

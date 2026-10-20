@@ -183,7 +183,7 @@ def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str
         fuentes_exigido = tuple({d.id: d for d in fuentes_exigido + exigido_mes.fuentes}.values())
         fuentes_transferido += datos_mes
         hasta = f"enero a {MESES_LARGOS[int(mes[5:]) - 1]} de 2025" if mes != "2025-01" else "enero de 2025"
-        eje.cifras.append(Cifra(f"{prefijo}acum-exigido-{mes[5:]}", f"{quien}: correspondía, {hasta}",
+        eje.cifras.append(Cifra(f"{prefijo}acum-exigido-{mes[5:]}", f"{quien}: la ley manda reconocer por {hasta}",
                                 acum_exigido, "ARS corrientes", mes, fuentes_exigido,
                                 calculo="Partida mensual × inflación de mayo a diciembre de 2024 (art. 3) × inflación acumulada al inicio de cada bimestre de 2025 (art. 4), sumado mes a mes."))
         eje.cifras.append(Cifra(f"{prefijo}acum-transferido-{mes[5:]}", f"{quien}: transferido, {hasta}",
@@ -314,12 +314,16 @@ def eje_salario(repo: Repositorio) -> Eje:
                                 Decimal(lentes.DIAS_DEL_MES - completos), "días", periodo, fuentes,
                                 f"30 − días que alcanza ({exacto})", aviso_mes))
         calendario.append({"periodo": periodo, "mes": nombre, "corto": mes_legible(periodo),
-                           "dias": float(dias.valor), "completos": completos, "aviso": aviso_mes})
+                           "dias": float(dias.valor), "completos": completos, "aviso": aviso_mes,
+                           "rige": periodo >= lentes.MES_VIGENCIA_ART5})
 
     for p in puntos.values():
-        exigido = (lentes.salario_art5(puntos, ipc, p.periodo).valor
-                   if p.periodo >= lentes.MES_PREVIO_ART5 else None)
-        eje.serie.append({"periodo": p.periodo, "pagado": p.valor, "exigido": exigido,
+        # «referencia»: el sueldo de nov-2023 actualizado por IPC, para todos los meses desde nov-2023.
+        # «exigido»: lo mismo, pero solo desde que el art. 5 rige (nov-2025).
+        referencia = (lentes.salario_art5(puntos, ipc, p.periodo).valor
+                      if p.periodo >= lentes.MES_PREVIO_ART5 else None)
+        exigido = referencia if p.periodo >= lentes.MES_VIGENCIA_ART5 else None
+        eje.serie.append({"periodo": p.periodo, "pagado": p.valor, "exigido": exigido, "referencia": referencia,
                           "vigencia": p.vigencia.value})
 
     sin_grilla = [p for p in puntos.values() if p.vigencia != Vigencia.PROPIA]
@@ -332,6 +336,7 @@ def eje_salario(repo: Repositorio) -> Eje:
         "ultima_grilla": ultima_grilla, "ipc": ipc[mes], "ultimo_ipc": legible,
         "grillas_sin_ipc": [mes_largo(d.periodo) for d in grillas if d.periodo > mes],
         "calendario": calendario,
+        "vigencia_art5": mes_largo(lentes.MES_VIGENCIA_ART5),
     }
     eje.eventos = repo.eventos_de("salario")
     eje.supuestos = [

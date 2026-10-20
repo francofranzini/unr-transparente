@@ -97,3 +97,13 @@ def test_calendario_del_sueldo(ejes):
     assert cal[0]["periodo"] == "2023-11" and cal[-1]["periodo"] == eje.cifra("pagado").periodo
     # Los meses sin escala publicada llevan el aviso de vigencia.
     assert eje.cifra("dias-2026-08").aviso
+
+
+def test_el_art5_exige_solo_desde_noviembre_de_2025(ejes):
+    # «Este aumento se hará efectivo al mes siguiente de la publicación» (BO 21-oct-2025).
+    eje = ejes["salario"]
+    serie = {p["periodo"]: p for p in eje.serie}
+    assert serie["2025-10"]["exigido"] is None and serie["2025-10"]["referencia"] is not None
+    assert serie["2025-11"]["exigido"] == serie["2025-11"]["referencia"]
+    rige = {c["periodo"]: c["rige"] for c in eje.detalle["calendario"]}
+    assert not rige["2025-10"] and rige["2025-11"] and rige["2026-08"]

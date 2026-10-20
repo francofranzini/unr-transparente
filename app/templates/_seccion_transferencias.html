@@ -94,7 +94,7 @@
             <path class="linea pagado" d="{{ ns.transferido }}"/>
             <circle class="punto exigido" cx="{{ xf }}" cy="{{ (f.sup + uh * (1 - fin.exigido / tope))|round(1) }}" r="4"/>
             <circle class="punto pagado" cx="{{ xf }}" cy="{{ (f.sup + uh * (1 - fin.transferido / tope))|round(1) }}" r="4"/>
-            <text class="rotulo" x="{{ xf + 10 }}" y="{{ (f.sup + uh * (1 - fin.exigido / tope) + 4)|round(1) }}">Correspondía</text>
+            <text class="rotulo" x="{{ xf + 10 }}" y="{{ (f.sup + uh * (1 - fin.exigido / tope) + 4)|round(1) }}">Según la ley</text>
             <text class="rotulo" x="{{ xf + 10 }}" y="{{ (f.sup + uh * (1 - fin.transferido / tope) + 4)|round(1) }}">Se transfirió</text>
             <line class="cruz" data-cruz x1="0" x2="0" y1="{{ f.sup }}" y2="{{ f.h - f.inf }}" visibility="hidden"/>
             <rect class="zona" x="{{ f.izq }}" y="0" width="{{ uw }}" height="{{ f.h }}"/>
@@ -104,7 +104,7 @@
         {% endfor %}
       </div>
       {% endfor %}
-      <p class="leyenda"><span class="clave exigido"></span>Correspondía según la ley
+      <p class="leyenda"><span class="clave exigido"></span>Lo que la ley (publicada en octubre de 2025) manda reconocer por cada mes de 2025
         <span class="clave pagado"></span>Se transfirió (devengado)</p>
     </figure>
   </div>
@@ -170,7 +170,7 @@
         const r = svg.getBoundingClientRect(), xv = (ev.clientX - r.left) * vb.width / r.width;
         const p = puntos.reduce((a, b) => Math.abs(b.x - xv) < Math.abs(a.x - xv) ? b : a);
         cruz.setAttribute("x1", p.x); cruz.setAttribute("x2", p.x); cruz.setAttribute("visibility", "visible");
-        tip.innerHTML = `<strong>Hasta ${p.mes}</strong><br>Correspondía: ${m(p.exigido)}<br>Se transfirió: ${m(p.transferido)}`;
+        tip.innerHTML = `<strong>Enero a ${p.mes}</strong><br>La ley manda reconocer: ${m(p.exigido)}<br>Se transfirió: ${m(p.transferido)}`;
         tip.hidden = false;
         tip.style.left = Math.max(0, Math.min(p.x * r.width / vb.width + 12, r.width - tip.offsetWidth)) + "px";
       });
@@ -180,7 +180,9 @@
   </script>
 
   <p class="aviso">Funcionamiento, hospitales, ciencia y técnica y extensión (arts. 3 y 4 de la Ley 27.795).
-     La ley es de octubre de 2025, pero manda actualizar estos montos desde enero de ese año.
+     La ley es de octubre de 2025, pero manda actualizar estos montos desde enero de ese año: no es lo que se debía
+     mes a mes, sino lo que la ley manda reconocer por 2025. Como los aumentos se toman «a cuenta» (art. 4), la
+     comparación que fija la ley es la del año completo.
      El Poder Ejecutivo suspendió su ejecución
      (<a href="{{ evento }}ley-27795-promulgacion" hx-get="{{ evento }}ley-27795-promulgacion" hx-target="#ficha-contenido">Decreto 759/2025</a>);
      un juez declaró inconstitucional esa suspensión y el Gobierno apeló
@@ -215,10 +217,10 @@
            {{ num(ej, "arts34-exigido-b") }}, y lo transferido queda en <span class="rojo">{{ num(ej, "arts34-relacion-b") }}</span>.</p></details>
       <details class="mas"><summary>Ver la cuenta por bimestre</summary>
         <table class="tabla">
-          <thead><tr><th>2025</th><th>Correspondía</th><th>Se transfirió</th></tr></thead>
+          <thead><tr><th>2025</th><th>Según la ley</th><th>Se transfirió</th></tr></thead>
           <tbody>
             {% for nombre in ["Ene–feb", "Mar–abr", "May–jun", "Jul–ago", "Sep–oct", "Nov–dic"] %}
-            <tr><th>{{ nombre }}</th><td data-r="Correspondía">{{ num(ej, "arts34-exigido-bim" ~ loop.index) }}</td><td data-r="Se transfirió">{{ num(ej, "arts34-transferido-bim" ~ loop.index) }}</td></tr>
+            <tr><th>{{ nombre }}</th><td data-r="Según la ley">{{ num(ej, "arts34-exigido-bim" ~ loop.index) }}</td><td data-r="Se transfirió">{{ num(ej, "arts34-transferido-bim" ~ loop.index) }}</td></tr>
             {% endfor %}
           </tbody>
         </table></details>
@@ -227,13 +229,13 @@
            no fija fórmula: hasta {{ ej.detalle.corte_actual }} se transfirieron {{ num(ej, "arts34-transferido-actual") }}.</p></details>
       <details class="mas"><summary>Ver los números de la UNR y del sistema, mes a mes</summary>
         <table class="tabla">
-          <thead><tr><th>Acumulado</th><th>UNR: correspondía</th><th>UNR: recibió</th><th>Todas: correspondía</th><th>Todas: recibieron</th></tr></thead>
+          <thead><tr><th>Acumulado</th><th>UNR: según la ley</th><th>UNR: recibió</th><th>Todas: según la ley</th><th>Todas: recibieron</th></tr></thead>
           <tbody>
             {% for mm in ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"] %}
             <tr><th>{{ ej.detalle.acumulado["arts34-"][loop.index0].mes }}</th>
-              <td data-r="UNR: correspondía">{{ num(ej, "unr-arts34-acum-exigido-" ~ mm) }}</td>
+              <td data-r="UNR: según la ley">{{ num(ej, "unr-arts34-acum-exigido-" ~ mm) }}</td>
               <td data-r="UNR: recibió">{{ num(ej, "unr-arts34-acum-transferido-" ~ mm) }}</td>
-              <td data-r="Todas: correspondía">{{ num(ej, "arts34-acum-exigido-" ~ mm) }}</td>
+              <td data-r="Todas: según la ley">{{ num(ej, "arts34-acum-exigido-" ~ mm) }}</td>
               <td data-r="Todas: recibieron">{{ num(ej, "arts34-acum-transferido-" ~ mm) }}</td></tr>
             {% endfor %}
           </tbody>

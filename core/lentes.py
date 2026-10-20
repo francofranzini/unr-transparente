@@ -100,6 +100,9 @@ def variacion_real(puntos: dict[str, Punto], ipc: dict[str, Dato], mes: str, bas
 # --- Ley 27.795, art. 5 ------------------------------------------------------
 
 MES_PREVIO_ART5 = "2023-11"  # el art. 5 cuenta el IPC desde el 1-dic-2023: el salario de partida es el de nov-2023
+# El aumento del art. 5 «se hará efectivo al mes siguiente de la publicación» (BO 21-oct-2025). Antes, la ley no exigía
+# nada: el sueldo de nov-2023 actualizado por IPC es solo una referencia (ADR 0023).
+MES_VIGENCIA_ART5 = "2025-11"
 FECHAS_CORTE_ART5 = {
     "2025-08-21": "sanción (21-ago-2025)",
     "2025-10-02": "confirmación del Congreso (2-oct-2025)",
