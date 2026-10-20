@@ -136,15 +136,6 @@ def test_meses_art4_reparten_cada_bimestre_en_dos():
     assert len(meses) == 12 and sum(r.valor for r in meses) == Decimal("2250")
 
 
-def test_dias_de_sueldo_a_mano():
-    # Nov-2023: 100 con IPC 100. Mes: 150 con IPC 200 → salario real 0,75 → 30 × 0,75 = 22,5 días.
-    grillas = [_dato("2023-11", "100"), _dato("2024-01", "150")]
-    ipc = lentes.serie_por_periodo([_dato("2023-11", "100", "ipc"), _dato("2023-12", "150", "ipc"),
-                                    _dato("2024-01", "200", "ipc")])
-    puntos = {p.periodo: p for p in lentes.serie_vigente(grillas, "2024-01")}
-    assert lentes.dias_de_sueldo(puntos, ipc, "2024-01").valor == Decimal("22.5")
-    assert lentes.dias_de_sueldo(puntos, ipc, "2023-11").valor == Decimal("30")
-
 
 def test_referencia_art4_en_2025_es_lo_que_manda_la_ley_y_sigue_en_2026():
     partida = lentes.partida_arts_3_4([_devengado("2024-09", "100")], "nivel_sep_2024")

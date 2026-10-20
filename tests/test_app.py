@@ -71,16 +71,16 @@ def test_transferencias_muestra_el_caso_unr_con_grafico(cliente):
     assert "−42,3 %" in texto and "−32,4 %" in texto
 
 
-def test_salario_muestra_el_calendario(cliente):
+def test_salario_muestra_el_billete(cliente):
     texto = cliente.get("/").text
-    assert "data-calendario" in texto and 'href="/ficha/cifra/salario/dias-2026-08"' in texto
+    assert "data-billete" in texto and 'href="/ficha/cifra/salario/compra-2026-08"' in texto
 
 
 @pytest.mark.parametrize("ficha, norma", [
     ("ejecucion/arts34-exigido", "Ley 27.795, art. 4"),
     ("ejecucion/arts34-relacion-2026", "la ley no lo pide"),
     ("salario/exigido", "Ley 27.795, art. 5"),
-    ("salario/faltan-2026-08", "Ley 27.795, art. 5"),
+    ("salario/poder-2026-08", "Ley 27.795, art. 5"),
 ])
 def test_las_cifras_de_la_ley_citan_la_norma(cliente, ficha, norma):
     texto = cliente.get(f"/ficha/cifra/{ficha}", headers={"HX-Request": "true"}).text
@@ -90,4 +90,4 @@ def test_las_cifras_de_la_ley_citan_la_norma(cliente, ficha, norma):
 
 def test_antes_de_que_rija_la_ley_no_hay_norma(cliente):
     # Mayo de 2025: pérdida de poder de compra, pero el art. 5 todavía no regía.
-    assert "<dt>Norma</dt>" not in cliente.get("/ficha/cifra/salario/faltan-2025-05", headers={"HX-Request": "true"}).text
+    assert "<dt>Norma</dt>" not in cliente.get("/ficha/cifra/salario/poder-2025-05", headers={"HX-Request": "true"}).text

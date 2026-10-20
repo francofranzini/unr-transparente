@@ -86,17 +86,17 @@ def test_acumulado_mensual_cierra_en_el_total_anual(ejes):
         assert len(eje.detalle["acumulado"][prefijo]) == 12
 
 
-def test_calendario_del_sueldo(ejes):
+def test_billete_del_sueldo(ejes):
     eje = ejes["salario"]
-    # Nov-2023 es la base: alcanza para los 30 días.
-    assert eje.cifra("dias-2023-11").valor == 30
-    # Ago-2026: salario real −25,0 % → 30 × 0,7498 = 22,49 → 22 días completos, 8 sin cubrir.
-    assert eje.cifra("dias-2026-08").valor == 22 and eje.cifra("faltan-2026-08").valor == 8
-    assert "22,49" in eje.cifra("dias-2026-08").calculo
-    cal = eje.detalle["calendario"]
-    assert cal[0]["periodo"] == "2023-11" and cal[-1]["periodo"] == eje.cifra("pagado").periodo
+    # Nov-2023 es la base: compra el 100 %.
+    assert eje.cifra("compra-2023-11").valor == 100
+    # Ago-2026: salario real −25,0 % → compra el 75,0 %.
+    assert eje.cifra("compra-2026-08").valor.quantize(Decimal("0.1")) == Decimal("75.0")
+    assert eje.cifra("poder-2026-08").valor == eje.cifra("real-nov_2023").valor
+    billete = eje.detalle["billete"]
+    assert billete[0]["periodo"] == "2023-11" and billete[-1]["periodo"] == eje.cifra("pagado").periodo
     # Los meses sin escala publicada llevan el aviso de vigencia.
-    assert eje.cifra("dias-2026-08").aviso
+    assert eje.cifra("compra-2026-08").aviso
 
 
 def test_el_art5_exige_solo_desde_noviembre_de_2025(ejes):
@@ -105,7 +105,7 @@ def test_el_art5_exige_solo_desde_noviembre_de_2025(ejes):
     serie = {p["periodo"]: p for p in eje.serie}
     assert serie["2025-10"]["exigido"] is None and serie["2025-10"]["referencia"] is not None
     assert serie["2025-11"]["exigido"] == serie["2025-11"]["referencia"]
-    rige = {c["periodo"]: c["rige"] for c in eje.detalle["calendario"]}
+    rige = {c["periodo"]: c["rige"] for c in eje.detalle["billete"]}
     assert not rige["2025-10"] and rige["2025-11"] and rige["2026-08"]
 
 

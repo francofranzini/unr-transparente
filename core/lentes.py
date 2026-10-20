@@ -211,20 +211,6 @@ def transferido_arts_3_4(devengado: list[Dato], anio: str) -> Resultado:
         f"Devengado {anio} de las actividades 14, 15, 16 y 25 (Presupuesto Abierto, todas las fuentes)."])
 
 
-# --- Días de sueldo (ADR 0023) ----------------------------------------------------
-
-DIAS_DEL_MES = 30
-
-
-def dias_de_sueldo(puntos: dict[str, Punto], ipc: dict[str, Dato], mes: str, base: str = "nov_2023") -> Resultado:
-    """Para cuántos días de un mes de 30 alcanza el sueldo de `mes`, medido con el poder de compra de la base.
-
-    30 × (salario real del mes ÷ salario real de la base). Con el sueldo de nov-2023 da 30."""
-    variacion = variacion_real(puntos, ipc, mes, base)
-    valor = DIAS_DEL_MES * (1 + variacion.valor / 100)
-    return Resultado(valor, variacion.fuentes, variacion.supuestos + [
-        f"Días de sueldo = {DIAS_DEL_MES} × salario real del mes ÷ salario real de la base."])
-
 
 def referencia_art4(partida: Resultado, ipc: dict[str, Dato], anio: str) -> list[Resultado]:
     """La regla del art. 4 (actualización bimestral por IPC) aplicada a cualquier año, mes a mes (ADR 0024).

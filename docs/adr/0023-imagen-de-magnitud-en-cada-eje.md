@@ -12,7 +12,7 @@ Las pilas de fajos de Transferencias funcionaron: la diferencia entre lo que cor
 
 Cada eje con una cifra central tiene una **imagen de magnitud** que cumple estas reglas:
 
-1. **Proporcional.** La imagen es una transformación directa del dato, sin exagerar (fajos: altura proporcional; calendario: días = 30 × salario real). Si hay redondeo, la ficha muestra el valor exacto.
+1. **Proporcional.** La imagen es una transformación directa del dato, sin exagerar (fajos: altura proporcional; billete: ancho = salario real ÷ salario real de nov-2023). Si hay redondeo, la ficha muestra el valor exacto.
 2. **Verificable.** Junto a la imagen va la cifra que la genera, y esa cifra abre su ficha (documento, página, cálculo, vigencia). Si la imagen cambia con un selector, cada estado tiene su propia cifra con ficha.
 3. **Rojo = lo que falta según la Ley 27.795, solo desde que la ley rige** para ese dato. Antes, la misma brecha se muestra en gris (`--tenue`) y se rotula como referencia. No se usa el rojo para otra cosa.
 4. **Animación con sentido**: muestra cómo se llega al dato (los fajos se apilan, los días se llenan) y se repite al cambiar de vista. Con «reducir movimiento», todo queda quieto. Sin JavaScript se ve el estado final.
@@ -45,3 +45,7 @@ Las fichas de las cifras que aplican la ley no citaban la ley: mostraban los dat
 - Referencias de años que la ley no regula (2026): «art. 4, extendido a otro año: la ley no lo pide».
 - Salario: brecha y «exige la ley», art. 5 (incluye la cláusula de actualización mensual no inferior a la inflación, que es la que vale para 2026). Días sin cubrir: art. 5 solo desde noviembre de 2025.
 - Para 2026, Transferencias muestra dos lecturas, porque la ley no dice qué pasa después de 2025: seguir actualizando (−34,7 % todas; −52,0 % UNR) o el monto de diciembre de 2025 como piso sin actualizar (−24,2 %; −44,3 %).
+
+## Actualización (2026-10-20): el calendario se reemplaza por un billete
+
+El calendario de 30 días quedó recargado. Se reemplaza por un **billete**: el contorno punteado es el sueldo de noviembre de 2023; el billete azul se achica a lo que compra el sueldo del mes (agosto de 2026: 75,0 %); en el hueco va lo que falta (−25,0 %), en rojo desde noviembre de 2025 y en gris antes. La animación muestra cómo se achica; el deslizador recorre los meses. Cifras por mes con ficha: `compra-AAAA-MM` y `poder-AAAA-MM` (esta con la norma del art. 5 desde que rige). La proporción es directa (ancho = salario real ÷ salario real de nov-2023), así que la imagen no exagera.

@@ -8,7 +8,7 @@ Tres frentes en paralelo, sobre la base fijada en [`docs/ESTANDAR.md`](../ESTAND
 | **Fran** | Presupuesto y transferencias | 03 — `#transferencias` | [`fran-presupuesto.md`](fran-presupuesto.md) |
 | **Tero** | Auditorías y control | 04 — `#control` | [`tero-auditorias.md`](tero-auditorias.md) |
 
-Salario (01) lo toma Fran (rama `fran/salario`, calendario de días de sueldo, ADR 0023). Graduación (05) no tiene responsable por ahora; sus pendientes están al final de este archivo.
+Salario (01) lo toma Fran (rama `fran/salario`, billete de poder de compra, ADR 0023). Graduación (05) no tiene responsable por ahora; sus pendientes están al final de este archivo.
 
 ## Qué archivos son de cada uno
 

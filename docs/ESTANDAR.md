@@ -63,7 +63,7 @@ Se usan tal como están; no se crean clases ni estilos nuevos.
 
 ## 4 bis. Imagen de magnitud (ADR 0023)
 
-Cada eje con una cifra central la muestra también con una imagen que se entiende sin leer números: pilas de fajos (Transferencias), calendario de días de sueldo (Salario). Reglas: proporcional al dato; la cifra que la genera está al lado y abre su ficha (también en cada estado de un selector); rojo solo para lo que falta según la Ley 27.795 y solo desde que la ley rige para ese dato (antes, gris y rotulado como referencia); animación que muestra cómo se llega al dato, quieta con «reducir movimiento» y completa sin JavaScript; en celular, lo que se compara va lado a lado.
+Cada eje con una cifra central la muestra también con una imagen que se entiende sin leer números: pilas de fajos (Transferencias), billete que se achica según el poder de compra (Salario). Reglas: proporcional al dato; la cifra que la genera está al lado y abre su ficha (también en cada estado de un selector); rojo solo para lo que falta según la Ley 27.795 y solo desde que la ley rige para ese dato (antes, gris y rotulado como referencia); animación que muestra cómo se llega al dato, quieta con «reducir movimiento» y completa sin JavaScript; en celular, lo que se compara va lado a lado.
 
 ## 5. Reglas de contenido
 
