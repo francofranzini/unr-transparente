@@ -38,8 +38,13 @@ Por cada informe: un evento con órgano, objeto auditado, período auditado, fec
 
 ## Avances
 
-_(Completar a medida que se avanza.)_
+**2026-10-20** (ADR 0025, propuesta)
+- Se quitó el recuadro «Último control externo publicado»: repetía el hito del informe AGN, que está en la línea de tiempo.
+- Debajo de la pregunta, un desplegable «Ver más» / «Ver menos» con el texto del equipo: autonomía y autarquía de las universidades (art. 75, inc. 19, de la Constitución) y quién las audita (AGN, Ley 24.156, y SIGEN), con enlaces a InfoLEG.
+- La línea de tiempo de Control usa la misma cronología que la ley (macro `_cronologia.html`): orden cronológico, scroll propio, filtros por órgano y recorrido hecho por hecho (`ACTORES_CONTROL` y `FILTROS_CONTROL` en `eje_control`). Sin sellos: son solo de la sección de la ley.
+- La línea de tiempo va dentro de un recuadro desplegable «Universidad Nacional de Rosario (UNR)». Para sumar otra universidad: sus hechos en `data/eventos/control_<sigla>.yaml` con `ejes: [control-<sigla>]` y una línea en `UNIVERSIDADES_CONTROL` (`core/ejes.py`).
+- Para cada evento nuevo de `control.yaml`: si su id no empieza con `agn`, `sigen`, `ptn` o `uai` (ni es un `convenio`), sumar su actor en `_actor_control`.
 
 ## Propuestas de presentación
 
-_(Anotar acá, sin implementarlas.)_
+- **ADR 0025 (implementada en la rama, pendiente de aprobación):** quién controla a la UNR, plegado debajo de la pregunta, y la cronología de la ley (sin sellos) en Control. Toca `_cronologia_ley.html`, `_cronologia.html` (nuevo) y `estilo.css`.

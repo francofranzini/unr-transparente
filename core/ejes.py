@@ -491,9 +491,44 @@ def eje_salario(repo: Repositorio) -> Eje:
     return eje
 
 
+# Cronología de Control (ADR 0025): cada órgano toma el color del poder del que depende, con las clases de actor que
+# ya existen (no se agregan colores). AGN: Congreso; SIGEN y Procuración del Tesoro: Poder Ejecutivo.
+ACTORES_CONTROL = {
+    "agn": ("congreso", "AGN"),
+    "sigen": ("ejecutivo", "SIGEN"),
+    "ptn": ("ejecutivo", "Procuración del Tesoro"),
+    "uai": ("justicia", "Auditoría interna UNR"),
+    "convenio": ("acuerdo", "Convenio"),
+}
+FILTROS_CONTROL = [("congreso", "AGN"), ("ejecutivo", "SIGEN y Procuración"), ("justicia", "Auditoría interna UNR"),
+                   ("acuerdo", "Convenios")]
+
+
+def _actor_control(evento: Evento) -> tuple[str, str]:
+    if evento.tipo == "convenio":
+        return ACTORES_CONTROL["convenio"]
+    for prefijo in ("agn", "sigen", "ptn", "uai"):
+        if evento.id.startswith(prefijo) or f"-{prefijo}-" in evento.id:
+            return ACTORES_CONTROL[prefijo]
+    raise ValueError(f"Evento de control sin actor: {evento.id} (agregarlo en ACTORES_CONTROL)")
+
+
+# Una cronología de control por universidad (ADR 0025): (sigla, nombre, eje de sus eventos en data/eventos/).
+# Para sumar otra: cargar sus hechos en data/eventos/control_<sigla>.yaml con `ejes: [control-<sigla>]` y agregarla acá.
+UNIVERSIDADES_CONTROL = [("UNR", "Universidad Nacional de Rosario", "control")]
+
+
 def eje_control(repo: Repositorio) -> Eje:
-    eje = Eje("control", "Control", "¿Quién audita a las universidades?")
-    eje.eventos = repo.eventos_de("control")
+    eje = Eje("control", "Control", "¿Quién audita a la UNR?")
+    universidades = []
+    for sigla, nombre, clave in UNIVERSIDADES_CONTROL:
+        eventos = repo.eventos_de(clave)
+        hitos = [e for e in eventos if e.tipo != "estado"]
+        universidades.append({"sigla": sigla, "nombre": nombre, "eventos": eventos, "hechos": len(hitos),
+                              "desde": hitos[0].fecha[:4] if hitos else "",
+                              "actores": {e.id: _actor_control(e) for e in hitos}})
+        eje.eventos += eventos
+    eje.detalle = {"universidades": universidades, "filtros": FILTROS_CONTROL}
     eje.pendientes = ["Informe AGN 161/2022 (original).", "Informes individuales de la Unidad de Auditoría Interna."]
     return eje
 

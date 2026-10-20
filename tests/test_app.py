@@ -71,8 +71,58 @@ def test_recorrido_de_la_ley_con_sellos(cliente):
     from core.ejes import SELLOS_LEY
     ids = {e.id for e in repo.eventos}
     assert set(SELLOS_LEY) <= ids
-    assert html.count('class="sello"') == len(SELLOS_LEY)
-    assert "<b>Vetada</b><small>Decreto 647/2025</small>" in html
+    ley = _seccion(html, "ley")
+    assert ley.count('class="sello"') == len(SELLOS_LEY)
+    assert "<b>Vetada</b><small>Decreto 647/2025</small>" in ley
+
+
+def _seccion(html: str, ancla: str) -> str:
+    inicio = html.index(f'id="{ancla}"')
+    return html[inicio:html.index("</section>", inicio)]
+
+
+def test_control_usa_la_misma_cronologia_que_la_ley(cliente):
+    # ADR 0025: misma plantilla (scroll, filtros, recorrido), en orden cronológico y con un actor por hecho.
+    # Los sellos son solo de la sección de la ley.
+    control = _seccion(cliente.get("/").text, "control")
+    for marca in ("data-cronologia", "data-cronologia-scroll", 'class="recorrido-modos" hidden', 'data-filtro="congreso"'):
+        assert marca in control
+    ids = re.findall(r'class="hito-ficha" href="/ficha/evento/([^"]+)"', control)
+    hitos = [e for e in repo.eventos_de("control") if e.tipo != "estado"]
+    assert ids == [e.id for e in hitos]
+    assert 'class="hito actor-otro' not in control
+    assert 'class="sello"' not in control
+
+
+def test_control_tiene_una_cronologia_por_universidad(cliente):
+    # ADR 0025: cada universidad, en su recuadro desplegable (hoy, solo la UNR, abierto); la cronología va adentro.
+    from core.ejes import UNIVERSIDADES_CONTROL
+    control = _seccion(cliente.get("/").text, "control")
+    assert control.count('<details class="universidad" open>') == len(UNIVERSIDADES_CONTROL)
+    inicio = control.index('<details class="universidad" open>')
+    assert '<span class="universidad-nombre">Universidad Nacional de Rosario (UNR)</span>' in control[inicio:]
+    assert inicio < control.index("data-cronologia-scroll")
+
+
+def test_los_recorridos_de_ley_y_control_tienen_transicion(cliente):
+    # ADR 0025: en las dos cronologías el paso entre hechos se desliza; en la ley, el sello cae después.
+    html = cliente.get("/").text
+    for ancla in ("ley", "control"):
+        assert "data-cronologia data-transicion" in _seccion(html, ancla)
+
+
+def test_control_explica_quien_controla_debajo_de_la_pregunta(cliente):
+    # ADR 0025: debajo de la pregunta, plegado («Ver más» / «Ver menos»), el texto sobre la autarquía de las universidades
+    # y quién las audita (AGN y SIGEN); el último control externo ya está en la línea de tiempo, no en un recuadro aparte.
+    control = _seccion(cliente.get("/").text, "control")
+    pregunta = control.index("¿Quién audita a la UNR?</h2>")
+    assert pregunta < control.index('presentacion') < control.index("Sindicatura General de la Nación") < control.index("data-cronologia")
+    assert "¿Quién controla a la UNR?" not in control
+    assert '<span class="si-cerrado">Ver más</span><span class="si-abierto">Ver menos</span>' in control
+    assert "artículo 75, inciso 19, de la Constitución Nacional" in control and "Auditoría General de la Nación" in control
+    visible = re.sub(r"<details.*?</details>", "", control, flags=re.S)
+    assert "Sindicatura General de la Nación" not in visible
+    assert 'class="hoy' not in control and "Último control externo" not in control
 
 
 @pytest.mark.parametrize("ruta", RUTAS)
