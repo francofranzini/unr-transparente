@@ -27,3 +27,10 @@ Con el alcance nacional (ADR 0021), la cifra principal de la sección 03 es la d
 - **Gráfico:** líneas punteadas en la sanción (21-ago-2025) y la publicación (21-oct-2025).
 - **Artículo:** la explicación es una cuenta de cinco renglones; el resto va en desplegables de una pregunta (`.mas`).
 - **Fichas:** rótulos de una línea, cálculo en una frase, nota única por archivo. El detalle por fuente de financiamiento y la cantidad de universidades pasan a columnas (`fuentes_financiamiento`, `universidades`), que no se muestran en la ficha.
+
+## Actualización (2026-10-19): negativos en rojo y pilas de fajos
+
+- **Cifra principal en negativo:** «se transfirió X % frente a lo que correspondía» = (transferido ÷ correspondía − 1) × 100. Sistema −32,4 %; UNR −42,3 %; partida B −21,3 %. Es la misma brecha que «correspondía 47,8 % / 73,3 % más», medida desde lo que correspondía. No se escribe «−73 %»: diría que la UNR recibió el 27 %, y recibió el 57,7 %.
+- **Rojo:** se extiende de «la brecha del art. 5» a **lo que falta según la Ley 27.795** (arts. 3, 4 y 5). Sigue sin usarse para otra cosa. Modifica `ESTANDAR.md` §2.
+- **Pilas de fajos** sobre los montos de la UNR: un fajo = $ 1.000 millones, redondeado (27 contra 16), así que la altura es proporcional. Los fajos caen uno por uno al entrar en pantalla (Web Animations API). Sin JavaScript o con «reducir movimiento», las pilas se ven quietas y completas. En celular, las dos pilas van lado a lado (`solo-angosto`) para que se puedan comparar.
+- Colores: naranja (`--serie-2`) para lo que correspondía y azul (`--serie-1`) para lo recibido, los mismos del gráfico.

@@ -1,9 +1,22 @@
 {% from "_macros.html" import num, encabezado %}
 {% set evento = "/ficha/evento/" %}
+{% macro pila(clave, serie, maximo, clase="solo-ancho") -%}
+{#- Fajos de $ 1.000 millones, proporcionales al monto (ADR 0022). Sin JS o con «reducir movimiento», quietos. -#}
+{%- set fajos = (ej.cifra(clave).valor / 1000000000)|round|int -%}
+{%- set alto = maximo * 5 + 6 -%}
+<svg class="pila {{ clase }}" display="block" viewBox="0 0 96 {{ alto }}" width="96" height="{{ alto }}" role="img"
+     aria-label="{{ fajos }} fajos de 1.000 millones de pesos" data-pila>
+  {%- for i in range(fajos) %}
+  {%- set y = alto - (i + 1) * 5 %}{% set dx = [0, 3, -2, 2, -3, 1, -1][i % 7] %}
+  <g data-fajo><rect x="{{ 8 + dx }}" y="{{ y }}" width="80" height="4.2" rx="1" fill="var(--fondo)" stroke="var({{ serie }})" stroke-width="1"/>
+  <rect x="{{ 42 + dx }}" y="{{ y }}" width="12" height="4.2" fill="var({{ serie }})"/></g>
+  {%- endfor %}
+</svg>
+{%- endmacro %}
 <section class="seccion" id="transferencias">
   {{ encabezado("03", "Transferencias", "¿Recibieron las universidades lo que les correspondía por ley en 2025?") }}
   <div class="datos revelar">
-    <div class="dato dato-grande"><small>Según la ley, correspondía más</small>{{ num(ej, "arts34-brecha", true) }}</div>
+    <div class="dato dato-grande"><small>Se transfirió, frente a lo que correspondía</small><span class="rojo">{{ num(ej, "arts34-relacion", true) }}</span></div>
     <div class="dato"><small>Correspondían</small>{{ num(ej, "arts34-exigido", true) }}</div>
     <div class="dato"><small>Se transfirió</small>{{ num(ej, "arts34-transferido", true) }}</div>
   </div>
@@ -17,12 +30,38 @@
   {# El caso de la UNR: gráfico acumulado con selector (ADR 0022) #}
   <p class="sec-numero revelar">El caso de la UNR</p>
   <h3 class="revelar">¿Y a la Universidad Nacional de Rosario?</h3>
-  <div class="datos revelar">
-    <div class="dato dato-grande"><small>Según la ley, le correspondía más</small>{{ num(ej, "unr-arts34-brecha", true) }}</div>
-    <div class="dato"><small>Correspondían</small>{{ num(ej, "unr-arts34-exigido", true) }}</div>
-    <div class="dato"><small>Recibió</small>{{ num(ej, "unr-arts34-transferido", true) }}</div>
-    <div class="dato"><small>Todo el sistema</small>{{ num(ej, "arts34-brecha", true) }}</div>
+  {% set mas_alta = (ej.cifra("unr-arts34-exigido").valor / 1000000000)|round|int %}
+  <div class="datos revelar" style="align-items: flex-end">
+    <div class="dato dato-grande"><small>Recibió, frente a lo que le correspondía</small><span class="rojo">{{ num(ej, "unr-arts34-relacion", true) }}</span></div>
+    <div class="dato">{{ pila("unr-arts34-exigido", "--serie-2", mas_alta) }}<small>Le correspondían</small>{{ num(ej, "unr-arts34-exigido", true) }}</div>
+    <div class="dato">{{ pila("unr-arts34-transferido", "--serie-1", mas_alta) }}<small>Recibió</small>{{ num(ej, "unr-arts34-transferido", true) }}</div>
+    <div class="dato"><small>Todo el sistema</small><span class="rojo">{{ num(ej, "arts34-relacion", true) }}</span></div>
+    {# En celular, las dos pilas lado a lado para que se comparen #}
+    <div class="solo-angosto" style="flex-basis: 100%">
+      <div style="display: flex; gap: 24px; align-items: flex-end">
+        <div>{{ pila("unr-arts34-exigido", "--serie-2", mas_alta, "") }}<small>Le correspondían</small></div>
+        <div>{{ pila("unr-arts34-transferido", "--serie-1", mas_alta, "") }}<small>Recibió</small></div>
+      </div>
+    </div>
   </div>
+  <p class="aviso">Cada fajo representa $ 1.000 millones (redondeado).</p>
+  <script>
+  (() => {
+    const fila = document.currentScript.previousElementSibling.previousElementSibling;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
+    const pilas = [...fila.querySelectorAll("[data-pila]")];
+    pilas.forEach((p) => p.querySelectorAll("[data-fajo]").forEach((f) => { f.style.opacity = 0; }));
+    const obs = new IntersectionObserver((entradas) => {
+      if (!entradas.some((e) => e.isIntersecting)) return;
+      obs.disconnect();
+      pilas.forEach((p) => p.querySelectorAll("[data-fajo]").forEach((f, i) => {
+        f.animate([{ transform: "translateY(-48px)", opacity: 0 }, { transform: "none", opacity: 1 }],
+                  { duration: 320, delay: 200 + i * 70, easing: "cubic-bezier(.2,.8,.3,1)", fill: "both" });
+      }));
+    }, { threshold: 0.4 });
+    obs.observe(fila);
+  })();
+  </script>
 
   {% set formatos = {"ancho": {"w": 720, "h": 300, "izq": 72, "der": 128, "sup": 24, "inf": 28},
                      "angosto": {"w": 360, "h": 280, "izq": 58, "der": 82, "sup": 22, "inf": 26}} %}
@@ -131,7 +170,7 @@
             <tr><th>Se transfirió en 2025</th><td data-r=""><strong>{{ num(ej, "arts34-transferido") }}</strong></td></tr>
           </tbody>
         </table>
-        <p class="resultado">Según la ley, correspondía <strong>{{ num(ej, "arts34-brecha") }}</strong> más.</p>
+        <p class="resultado">Se transfirió <strong class="rojo">{{ num(ej, "arts34-relacion") }}</strong> frente a lo que correspondía.</p>
       </div>
 
       <details class="mas"><summary>¿De dónde salen los datos?</summary>
@@ -144,7 +183,7 @@
       <details class="mas"><summary>¿Por qué septiembre de 2024?</summary>
         <p>La ley no dice de qué mes es «el monto». Septiembre es el monto que regía después del aumento de mitad de 2024.
            Partiendo del promedio de todo 2024 ({{ num(ej, "arts34-partida-b") }} por mes), correspondían
-           {{ num(ej, "arts34-exigido-b") }}: {{ num(ej, "arts34-brecha-b") }} más.</p></details>
+           {{ num(ej, "arts34-exigido-b") }}, y lo transferido queda en <span class="rojo">{{ num(ej, "arts34-relacion-b") }}</span>.</p></details>
       <details class="mas"><summary>Ver la cuenta por bimestre</summary>
         <table class="tabla">
           <thead><tr><th>2025</th><th>Correspondía</th><th>Se transfirió</th></tr></thead>

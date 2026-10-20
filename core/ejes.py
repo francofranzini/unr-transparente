@@ -158,6 +158,12 @@ def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str
                                 (exigido.valor / transferido.valor - 1) * 100, "porcentaje", "2025",
                                 exigido.fuentes + transferido.fuentes,
                                 calculo="(Correspondía ÷ transferido − 1) × 100"))
+        eje.cifras.append(Cifra(f"{prefijo}relacion{sufijo}",
+                                f"{quien}: lo transferido frente a lo que correspondía"
+                                + (" (partida: promedio de 2024)" if sufijo else ""),
+                                (transferido.valor / exigido.valor - 1) * 100, "porcentaje", "2025",
+                                exigido.fuentes + transferido.fuentes,
+                                calculo="(Transferido ÷ correspondía − 1) × 100"))
         eje.cifras.append(Cifra(f"{prefijo}faltante{sufijo}",
                                 f"{quien}: diferencia en 2025" + (" (partida: promedio de 2024)" if sufijo else ""),
                                 exigido.valor - transferido.valor, "ARS corrientes", "2025",
