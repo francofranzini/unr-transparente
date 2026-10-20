@@ -67,3 +67,4 @@ Leer antes: [`docs/ESTANDAR.md`](../ESTANDAR.md), ADR 0012, 0013, 0014 y 0015.
 - Las fichas son legibles si los rótulos, cálculos y notas son cortos; sugerir el mismo criterio a los demás ejes.
 - Si se adopta el gráfico del ADR 0022, mover su geometría a `app/graficos.py` y el sombreado a `estilo.css` (archivos congelados).
 - Un selector de universidad para la línea de detalle: los datos mensuales por universidad están en Presupuesto Abierto.
+- **Ficha breve (ADR 0032, propuesta):** la ficha muestra el número, «Cómo se calcula» (con los sumandos y el criterio, si los hay) y «Sale de»; citas, documentos completos e ids pasan a «Ver el detalle». Toca archivos congelados: hay que aprobarla entre los tres.

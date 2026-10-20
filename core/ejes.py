@@ -54,6 +54,8 @@ class Cifra:
     calculo: str = ""
     aviso: str = ""  # p. ej. vigencia no confirmada de una grilla (ADR 0004)
     normas: tuple[Norma, ...] = ()  # la norma que define el cálculo, si la hay (ADR 0023)
+    criterio: str = ""  # una elección del portal que la norma no fija (p. ej. el mes de la partida, ADR 0020)
+    serie: tuple[tuple[str, Decimal], ...] = ()  # (período, valor) de donde se eligió la cifra, para la ficha
 
     @property
     def tipo_fuente(self) -> str:
@@ -175,6 +177,14 @@ def _con_normas(eje: Eje, regla) -> None:
     eje.cifras = [replace(c, normas=regla(c)) if regla(c) else c for c in eje.cifras]
 
 
+CRITERIO_PARTIDA = {
+    "nivel_sep_2024": ("La ley no dice de qué mes es el monto a actualizar. Tomamos septiembre de 2024, el último "
+                       "nivel estable antes del período que actualiza la ley."),
+    "promedio_2024": ("La ley no dice de qué mes es el monto a actualizar. Esta es la opción alternativa: el promedio "
+                      "de 2024. La principal es septiembre de 2024."),
+}
+
+
 def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str, quien: str,
               detalle: bool = False) -> None:
     """Ley 27.795, arts. 3 y 4: lo que correspondía transferir en 2025 frente a lo transferido (ADR 0020).
@@ -188,14 +198,20 @@ def _arts_3_4(repo: Repositorio, eje: Eje, anio: str, entidad: str, prefijo: str
                             transferido.valor, "ARS corrientes", "2025", transferido.fuentes,
                             calculo="Devengado de enero a diciembre, actividades 14, 15, 16 y 25"))
 
+    serie_2024 = tuple((mes, sum((d.valor for d in lentes._de_actividades(devengado) if d.periodo == mes), Decimal(0)))
+                       for mes in lentes._meses("2024-01", "2024-12"))
     opciones = (("nivel_sep_2024", ""), ("promedio_2024", "-b")) if detalle else (("nivel_sep_2024", ""),)
     for opcion, sufijo in opciones:
         partida = lentes.partida_arts_3_4(devengado, opcion)
         nombre = lentes.PARTIDAS_ARTS_3_4[opcion]
         eje.cifras.append(Cifra(f"{prefijo}partida{sufijo}", f"{quien}: {nombre}", partida.valor,
-                                "ARS corrientes", "2024", partida.fuentes,
-                                calculo=("Devengado de septiembre de 2024, actividades 14, 15, 16 y 25"
-                                         if opcion == "nivel_sep_2024" else "Devengado de 2024 ÷ 12")))
+                                "ARS corrientes", lentes.MES_PARTIDA_ARTS_3_4 if opcion == "nivel_sep_2024" else "2024",
+                                partida.fuentes, criterio=CRITERIO_PARTIDA[opcion], serie=serie_2024,
+                                calculo=("Lo transferido en septiembre de 2024 para gastos de funcionamiento: la suma "
+                                         "de las cuatro actividades del Programa 26 que nombra la ley"
+                                         if opcion == "nivel_sep_2024" else
+                                         "Lo transferido en 2024 para gastos de funcionamiento (las cuatro actividades "
+                                         "del Programa 26 que nombra la ley), dividido por 12")))
         exigido = lentes.exigido_arts_3_4(partida, ipc)
         eje.cifras.append(Cifra(f"{prefijo}exigido{sufijo}",
                                 f"{quien}: correspondían en 2025 según la ley" + (" (partida: promedio de 2024)" if sufijo else ""),

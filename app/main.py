@@ -58,7 +58,8 @@ def ficha_cifra(request: Request, eje: str, clave: str):
         raise HTTPException(404, "No existe esa cifra")
     documentos = Counter((d.documento, d.url, d.pagina, d.tipo_fuente.value, d.consultado) for d in cifra.fuentes)
     notas = sorted({d.nota for d in cifra.fuentes if d.nota})
-    return _render(request, "_ficha_cifra.html", {"cifra": cifra, "documentos": documentos, "notas": notas})
+    return _render(request, "_ficha_cifra.html", {"cifra": cifra, "documentos": documentos, "notas": notas,
+                                                  "composicion": formato.composicion(cifra)})
 
 
 @app.get("/ficha/evento/{evento_id}", response_class=HTMLResponse)

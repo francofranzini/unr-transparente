@@ -134,3 +134,30 @@ def test_la_ficha_lleva_al_sitio_oficial_y_no_a_una_descarga(cliente, ficha, sit
     texto = cliente.get(f"/ficha/cifra/{ficha}", headers={"HX-Request": "true"}).text
     documento = re.search(r'<a href="([^"]+)" rel="noopener" target="_blank">', texto.split("<dt>Documento</dt>")[1])
     assert documento[1] == sitio and "descargar los datos" in texto
+
+
+
+def test_la_ficha_es_breve_y_deja_el_detalle_plegado(cliente):
+    # ADR 0032: a la vista, el número, cómo se calcula y de dónde sale; citas, documentos e ids, en «Ver el detalle».
+    texto = cliente.get("/ficha/cifra/ejecucion/unr-arts34-brecha", headers={"HX-Request": "true"}).text
+    breve, detalle = texto.split('<details class="ficha-detalle">')
+    assert "Cómo se calcula" in breve and "Sale de" in breve and "Norma: <a" in breve
+    assert "<dt>Norma</dt>" in detalle and "<code>" in detalle and "<code>" not in breve
+
+
+def test_la_ficha_de_la_partida_muestra_de_que_se_compone(cliente):
+    # La partida de los arts. 3 y 4 es la suma de cuatro actividades: la ficha muestra cada una, no solo los ids.
+    texto = cliente.get("/ficha/cifra/ejecucion/unr-arts34-partida", headers={"HX-Request": "true"}).text
+    breve, detalle = texto.split('<details class="ficha-detalle">')
+    assert "<span>Asistencia Financiera para el Funcionamiento Universitarios</span><span>$ 1.483 millones</span>" in breve
+    assert "$ 1.482.584.082,00" in detalle and "$ 1.529.018.216,00" in detalle
+    assert '<span class="ficha-periodo">sep 2024</span>' in breve
+
+
+def test_la_ficha_de_la_partida_explica_que_el_mes_es_una_eleccion(cliente):
+    # La ley no fija el mes de la partida (ADR 0020): la ficha lo dice y muestra los 12 meses de donde se eligió.
+    texto = cliente.get("/ficha/cifra/ejecucion/unr-arts34-partida", headers={"HX-Request": "true"}).text
+    assert "no dice de qué mes" in texto.split('<details class="ficha-detalle">')[0]
+    cada_mes = texto.split("<dt>Cada mes</dt>")[1]
+    assert '<tr class="total"><th>sep 2024</th><td>$ 1.529.018.216</td></tr>' in cada_mes
+    assert "<th>dic 2024</th><td>$ 2.408.852.952</td>" in cada_mes

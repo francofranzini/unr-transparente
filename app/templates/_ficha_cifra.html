@@ -1,19 +1,48 @@
-<p class="ficha-rotulo">Ficha</p>
+{# Ficha breve (ADR 0032): el número, cómo se calcula y de dónde sale. Todo lo demás, detrás de «Ver el detalle». #}
+<p class="ficha-rotulo">De dónde sale este número</p>
 <h3 id="ficha-titulo">{{ cifra.etiqueta }}</h3>
-<p class="ficha-valor">{{ fmt.cifra_exacta(cifra) }}</p>
-<dl class="ficha">
-  <dt>Período</dt><dd>{{ cifra.periodo }}</dd>
-  <dt>Fuente</dt><dd>{{ cifra.tipo_fuente }}</dd>
-  {% if cifra.calculo %}<dt>Cálculo</dt><dd>{{ cifra.calculo }}</dd>{% endif %}
-  {% if cifra.aviso %}<dt>Vigencia</dt><dd>{{ cifra.aviso }}</dd>{% endif %}
-  {% if cifra.normas %}<dt>Norma</dt>
-  <dd>{% for n in cifra.normas %}<p><a href="{{ n.url }}" rel="noopener" target="_blank">{{ n.texto }}</a><br><small>{{ n.cita }}</small></p>{% endfor %}</dd>{% endif %}
-  <dt>Documento</dt>
-  <dd>{% for (documento, url, pagina, tipo, consultado), n in documentos.items() %}
-    {% set s = fmt.sitio(url) %}
-    <p><a href="{{ s[1] if s else url }}" rel="noopener" target="_blank">{{ documento }}</a>{% if pagina %}, pág. {{ pagina }}{% endif %}
-    <br><small>{% if s %}En {{ s[0] }} · <a href="{{ url }}" rel="noopener">descargar los datos</a> · {% endif %}consultado {{ consultado.strftime("%d/%m/%Y") }}{% if n > 1 %} · {{ n }} registros{% endif %}</small></p>
-  {% endfor %}</dd>
-  {% if notas %}<dt>Notas</dt><dd>{% for nota in notas %}<p>{{ nota }}</p>{% endfor %}</dd>{% endif %}
-</dl>
-<p class="ids">{% for d in cifra.fuentes[:4] %}<code>{{ d.id }}</code> {% endfor %}{% if cifra.fuentes|length > 4 %}y {{ cifra.fuentes|length - 4 }} más{% endif %}</p>
+<p class="ficha-valor">{{ fmt.cifra_corta(cifra) }}<span class="ficha-periodo">{{ fmt.fecha_evento(cifra.periodo) }}</span></p>
+
+<div class="ficha-calculo">
+  <p class="ficha-subtitulo">Cómo se calcula</p>
+  <p>{{ cifra.calculo or "Se toma tal cual del documento." }}</p>
+  {% if composicion %}<ul class="ficha-suma">
+    {% for concepto, monto in composicion %}<li><span>{{ concepto }}</span><span>{{ fmt.pesos_corto(monto) }}</span></li>{% endfor %}
+    <li class="total"><span>Total</span><span>{{ fmt.cifra_corta(cifra) }}</span></li>
+  </ul>{% endif %}
+  {% if cifra.criterio %}<p class="ficha-nota">{{ cifra.criterio }}</p>{% endif %}
+  {% if cifra.aviso %}<p class="ficha-nota">{{ cifra.aviso }}</p>{% endif %}
+</div>
+
+<p class="ficha-subtitulo">Sale de</p>
+<ul class="ficha-origen">
+  {% for nombre, enlace, pagina in fmt.origenes(cifra) %}<li><a href="{{ enlace }}" rel="noopener" target="_blank">{{ nombre }}</a>{% if pagina %}, pág. {{ pagina }}{% endif %}</li>{% endfor %}
+  {% for n in cifra.normas %}<li>Norma: <a href="{{ n.url }}" rel="noopener" target="_blank">{{ n.texto }}</a></li>{% endfor %}
+</ul>
+<p class="ficha-pie">Fuente {{ cifra.tipo_fuente }} · consultado {{ (cifra.fuentes | map(attribute="consultado") | max).strftime("%d/%m/%Y") }}</p>
+
+<details class="ficha-detalle">
+  <summary>Ver el detalle</summary>
+  <dl class="ficha">
+    <dt>Valor exacto</dt><dd>{{ fmt.cifra_exacta(cifra) }}</dd>
+    {% if cifra.serie %}<dt>Cada mes</dt>
+    <dd><table class="ficha-composicion">
+      {% for periodo, valor in cifra.serie %}<tr{% if periodo == cifra.periodo %} class="total"{% endif %}><th>{{ fmt.fecha_evento(periodo) }}</th><td>$ {{ fmt.numero(valor) }}</td></tr>{% endfor %}
+    </table>
+    <small>Devengado de las mismas actividades, mismo documento.{% if cifra.serie|selectattr(0, "equalto", cifra.periodo)|list %} En negrita, el mes elegido.{% endif %}</small></dd>{% endif %}
+    {% if composicion %}<dt>Montos exactos</dt>
+    <dd><table class="ficha-composicion">
+      {% for concepto, monto in composicion %}<tr><th>{{ concepto }}</th><td>$ {{ fmt.numero(monto, 2) }}</td></tr>{% endfor %}
+    </table></dd>{% endif %}
+    {% if cifra.normas %}<dt>Norma</dt>
+    <dd>{% for n in cifra.normas %}<p><a href="{{ n.url }}" rel="noopener" target="_blank">{{ n.texto }}</a><br><small>{{ n.cita }}</small></p>{% endfor %}</dd>{% endif %}
+    <dt>Documento</dt>
+    <dd>{% for (documento, url, pagina, tipo, consultado), n in documentos.items() %}
+      {% set s = fmt.sitio(url) %}
+      <p><a href="{{ s[1] if s else url }}" rel="noopener" target="_blank">{{ documento }}</a>{% if pagina %}, pág. {{ pagina }}{% endif %}
+      <br><small>{% if s %}En {{ s[0] }} · <a href="{{ url }}" rel="noopener">descargar los datos</a> · {% endif %}consultado {{ consultado.strftime("%d/%m/%Y") }}{% if n > 1 %} · {{ n }} registros{% endif %}</small></p>
+    {% endfor %}</dd>
+    {% if notas %}<dt>Notas</dt><dd>{% for nota in notas %}<p>{{ nota }}</p>{% endfor %}</dd>{% endif %}
+  </dl>
+  <p class="ids">{% for d in cifra.fuentes[:4] %}<code>{{ d.id }}</code> {% endfor %}{% if cifra.fuentes|length > 4 %}y {{ cifra.fuentes|length - 4 }} más{% endif %}</p>
+</details>
