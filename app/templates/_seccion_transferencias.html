@@ -43,8 +43,8 @@
     {% for a in anios %}
     {% for prefijo, nombre, r_recibido, mayus, minus in entidades %}
     {% set ley = a == "2025" %}
-    {% set k_rel = prefijo ~ ("relacion" if ley else "relacion-" ~ a) %}
-    {% set k_ref = prefijo ~ ("exigido" if ley else "ref-" ~ a) %}
+    {% set k_rel = prefijo ~ ("relacion" if ley else "relacion-piso-" ~ a) %}
+    {% set k_ref = prefijo ~ ("exigido" if ley else "piso-" ~ a) %}
     {% set k_tr = prefijo ~ ("transferido" if ley else "tr-" ~ a) %}
     {% set recibidos = (FAJOS * ej.cifra(k_tr).valor / ej.cifra(k_ref).valor)|round|int %}
     {% set color = "--serie-2" if ley else "--tenue" %}
@@ -72,8 +72,9 @@
       <figcaption>Acumulado del año, en millones de pesos de cada mes.</figcaption>
       {% for a in anios %}
       {% set ley = a == "2025" %}
-      {# Fechas de la ley sobre el eje de 2025: cada punto es el acumulado a fin de mes (ene = 0 … dic = 11). #}
-      {% set hitos = [(6 + 21 / 31, "Sanción", "end"), (8 + 21 / 31, "Publicación", "start")] if ley else [] %}
+      {# Hechos del conflicto sobre el eje (cada punto es el acumulado a fin de mes: ene = 0 … dic = 11); cada rótulo abre la ficha del evento. #}
+      {% set hitos = [(6 + 21 / 31, "Sanción", "end", "ley-27795-sancion"), (8 + 21 / 31, "Publicación", "start", "ley-27795-promulgacion")] if ley
+                     else [(4 + 10 / 30, "Acuerdo de junio", "end", "ley-27795-acuerdo-junio-2026"), (8 + 6 / 31, "Sentencia de fondo", "start", "ley-27795-fallo-fondo")] %}
       {% for prefijo, nombre, _, _, _ in entidades %}
       {% set serie = ej.detalle.acumulado[prefijo] if ley else ej.detalle.acumulado_actual[prefijo] %}
       {% set n = serie|length %}
@@ -111,10 +112,11 @@
             {% for m in ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"] %}{% if formato == "ancho" or loop.index0 is even %}
               <text class="eje-texto" x="{{ (f.izq + uw * loop.index0 / 11)|round(1) }}" y="{{ f.h - 8 }}" text-anchor="middle">{{ m }}</text>
             {% endif %}{% endfor %}
-            {% for posicion, rotulo, ancla in hitos %}
+            {% for posicion, rotulo, ancla, id_evento in hitos %}
               {% set xh = (f.izq + uw * posicion / 11)|round(1) %}
               <line class="cruz" x1="{{ xh }}" x2="{{ xh }}" y1="{{ f.sup }}" y2="{{ f.h - f.inf }}" stroke-dasharray="3 4"/>
-              <text class="eje-texto" x="{{ xh + (-4 if ancla == "end" else 4) }}" y="{{ f.sup - 8 }}" text-anchor="{{ ancla }}">{{ rotulo }}</text>
+              <a href="{{ evento }}{{ id_evento }}" hx-get="{{ evento }}{{ id_evento }}" hx-target="#ficha-contenido">
+                <text class="eje-texto" x="{{ xh + (-4 if ancla == "end" else 4) }}" y="{{ f.sup - 8 }}" text-anchor="{{ ancla }}" text-decoration="underline">{{ rotulo }}</text></a>
             {% endfor %}
             <polygon points="{{ ns.ida }} {{ ns.vuelta }}" fill="{{ color }}" fill-opacity=".14"/>
             <path class="linea" d="{{ ns.exigido }}" stroke="{{ color }}"{% if not ley %} stroke-dasharray="6 5"{% endif %}/>
@@ -124,7 +126,7 @@
             <text class="rotulo" x="{{ xf + 10 }}" y="{{ ye_f + 4 }}">{{ "Según la ley" if ley else "Referencia" }}</text>
             <text class="rotulo" x="{{ xf + 10 }}" y="{{ yt_f + 4 }}">Se transfirió</text>
             <line class="cruz" data-cruz x1="0" x2="0" y1="{{ f.sup }}" y2="{{ f.h - f.inf }}" visibility="hidden"/>
-            <rect class="zona" x="{{ f.izq }}" y="0" width="{{ uw }}" height="{{ f.h }}"/>
+            <rect class="zona" x="{{ f.izq }}" y="{{ f.sup }}" width="{{ uw }}" height="{{ f.h - f.sup }}"/>
           </svg>
           <div class="tooltip" hidden></div>
         </div>
@@ -264,17 +266,19 @@
         <table class="tabla">
           <thead><tr><th>Lectura</th><th>Todas: referencia</th><th>Todas</th><th>UNR</th></tr></thead>
           <tbody>
-            <tr><th>Seguir actualizando cada dos meses por inflación (la que muestra el gráfico)</th>
-              <td data-r="Referencia">{{ num(ej, "arts34-ref-" ~ actual) }}</td>
-              <td data-r="Todas">{{ num(ej, "arts34-relacion-" ~ actual) }}</td>
-              <td data-r="UNR">{{ num(ej, "unr-arts34-relacion-" ~ actual) }}</td></tr>
-            <tr><th>Mantener el monto de diciembre de 2025 como piso, sin actualizar</th>
+            <tr><th>El monto que la ley deja para diciembre de 2025, como piso y sin actualizar (la que muestra el gráfico)</th>
               <td data-r="Referencia">{{ num(ej, "arts34-piso-" ~ actual) }}</td>
               <td data-r="Todas">{{ num(ej, "arts34-relacion-piso-" ~ actual) }}</td>
               <td data-r="UNR">{{ num(ej, "unr-arts34-relacion-piso-" ~ actual) }}</td></tr>
+            <tr><th>Seguir actualizando cada dos meses por inflación</th>
+              <td data-r="Referencia">{{ num(ej, "arts34-ref-" ~ actual) }}</td>
+              <td data-r="Todas">{{ num(ej, "arts34-relacion-" ~ actual) }}</td>
+              <td data-r="UNR">{{ num(ej, "unr-arts34-relacion-" ~ actual) }}</td></tr>
           </tbody>
         </table>
-        <p>La ley no decide entre ellas; por eso {{ actual }} va en gris.
+        <p>El gráfico usa el piso porque solo supone que lo que la ley ordenó para 2025 no se pierde. Aun así, la ley
+           no decide entre las dos; por eso {{ actual }} va en gris. Las líneas punteadas marcan el acuerdo del 10 de junio
+           (según la cobertura, un 20 % más para funcionamiento) y la sentencia de fondo.
            <a href="{{ evento }}estado-ley-27795-octubre-2026" hx-get="{{ evento }}estado-ley-27795-octubre-2026" hx-target="#ficha-contenido">Estado de la ley hoy</a>.</p></details>
       {% endif %}
       <details class="mas"><summary>Ver la cuenta por bimestre</summary>

@@ -38,3 +38,9 @@ Lo que la oración no dice va en el sitio: qué transfiere la Nación, qué hace
 - 2026: **referencia en gris y punteada** = la regla del art. 4 (partida de septiembre de 2024 × IPC del art. 3 × IPC al inicio de cada bimestre) extendida a 2026, rotulada «la ley no lo fija» (`lentes.referencia_art4`). Ventana: enero a septiembre de 2026, el último mes completo con referencia. Todas las universidades −34,7 %; UNR −52,0 %. La cifra no va en rojo.
 - El texto de 2026 enlaza el estado de la ley a octubre de 2026. El título de la sección pasa a «¿Reciben las universidades lo que les corresponde por ley?», para que valga en cualquier año.
 - Al publicarse un mes nuevo de Presupuesto Abierto y del IPC, la ventana se extiende sola.
+
+## Actualización (2026-10-20): el piso como referencia de 2026 y los hechos del conflicto en el gráfico
+
+- La referencia de 2026 pasa a ser el **piso de diciembre de 2025**: el monto mensual que el art. 4 fija para noviembre-diciembre de 2025, sin actualizar. Es la lectura más cercana a la ley, porque solo supone que lo que la ley ordenó para 2025 no se pierde. Enero a septiembre de 2026: todas −24,2 %; UNR −44,3 %. «Seguir actualizando por inflación» (−34,7 %; −52,0 %) queda en el desplegable «¿Y 2026?».
+- El gráfico marca hechos del conflicto con su ficha: en 2025, sanción y publicación; en 2026, el acuerdo del 10 de junio (según la cobertura, un 20 % más para funcionamiento desde junio) y la sentencia de fondo del 6 de octubre.
+- Queda fuera (se decidió no hacerlo por ahora): mostrar como cifra principal de 2026 la deuda de 2025 sin pagar.
