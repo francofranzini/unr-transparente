@@ -1,5 +1,5 @@
 # Lo escribe scripts/actualizar_ley.py (ADR 0036): última consulta de las fuentes y claves de los hitos cargados solos.
-consultado: '2026-10-20'
+consultado: '2026-10-21'
 avisados:
 - 0076c5361aa8aeb8
 - 01eeb44e9ece7c9f
@@ -49,9 +49,12 @@ avisados:
 - 6100bac1b945ee8d
 - 61f8a393f9248abb
 - 659a4d1459621d57
+- 6935e1cbd3cdf416
 - 6d1a9e453cba7bf6
 - 6ee6e18d9127ebd3
+- 717d5526591040b9
 - 718d0a85305ac6aa
+- 71e036f12f786fc2
 - 7281f06bdc84f344
 - 73a2a75def0e8e3d
 - 7a20f7403e51e2f9
@@ -65,7 +68,9 @@ avisados:
 - 8030b37b46e22051
 - 8412c867161fc539
 - 8593be00157bc7a5
+- 86fd76093e2854d2
 - 87aafd352cfb8f11
+- 8860304ae00679ab
 - 8ff35f0a5a24516b
 - 9000fbed2cafc3c6
 - 932ff815e1cf6570
@@ -75,14 +80,19 @@ avisados:
 - a06596786d15ad0e
 - a3cbc68596a805f0
 - a5cc5280690bf39a
+- a6a3d9e6aa99424f
 - a8c16e6603c6609b
 - a9306db35b07c284
 - a9caca14bb3c3207
 - aa9312116ba5e287
 - ad452331580fa11e
+- ad46b0b17ebf9380
 - ae0249cf54674ee3
+- af86f8135bd0ef96
 - b1cb41ed56bfa68c
 - b459824ad39f1553
+- b548d0a1f74a46e8
+- b7c61ca15d61917b
 - b8f0324808e5a64a
 - bb44505b8600f812
 - be115775249fa89a
@@ -94,6 +104,7 @@ avisados:
 - cd1995bee07eb324
 - cd347f7528511c71
 - cd6658521efdba10
+- d14197b648969bc6
 - d326d73281a0b1e0
 - d4d2d91becb80b8e
 - d5468609a0daa813
@@ -111,6 +122,7 @@ avisados:
 - f524ed86ee289cb6
 - f68bf2dc98d4cc14
 - f80325e34919f96f
+- f80f352ff8661b3c
 - f8af88b94ed11276
 - f95ed1ee24f2441d
 - fabf1ac11e848c0e
