@@ -26,6 +26,17 @@
     <p>Fuentes: <a href="https://transparencia.unr.edu.ar/">Transparencia UNR</a> ·
        <a href="https://www.presupuestoabierto.gob.ar/sici/datos-abiertos">Presupuesto Abierto</a> ·
        <a href="https://apis.datos.gob.ar/series/api/">INDEC</a>. Sitio independiente, sin afiliación con ninguna universidad.</p>
+    {# Autores: nombre, GitHub y LinkedIn. Un enlace vacío no se muestra. #}
+    {% set autores = [
+      ("Franco Franzini", "https://github.com/francofranzini", "https://www.linkedin.com/in/franco-franzini-7050ab233/"),
+      ("Ignacio Gonzalez", "https://github.com/igg7x", "https://www.linkedin.com/in/ignacio-g-421882231/"),
+      ("Santos Lurati", "https://github.com/santosLurati", "https://www.linkedin.com/in/santos-lurati-b3525824a/"),
+    ] %}
+    <p class="autores">Hecho por
+      {%- for nombre, github, linkedin in autores %}
+      {{ nombre }}{% if github or linkedin %} ({% if github %}<a href="{{ github }}">GitHub</a>{% endif %}{% if github and linkedin %} · {% endif %}{% if linkedin %}<a href="{{ linkedin }}">LinkedIn</a>{% endif %}){% endif %}{{ "," if loop.revindex > 2 else (" y" if loop.revindex == 2 else "") }}
+      {%- endfor %}.
+      <a href="https://github.com/francofranzini/unr-transparente">Código del sitio</a>.</p>
   </footer>
   <dialog id="ficha" aria-labelledby="ficha-titulo" class="vidrio">
     <div id="ficha-contenido"></div>
