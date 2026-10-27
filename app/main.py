@@ -35,7 +35,8 @@ PAGINAS = {"salario": "salario", "ley": "ley", "transferencias": "ejecucion", "c
 templates.env.globals.update(paginas={v: k for k, v in PAGINAS.items()})
 
 
-@app.get("/", response_class=HTMLResponse)
+# HEAD también: algunos lectores de vista previa (LinkedIn, WhatsApp) lo piden antes del GET
+@app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
 def inicio(request: Request):
     ejes = construir_ejes(repo)
     formatos = [graficos.salario_contra_ley(ejes["salario"].serie, f) for f in graficos.FORMATOS]
