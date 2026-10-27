@@ -24,7 +24,7 @@ def test_paginas_responden(cliente, ruta):
 def test_portada_tiene_vista_previa_para_compartir(cliente):
     assert cliente.head("/").status_code == 200
     html = cliente.get("/").text
-    imagen = re.search(r'<meta property="og:image" content="https://[^"]+(/static/og\.png)">', html)
+    imagen = re.search(r'<meta property="og:image" content="https://[^"]+(/static/og-portada\.png)">', html)
     assert imagen and cliente.get(imagen[1]).headers["content-type"] == "image/png"
     assert 'name="twitter:card" content="summary_large_image"' in html
 
