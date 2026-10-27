@@ -4,6 +4,24 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block titulo %}Universidad Transparente · La universidad pública, a la vista{% endblock %}</title>
+  {# Vista previa al compartir el enlace (WhatsApp, LinkedIn, X): las URL tienen que ser absolutas #}
+  {% set sitio = "https://unr-transparente-sigma.vercel.app" %}
+  {% set descripcion = "El financiamiento universitario frente a la Ley 27.795, con la fuente de cada número. Sitio independiente." %}
+  <meta name="description" content="{{ descripcion }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Universidad Transparente">
+  <meta property="og:locale" content="es_AR">
+  <meta property="og:title" content="Universidad Transparente · La universidad pública, a la vista">
+  <meta property="og:description" content="{{ descripcion }}">
+  <meta property="og:url" content="{{ sitio }}/">
+  <meta property="og:image" content="{{ sitio }}/static/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Universidad Transparente: el financiamiento universitario frente a la Ley 27.795, con la fuente de cada número.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Universidad Transparente · La universidad pública, a la vista">
+  <meta name="twitter:description" content="{{ descripcion }}">
+  <meta name="twitter:image" content="{{ sitio }}/static/og.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400&display=swap">
   <link rel="stylesheet" href="/static/estilo.css">
