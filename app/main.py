@@ -4,7 +4,7 @@ from collections import Counter
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse, Response
+from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -22,6 +22,8 @@ app.mount("/static", StaticFiles(directory=RAIZ / "static"), name="static")
 templates = Jinja2Templates(directory=RAIZ / "templates")
 # Dirección pública: los buscadores y las vistas previas al compartir necesitan URL absolutas.
 SITIO = "https://unr-transparente-sigma.vercel.app"
+# Clave de IndexNow: con ella Bing y otros buscadores aceptan avisos de cambios (scripts/avisar_buscadores.py).
+INDEXNOW_CLAVE = "0e91086c2ca35921727ad800d2b59988"
 templates.env.globals.update(fmt=formato, sitio=SITIO)
 
 
@@ -57,6 +59,16 @@ def sitemap():
            f"  <url><loc>{SITIO}/</loc></url>\n"
            "</urlset>\n")
     return Response(xml, media_type="application/xml")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return FileResponse(RAIZ / "static" / "favicon.ico")
+
+
+@app.get(f"/{INDEXNOW_CLAVE}.txt", response_class=PlainTextResponse)
+def indexnow_clave():
+    return INDEXNOW_CLAVE
 
 
 @app.get("/{pagina}")

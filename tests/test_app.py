@@ -380,3 +380,10 @@ def test_buscadores_encuentran_la_portada(cliente):
     assert sitemap.headers["content-type"].startswith("application/xml")
     assert "<loc>https://unr-transparente-sigma.vercel.app/</loc>" in sitemap.text
     assert '<link rel="canonical" href="https://unr-transparente-sigma.vercel.app/">' in cliente.get("/").text
+
+
+def test_icono_y_clave_de_indexnow(cliente):
+    from app.main import INDEXNOW_CLAVE
+    assert cliente.get("/favicon.ico").status_code == 200
+    assert cliente.get(f"/{INDEXNOW_CLAVE}.txt").text == INDEXNOW_CLAVE
+    assert 'rel="apple-touch-icon"' in cliente.get("/").text
