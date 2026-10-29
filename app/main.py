@@ -21,7 +21,7 @@ app = FastAPI(title="Portal de transparencia — UNR")
 app.mount("/static", StaticFiles(directory=RAIZ / "static"), name="static")
 templates = Jinja2Templates(directory=RAIZ / "templates")
 # Dirección pública: los buscadores y las vistas previas al compartir necesitan URL absolutas.
-SITIO = "https://unr-transparente-sigma.vercel.app"
+SITIO = "https://universidadtransparente.com.ar"
 # Clave de IndexNow: con ella Bing y otros buscadores aceptan avisos de cambios (scripts/avisar_buscadores.py).
 INDEXNOW_CLAVE = "0e91086c2ca35921727ad800d2b59988"
 templates.env.globals.update(fmt=formato, sitio=SITIO)
