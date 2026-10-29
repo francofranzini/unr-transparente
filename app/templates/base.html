@@ -3,11 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block titulo %}Universidad Transparente · La universidad pública, a la vista{% endblock %}</title>
+  <title>{% block titulo %}Universidad Transparente · Ley 27.795 de financiamiento universitario{% endblock %}</title>
   {# Vista previa al compartir el enlace (WhatsApp, LinkedIn, X): las URL tienen que ser absolutas. Si cambia la imagen, cambiarle el nombre: las redes la guardan en caché por URL #}
-  {% set sitio = "https://unr-transparente-sigma.vercel.app" %}
   {% set descripcion = "El financiamiento universitario frente a la Ley 27.795, con la fuente de cada número. Sitio independiente." %}
   <meta name="description" content="{{ descripcion }}">
+  {% block robots %}<link rel="canonical" href="{{ sitio }}/">{% endblock %}
+  <script type="application/ld+json">
+  {"@context": "https://schema.org", "@type": "WebSite", "name": "Universidad Transparente",
+   "url": "{{ sitio }}/", "inLanguage": "es-AR", "description": "{{ descripcion }}"}
+  </script>
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Universidad Transparente">
   <meta property="og:locale" content="es_AR">

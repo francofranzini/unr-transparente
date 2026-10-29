@@ -372,3 +372,11 @@ def test_salario_muestra_lo_que_dejo_de_cobrar(cliente):
     assert 'href="/ficha/cifra/salario/no-cobrado"' in _seccion(cliente.get("/").text, "salario")
     ficha = cliente.get("/ficha/cifra/salario/no-cobrado", headers={"HX-Request": "true"}).text
     assert "Norma: <a" in ficha and "documentos," in ficha
+
+
+def test_buscadores_encuentran_la_portada(cliente):
+    assert "Sitemap: https://unr-transparente-sigma.vercel.app/sitemap.xml" in cliente.get("/robots.txt").text
+    sitemap = cliente.get("/sitemap.xml")
+    assert sitemap.headers["content-type"].startswith("application/xml")
+    assert "<loc>https://unr-transparente-sigma.vercel.app/</loc>" in sitemap.text
+    assert '<link rel="canonical" href="https://unr-transparente-sigma.vercel.app/">' in cliente.get("/").text

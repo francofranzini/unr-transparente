@@ -1,2 +1,4 @@
 {% extends "base.html" %}
+{# Las fichas sueltas no compiten con la portada en los buscadores; sus enlaces sí se siguen. #}
+{% block robots %}<meta name="robots" content="noindex, follow">{% endblock %}
 {% block contenido %}<section class="ficha-pagina">{% include parcial %}<p><a href="/">← Volver</a></p></section>{% endblock %}
