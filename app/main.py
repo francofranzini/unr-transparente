@@ -44,7 +44,10 @@ templates.env.globals.update(paginas={v: k for k, v in PAGINAS.items()})
 def inicio(request: Request):
     ejes = construir_ejes(repo)
     formatos = [graficos.salario_contra_ley(ejes["salario"].serie, f) for f in graficos.FORMATOS]
-    return templates.TemplateResponse(request, "inicio.html", {"ejes": ejes, "graficos_salario": formatos})
+    respuesta = templates.TemplateResponse(request, "inicio.html", {"ejes": ejes, "graficos_salario": formatos})
+    # La CDN de Vercel guarda la portada 5 minutos; así un pico de visitas no recalcula la página en cada pedido.
+    respuesta.headers["Cache-Control"] = "public, max-age=0, s-maxage=300, stale-while-revalidate=86400"
+    return respuesta
 
 
 @app.get("/robots.txt", response_class=PlainTextResponse)

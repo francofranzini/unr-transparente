@@ -387,3 +387,9 @@ def test_icono_y_clave_de_indexnow(cliente):
     assert cliente.get("/favicon.ico").status_code == 200
     assert cliente.get(f"/{INDEXNOW_CLAVE}.txt").text == INDEXNOW_CLAVE
     assert 'rel="apple-touch-icon"' in cliente.get("/").text
+
+
+def test_portada_cacheable_y_con_autoria(cliente):
+    respuesta = cliente.get("/")
+    assert "s-maxage=300" in respuesta.headers["cache-control"]
+    assert "estudiantes de la Licenciatura en Ciencias de la Computación" in respuesta.text
