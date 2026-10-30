@@ -20,18 +20,7 @@
           "value": "unr-transparente-sigma.vercel.app"
         }
       ],
-      "destination": "https://universidadtransparente.com.ar/$1",
-      "permanent": true
-    },
-    {
-      "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.universidadtransparente.com.ar"
-        }
-      ],
-      "destination": "https://universidadtransparente.com.ar/$1",
+      "destination": "https://www.universidadtransparente.com.ar/$1",
       "permanent": true
     }
   ]

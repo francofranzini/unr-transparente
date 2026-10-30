@@ -375,11 +375,11 @@ def test_salario_muestra_lo_que_dejo_de_cobrar(cliente):
 
 
 def test_buscadores_encuentran_la_portada(cliente):
-    assert "Sitemap: https://universidadtransparente.com.ar/sitemap.xml" in cliente.get("/robots.txt").text
+    assert "Sitemap: https://www.universidadtransparente.com.ar/sitemap.xml" in cliente.get("/robots.txt").text
     sitemap = cliente.get("/sitemap.xml")
     assert sitemap.headers["content-type"].startswith("application/xml")
-    assert "<loc>https://universidadtransparente.com.ar/</loc>" in sitemap.text
-    assert '<link rel="canonical" href="https://universidadtransparente.com.ar/">' in cliente.get("/").text
+    assert "<loc>https://www.universidadtransparente.com.ar/</loc>" in sitemap.text
+    assert '<link rel="canonical" href="https://www.universidadtransparente.com.ar/">' in cliente.get("/").text
 
 
 def test_icono_y_clave_de_indexnow(cliente):
