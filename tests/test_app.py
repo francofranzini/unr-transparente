@@ -393,3 +393,9 @@ def test_portada_cacheable_y_con_autoria(cliente):
     respuesta = cliente.get("/")
     assert "s-maxage=300" in respuesta.headers["cache-control"]
     assert "estudiantes de la Licenciatura en Ciencias de la Computación" in respuesta.text
+
+
+def test_pie_con_datos_de_prensa(cliente):
+    texto = cliente.get("/").text
+    assert 'id="prensa"' in texto and "mailto:" in texto
+    assert cliente.get("/static/og-portada.png").status_code == 200
