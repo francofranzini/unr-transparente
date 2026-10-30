@@ -17,6 +17,7 @@ El sitio se mencionó en un programa de radio («estudiantes de LCC de la UNR»)
 - **Ícono del sitio** (`favicon.ico` y versiones para celular): una «U» crema sobre azul marino, con la paleta y la tipografía del estándar.
 - **IndexNow:** la clave se sirve en `/<clave>.txt` y `scripts/avisar_buscadores.py` avisa a Bing y a los demás buscadores de IndexNow que la portada cambió. Google se avisa desde Search Console.
 - **Caché:** la portada se guarda 5 minutos en la CDN de Vercel (`s-maxage=300`), para que un pico de visitas no la recalcule en cada pedido.
+- **Visitas:** Vercel Web Analytics (`/_vercel/insights/script.js`), sin cookies ni datos personales, para saber cuánta gente entra y desde dónde. Se activa en el panel de Vercel.
 - **Prensa, en el pie y no en una página aparte** (se mantiene el ADR 0019): contacto, la imagen para notas y cómo citar un número. El pie tiene el ancla `#prensa`.
 
 ## Consecuencias
