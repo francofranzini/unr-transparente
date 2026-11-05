@@ -1,5 +1,5 @@
 # Lo escribe scripts/actualizar_ley.py (ADR 0036): última consulta de las fuentes y claves de los hitos cargados solos.
-consultado: '2026-11-04'
+consultado: '2026-11-05'
 avisados:
 - 0076c5361aa8aeb8
 - 0196ee69f4621fe2
@@ -7,6 +7,7 @@ avisados:
 - 0372148b9f0bd2a4
 - 055b1f65a8b59645
 - 0c504c2e3e729687
+- 0c7dc8e8228100a0
 - 0d30612dd8987830
 - 12c393cf63c7fdc4
 - 12dcde33b594c7a1
@@ -14,6 +15,7 @@ avisados:
 - 175c4b346549d6b6
 - 1adae28908cf9682
 - 1f2794bef88b780f
+- 202df42804bfdd55
 - 20453aed42bec411
 - 207b799f2e81603d
 - 2164d9cba1426a94
@@ -39,6 +41,7 @@ avisados:
 - 315351f64c18d292
 - 33a6c54072078056
 - 3522a0af32de8bb0
+- 368eb1b850dc39d4
 - 36eb453969504d80
 - 37313b98c619e25a
 - 375e26c506ea6e8d
@@ -144,6 +147,7 @@ avisados:
 - ab4b5f4196335b73
 - abb5585f366f193f
 - abdf0529573d8ceb
+- ac4decc701348dae
 - ad452331580fa11e
 - ad46b0b17ebf9380
 - ae0249cf54674ee3
@@ -159,6 +163,7 @@ avisados:
 - be115775249fa89a
 - bfa04011ecde618a
 - c1c8d81a84306e79
+- c1f838355bc7ed96
 - c276a6dcbbe45102
 - c5eb745903dca954
 - c746f72c1aaf34f2
@@ -202,6 +207,7 @@ avisados:
 - f65a00a699f11036
 - f68bf2dc98d4cc14
 - f713a5cca282a035
+- f754a6a9d470b765
 - f80325e34919f96f
 - f80f352ff8661b3c
 - f8af88b94ed11276
