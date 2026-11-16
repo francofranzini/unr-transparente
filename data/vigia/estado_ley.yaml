@@ -1,5 +1,5 @@
 # Lo escribe scripts/actualizar_ley.py (ADR 0036): última consulta de las fuentes y claves de los hitos cargados solos.
-consultado: '2026-11-15'
+consultado: '2026-11-16'
 avisados:
 - 0076c5361aa8aeb8
 - 0196ee69f4621fe2
@@ -53,6 +53,7 @@ avisados:
 - 3bb91d40db1b07c1
 - 3bc3c1347dea6f17
 - 3c00027a7a124f79
+- 3de04f8f3ae07ca2
 - 3e3fa2481fc9f9ca
 - 3f9f342bc8ffebf4
 - 4198b50778bf9a23
