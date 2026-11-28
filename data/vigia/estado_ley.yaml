@@ -1,7 +1,8 @@
 # Lo escribe scripts/actualizar_ley.py (ADR 0036): última consulta de las fuentes y claves de los hitos cargados solos.
-consultado: '2026-11-27'
+consultado: '2026-11-28'
 avisados:
 - 0076c5361aa8aeb8
+- 0185f6b113b91108
 - 0196ee69f4621fe2
 - 01eeb44e9ece7c9f
 - 0372148b9f0bd2a4
@@ -50,6 +51,8 @@ avisados:
 - 207b799f2e81603d
 - 207e8f9ff23a2db8
 - 2164d9cba1426a94
+- 21651f68ca9a8b09
+- 2178bced7e1fe515
 - 21964aa1d4ab201f
 - 221a3b7762bf41df
 - 224dd4a918c8645a
@@ -84,11 +87,13 @@ avisados:
 - 3141f65897548c6c
 - 315351f64c18d292
 - 33a6c54072078056
+- 33bca4f30e1ce473
 - 345b7fa6787f8898
 - 3522a0af32de8bb0
 - 35ba6a148431c5cd
 - 368eb1b850dc39d4
 - 36eb453969504d80
+- 36ece9d364a9bbf1
 - 37313b98c619e25a
 - 375e26c506ea6e8d
 - 38ba3dd853344702
@@ -108,6 +113,7 @@ avisados:
 - 3fda440f7f92c9b4
 - 4198b50778bf9a23
 - 4232ae5bede61a20
+- 427c0053c13a62a1
 - 42937ef23ab59636
 - 42eedb58c01adf03
 - 450775dd9a058ec2
@@ -118,12 +124,14 @@ avisados:
 - 465f845cd8f2d3ed
 - 467d7bb4e9bd42f6
 - 4696d1f482f93d05
+- 46c57bf860059ecb
 - 46cebe54dcc43c62
 - 479c94fecdc76f76
 - 47acdd7564403991
 - 4909d1fc07db0ea6
 - 490cbfb802b3761c
 - 49a55018107d3159
+- 4a68f07c3264cce0
 - 4a8f192d4b87581c
 - 4ab24adede9e46f4
 - 4b290abcb2c06c7a
@@ -138,6 +146,7 @@ avisados:
 - 518248ead7e59545
 - 51b48081380324b7
 - 52002f075ec4a0d6
+- 52254696b41ddb48
 - 5239edda3a72ed5f
 - 52511b362e3688f2
 - 52a42004792803c8
@@ -164,6 +173,7 @@ avisados:
 - 5f57238cc03bb118
 - 5fde6cf11673d364
 - 5fe572399e861d6e
+- 6021c6be09191982
 - 608a666bd7dd6a88
 - 609f042f3c80e1ee
 - 60ae281e1cb1c851
@@ -200,10 +210,12 @@ avisados:
 - 71e036f12f786fc2
 - 7281f06bdc84f344
 - 73a2a75def0e8e3d
+- 74be7093b4cc3476
 - 750e39eb551bf7ab
 - 7523acbddd4f4312
 - 75585b020d500a83
 - 75adae8c1496a15a
+- 77706427f5223bf2
 - 7802fcbbb6953e45
 - 78a9243b869173dd
 - 79e952689b4bbef2
@@ -254,7 +266,11 @@ avisados:
 - 8a8db91d61bb1422
 - 8b766cfc584648b7
 - 8bb7d03b205f8bbc
+- 8c2ea8d3a037c89e
 - 8c62231e1f991aa4
+- 8df27239ea9e3d06
+- 8e57789f2776faed
+- 8e5cd9c5dc10179e
 - 8edade1e2e873ce1
 - 8ff35f0a5a24516b
 - 9000fbed2cafc3c6
@@ -286,6 +302,7 @@ avisados:
 - a012a648c2e3121a
 - a06459cb0a8fdf9c
 - a06596786d15ad0e
+- a101e5914f856e48
 - a1d2d4485a86fe22
 - a3cbc68596a805f0
 - a3e403e073e27c8b
@@ -294,6 +311,7 @@ avisados:
 - a5dc9a3a5e16b540
 - a675ccea93270a7a
 - a6a3d9e6aa99424f
+- a7ac55fb5a777d70
 - a7e562380b72f4cc
 - a8c16e6603c6609b
 - a9306db35b07c284
@@ -315,8 +333,10 @@ avisados:
 - ae0249cf54674ee3
 - ae411de7c416ff95
 - af2fa1878da5b31a
+- af7b377af7301e2d
 - af86f8135bd0ef96
 - b0481ef91f470b53
+- b10b3a7693366fbd
 - b168ce2d418e3ed5
 - b1c28f4fc48af3dc
 - b1cb41ed56bfa68c
@@ -324,10 +344,14 @@ avisados:
 - b379f0e4e4c13582
 - b459824ad39f1553
 - b46954875aa05220
+- b48030905a487e7b
 - b5335ac58631a3a3
 - b548d0a1f74a46e8
+- b5af0a5cedf1ca92
+- b5eb63219080f0fa
 - b75aa6f5b21e4fff
 - b7c61ca15d61917b
+- b8a74cdfa6c5d9ca
 - b8f0324808e5a64a
 - b902aaff7939a8f9
 - ba102867733f5e3a
@@ -355,6 +379,7 @@ avisados:
 - c746f72c1aaf34f2
 - c77aaf8c3ba63113
 - c951505af1c5accb
+- c966499bef3d7c4e
 - c98d1d8ebf430477
 - ca25b87b8d306442
 - ca3c8730a47a7d42
@@ -375,6 +400,8 @@ avisados:
 - cdc0f723663b1e4e
 - cdd58baf2ce2a747
 - ce6ad030648ee08d
+- cf2e066cd9b0ddb1
+- cffb86dcb5fcb440
 - d14197b648969bc6
 - d1698a8b5bdba13b
 - d24390707c740329
@@ -382,15 +409,18 @@ avisados:
 - d326d73281a0b1e0
 - d3e6992afdb69c37
 - d4d2d91becb80b8e
+- d4e68f3a9714f745
 - d5468609a0daa813
 - d56f9e9cddfb66ef
 - d5e4646fddb236da
 - d6c1b41b63e79ed0
 - d71fa5abe6dbe691
 - d93f1ac16ab46521
+- d9e032230e86cbd8
 - da5f81e14ec57d85
 - da9b8b7180eacae3
 - dad7b2868f8a7a78
+- dae4a8cdcb4a63f8
 - daf57e51749b5946
 - db8b7c2ffdd1f20b
 - dcb85a89f22ad575
@@ -400,6 +430,7 @@ avisados:
 - ddc0b5ea87b10349
 - de34ff6c19d2e4f8
 - de9948bc888e9caa
+- df1079c730552995
 - df4a150e1173c23d
 - e053fff19ef1fa45
 - e06170f38d214644
@@ -415,15 +446,19 @@ avisados:
 - e7a228f9f72d0c27
 - e821b2d28cfd5e29
 - e87bc44f278dc859
+- e88bb4d94ec1050b
 - e93f63a8666d3808
 - e9b9900623bcb1c3
 - ea01a51fcbc30e8d
 - ec6626e32e9b7bf9
 - ecddcbbfc331e5f1
+- eceb40ac73ead078
 - ed0d1f662e5d30e3
 - edab49d9b2b5cb7d
+- ef31c5f0638e681f
 - f108268cb12dd38d
 - f151014f32481c4c
+- f175ca4466b0bbb6
 - f183bed6a22939b9
 - f1bb765d295a9f0b
 - f234f73f05590871
@@ -448,6 +483,7 @@ avisados:
 - f95ed1ee24f2441d
 - f95f505ee494881f
 - f9db5c6dc6543820
+- f9e724c4f25a4733
 - fabf1ac11e848c0e
 - fb1f7cb37ef55db8
 - fb86f5c934d69c53
